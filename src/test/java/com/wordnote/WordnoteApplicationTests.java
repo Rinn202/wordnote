@@ -1,4 +1,4 @@
-package R_project.wordnote;
+package com.wordnote;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

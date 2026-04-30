@@ -1,4 +1,4 @@
-package R_project.wordnote;
+package com.wordnote;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
