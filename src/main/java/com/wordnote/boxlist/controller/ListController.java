@@ -3,18 +3,15 @@ package com.wordnote.boxlist.controller;
 import com.wordnote.boxlist.dto.request.ListPatchDto;
 import com.wordnote.boxlist.dto.request.ListPostDto;
 import com.wordnote.boxlist.dto.response.ListResponseDto;
+import com.wordnote.boxlist.entity.Type;
 import com.wordnote.boxlist.mapper.ListMapper;
-import com.wordnote.boxlist.repository.ListRepository;
 import com.wordnote.boxlist.service.ListService;
 import com.wordnote.workbox.entity.WorkBox;
-import com.wordnote.workbox.mapper.WorkBoxMapper;
 import org.apache.catalina.security.SecurityUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import com.wordnote.boxlist.entity.Type;
 
 import java.util.List;
 
@@ -36,8 +33,8 @@ class ListController {
     public ResponseEntity<ListResponseDto> getWorkLists(@RequestParam(required = false) Type type,
                                                         @RequestHeader("Authorization")
                                                         @RequestParam(defaultValue = "asc") String sort) {
-        Long memberId = SecurityUtil.getUserId();//토큰
-
+        //Long memberId = SecurityUtil.getUserId();
+        Long memberId = 1L;
         List<WorkBox> list = listService.findAll();
         ListResponseDto response = new ListResponseDto(list);
         return ResponseEntity.ok(response);
@@ -48,8 +45,8 @@ class ListController {
     public ResponseEntity<ListResponseDto> getWorkListsById(@RequestParam(required = false) Type type,
                                                             @RequestHeader("Authorization")
                                                             @RequestParam(defaultValue = "asc") String sort) {
-        Long memberId = SecurityUtil.getUserId();//토큰
-
+        //Long memberId = SecurityUtil.getUserId();
+        Long memberId = 1L;
         List<WorkBox> list = listService.findByMemberId(memberId);
         ListResponseDto response = new ListResponseDto(list);
         return ResponseEntity.ok(response);
@@ -60,10 +57,10 @@ class ListController {
     public ResponseEntity<ListResponseDto> createWorkList(@RequestParam(required = false) Type type,
                                                           @RequestHeader("Authorization")
                                                           @RequestBody ListPostDto listPostDto) {
-        Long memberId = SecurityUtil.getUserId();//토큰
-
+        //Long memberId = SecurityUtil.getUserId();
+        Long memberId = 1L;
         List<WorkBox> workBoxes = listMapper.toWorkBoxList(listPostDto);
-        List<WorkBox> savedBoxes  = listService.createWorkList(memberId, workBoxes);
+        List<WorkBox> savedBoxes = listService.createWorkList(memberId, workBoxes);
         ListResponseDto response = listMapper.toResponseListDto(savedBoxes);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -75,20 +72,23 @@ class ListController {
                                                          @RequestHeader("Authorization")
                                                          @RequestBody ListPatchDto listpatchDto,
                                                          @PathVariable long workListId) {
-        Long memberId = SecurityUtil.getUserId();//토큰
+        Long memberId = 1L;
+        //Long memberId = SecurityUtil.getUserId();
 
         List<WorkBox> workBoxes = listMapper.toWorkBoxList(listpatchDto);
-        List<WorkBox> savedBoxes  = listService.updateList(memberId, workListId, workBoxes);
+        List<WorkBox> savedBoxes = listService.updateList(memberId, workListId, workBoxes);
         ListResponseDto response = listMapper.toResponseListDto(savedBoxes);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     //리스트 삭제
     @GetMapping("/{workListId}")
     public ResponseEntity<ListResponseDto> deleteList(@RequestParam(required = false) Type type,
                                                       @RequestHeader("Authorization")
                                                       @PathVariable long workListId) {
-        Long memberId = SecurityUtil.getUserId();//토큰
+        Long memberId = 1L;
+        //Long memberId = SecurityUtil.getUserId();
         listService.deleteList(memberId, workListId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

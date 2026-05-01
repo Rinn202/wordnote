@@ -24,14 +24,18 @@ public class ListMapper {
 
     //ListPostDto -> List<Entity>
     public List<WorkBox> toWorkBoxList(ListPostDto postDto) {
-        if (postDto == null || postDto.getBoxes() == null) { return Collections.emptyList(); }
+        if (postDto == null || postDto.getBoxes() == null) {
+            return Collections.emptyList();
+        }
 
         return postDto.getBoxes();
     }
 
     //ListPatchDto -> List<Entity>
     public List<WorkBox> toWorkBoxList(ListPatchDto patchDto) {
-        if (patchDto == null || patchDto.getBoxes() == null) { return Collections.emptyList(); }
+        if (patchDto == null || patchDto.getBoxes() == null) {
+            return Collections.emptyList();
+        }
 
         return patchDto.getBoxes();
     }
