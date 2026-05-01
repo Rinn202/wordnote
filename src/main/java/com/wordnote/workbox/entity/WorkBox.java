@@ -3,10 +3,15 @@ package com.wordnote.workbox.entity;
 import com.wordnote.workblock.entity.WorkBlock;
 import com.wordnote.boxlist.entity.BoxList;
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Getter
 @Entity
 public class WorkBox {
 
@@ -43,8 +48,3 @@ public class WorkBox {
 
 }
 
-enum Status {
-    ready,
-    process,
-    done
-}

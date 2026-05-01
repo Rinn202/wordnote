@@ -18,7 +18,6 @@ repositories {
 }
 
 dependencies {
-	// 핵심 (순서 의미 없음, 가독성용 그룹)
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 //	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

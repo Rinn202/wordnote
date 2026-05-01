@@ -6,11 +6,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
-@Table(name = "box_list")
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Getter
 @Entity
+@Table(name = "box_list")
 public class BoxList {
 
     @Id
@@ -22,11 +27,10 @@ public class BoxList {
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @Column(name = "list_order")
-    private Integer order;
+    @Column
+    private Integer sortIndex = 1;
 
     @OneToMany(mappedBy = "boxList") //리스트에게 매핑당함
-    @Column
     List<WorkBox> workBoxs;
 
     @ManyToOne
@@ -35,4 +39,3 @@ public class BoxList {
 
 }
 
-enum Type {routine, event}
