@@ -2,7 +2,6 @@ package com.wordnote.boxlist.dto.request;
 
 import com.wordnote.boxlist.entity.Type;
 import com.wordnote.member.entity.Member;
-import com.wordnote.workblock.entity.WorkBlock;
 import com.wordnote.workbox.entity.WorkBox;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,5 +17,5 @@ public class ListPostDto {
 
     Member member;
 
-    List<WorkBox> blocks;
+    List<WorkBox> boxes;
 }

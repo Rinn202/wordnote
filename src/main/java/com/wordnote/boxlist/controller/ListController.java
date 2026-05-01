@@ -1,5 +1,6 @@
 package com.wordnote.boxlist.controller;
 
+import com.wordnote.boxlist.dto.request.ListPatchDto;
 import com.wordnote.boxlist.dto.request.ListPostDto;
 import com.wordnote.boxlist.dto.response.ListResponseDto;
 import com.wordnote.boxlist.mapper.ListMapper;
@@ -24,21 +25,16 @@ import java.util.List;
 class ListController {
     private final ListService listService;
     private final ListMapper listMapper;
-    private final ListRepository listRepository;
-    private final MemberService memberService;
-    private final WorkBoxMapper workBoxMapper;
 
-    public ListController(ListService listService, WorkBoxMapper workBoxMapper, ListMapper listMapper, ListRepository listRepository, MemberService memberService, WorkBoxMapper workBoxMapper1) {
+    ListController(ListService listService, ListMapper listMapper) {
         this.listService = listService;
         this.listMapper = listMapper;
-        this.listRepository = listRepository;
-        this.memberService = memberService;
-        this.workBoxMapper = workBoxMapper;
     }
 
     //리스트 전체조회
     @GetMapping
     public ResponseEntity<ListResponseDto> getWorkLists(@RequestParam(required = false) Type type,
+                                                        @RequestHeader("Authorization")
                                                         @RequestParam(defaultValue = "asc") String sort) {
         Long memberId = SecurityUtil.getUserId();//토큰
 
@@ -48,8 +44,9 @@ class ListController {
     }
 
     //리스트 객체조회
-    @GetMapping("workListId")
+    @GetMapping("/{workListId}")
     public ResponseEntity<ListResponseDto> getWorkListsById(@RequestParam(required = false) Type type,
+                                                            @RequestHeader("Authorization")
                                                             @RequestParam(defaultValue = "asc") String sort) {
         Long memberId = SecurityUtil.getUserId();//토큰
 
@@ -60,11 +57,12 @@ class ListController {
 
     //리스트 생성
     @PostMapping
-    public ResponseEntity<ListResponseDto> createWorkList(@RequestHeader("Authorization") String token,
+    public ResponseEntity<ListResponseDto> createWorkList(@RequestParam(required = false) Type type,
+                                                          @RequestHeader("Authorization")
                                                           @RequestBody ListPostDto listPostDto) {
         Long memberId = SecurityUtil.getUserId();//토큰
 
-        List<WorkBox> workBoxes = listMapper.toWorkBoxes(listPostDto);
+        List<WorkBox> workBoxes = listMapper.toWorkBoxList(listPostDto);
         List<WorkBox> savedBoxes  = listService.createWorkList(memberId, workBoxes);
         ListResponseDto response = listMapper.toResponseListDto(savedBoxes);
 
@@ -72,6 +70,27 @@ class ListController {
     }
 
     //리스트 수정
+    @PatchMapping("/{workListId}")
+    public ResponseEntity<ListResponseDto> patchWorkList(@RequestParam(required = false) Type type,
+                                                         @RequestHeader("Authorization")
+                                                         @RequestBody ListPatchDto listpatchDto,
+                                                         @PathVariable long workListId) {
+        Long memberId = SecurityUtil.getUserId();//토큰
 
+        List<WorkBox> workBoxes = listMapper.toWorkBoxList(listpatchDto);
+        List<WorkBox> savedBoxes  = listService.updateList(memberId, workListId, workBoxes);
+        ListResponseDto response = listMapper.toResponseListDto(savedBoxes);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
     //리스트 삭제
+    @GetMapping("/{workListId}")
+    public ResponseEntity<ListResponseDto> deleteList(@RequestParam(required = false) Type type,
+                                                      @RequestHeader("Authorization")
+                                                      @PathVariable long workListId) {
+        Long memberId = SecurityUtil.getUserId();//토큰
+        listService.deleteList(memberId, workListId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

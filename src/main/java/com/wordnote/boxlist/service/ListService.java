@@ -1,6 +1,5 @@
 package com.wordnote.boxlist.service;
 
-import com.wordnote.boxlist.dto.request.ListPostDto;
 import com.wordnote.workbox.entity.WorkBox;
 import org.springframework.stereotype.Service;
 
@@ -15,5 +14,11 @@ public class ListService {
     }
 
     public List<WorkBox> createWorkList(Long memberId, List<WorkBox> list) {
+    }
+
+    public List<WorkBox> updateList(Long memberId, Long listId, List<WorkBox> workBoxes) {
+    }
+
+    public void deleteList(Long memberId, long workListId) {
     }
 }
