@@ -7,7 +7,7 @@ import com.wordnote.board.entity.Board;
 import com.wordnote.board.entity.Type;
 import com.wordnote.board.mapper.BoardMapper;
 import com.wordnote.board.service.BoardService;
-import com.wordnote.workbox.mapper.WorkBox;
+import com.wordnote.task.entity.Task;
 import com.wordnote.workbox.service.WorkBoxService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,8 @@ import java.util.List;
 @RequestMapping("/Boards")
 class BoardController {
 
-    Task workBoxMapper;
     BoardMapper boardMapper;
     BoardService boardService;
-    WorkBoxService workBoxService;
 
     //조회
     @GetMapping
