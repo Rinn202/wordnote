@@ -1,7 +1,7 @@
 package com.wordnote.workbox.entity;
 
-import com.wordnote.workblock.entity.WorkBlock;
-import com.wordnote.boxlist.entity.BoxList;
+import com.wordnote.task.entity.Task;
+import com.wordnote.board.entity.Board;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 public class WorkBox {
 
     @Id
-    @Column(name = "work_box_id", updatable = false, nullable = false)
+    @Column(name = "boxId", updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO) //pk 자동생성
-    private Long workBoxId;
+    private Long BoxId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "box_list_id") //리스트id로 리스트를 매핑 함
-    private BoxList boxList;
+    @JoinColumn(name = "boardId") //리스트id로 리스트를 매핑 함
+    private Board board;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -31,7 +31,7 @@ public class WorkBox {
     private Boolean bookmark;
 
     @OneToOne(mappedBy = "workBox") //블록은 박스에게 매핑당함
-    private WorkBlock block;
+    private Task task;
 
     @Column
     private Long alarmId;
@@ -45,6 +45,16 @@ public class WorkBox {
     @Column //생성일자
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public void setBoard(Board board) {
+        if (this.board != null) {
+            this.board.getBoxes().remove(this);
+        }
+        this.board = board;
+        if (board != null && !board.getBoxes().contains(this)) {
+            board.getBoxes().add(this);
+        }
+    }
 
 }
 

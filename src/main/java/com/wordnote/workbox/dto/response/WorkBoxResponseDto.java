@@ -1,33 +1,31 @@
-package com.wordnote.workbox.dto.request;
+package com.wordnote.workbox.dto.response;
 
-import com.wordnote.board.entity.Board;
 import com.wordnote.task.entity.Task;
 import com.wordnote.workbox.entity.Status;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import com.wordnote.task.entity.Task;
 
 @Getter
-@NoArgsConstructor
-public class WorkBoxPostDto {
-
+@Builder
+@AllArgsConstructor
+public class WorkBoxResponseDto {
     private Long BoxId;
 
-    private Board board;
-
     private Status status;
-
-    private Boolean bookmark;
 
     private Task task;
 
     private Long alarmId;
+
+    private Boolean bookmark;
 
     private LocalDateTime alarmTime;
 
     private LocalDateTime expiredAt;
 
     private LocalDateTime createdAt;
-
 }

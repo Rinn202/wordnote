@@ -1,18 +1,22 @@
 package com.wordnote.member.entity;
 
-import com.wordnote.boxlist.entity.BoxList;
+import com.wordnote.board.entity.Board;
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Table
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Getter
 @Entity
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "member_id")
+    @Column(name = "memberId")
     private Long memberId;
 
     @Column(nullable = false, updatable = false)
@@ -32,5 +36,23 @@ public class Member {
     LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "member")
-    List<BoxList> boxLists;
+    List<Board> boards;
+
+
+    public void update(String nickname, String password, String email, List<Board> boards) {
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+
+        this.boards.clear();
+
+        if (boards != null) {
+            boards.forEach(this::addBoard); //매핑 유지
+        }
+    }
+
+    public void addBoard(Board board) {
+        this.boards.add(board);
+        board.assignMember(this);
+    }
 }

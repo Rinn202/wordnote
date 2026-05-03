@@ -1,7 +1,7 @@
 package com.wordnote.workbox.dto.request;
 
-import com.wordnote.boxlist.entity.BoxList;
-import com.wordnote.workblock.entity.WorkBlock;
+import com.wordnote.board.entity.Board;
+import com.wordnote.task.entity.Task;
 import com.wordnote.workbox.entity.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class WorkBoxPatchDto {
 
-    private Long workBoxId;
+    private Long BoxId;
 
-    private BoxList boxList;
+    private Board board;
 
     private Status status;
 
     private Boolean bookmark;
 
-    private WorkBlock block;
+    private Task task;
 
     private Long alarmId;
 
