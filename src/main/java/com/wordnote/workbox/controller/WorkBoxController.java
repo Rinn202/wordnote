@@ -24,9 +24,7 @@ public class WorkBoxController {
 
     //박스 조회
     @GetMapping("/{boxId}")
-    public ResponseEntity<WorkBoxResponseDto> getWorkBoxById(@RequestParam(required = false) Type type,
-                                                        @RequestParam(defaultValue = "asc") String sort,
-                                                             @PathVariable long boxId) {
+    public ResponseEntity<WorkBoxResponseDto> getWorkBoxById(@PathVariable long boxId) {
 
         com.wordnote.workbox.entity.WorkBox box = workBoxService.findById(boxId);
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(box);
@@ -35,8 +33,7 @@ public class WorkBoxController {
 
     //박스 생성
     @PostMapping
-    public ResponseEntity<WorkBoxResponseDto> createWorkBox(@RequestParam(required = false) Type type,
-                                                           @RequestBody WorkBoxPostDto workBoxPostDto) {
+    public ResponseEntity<WorkBoxResponseDto> createWorkBox(@RequestBody WorkBoxPostDto workBoxPostDto) {
         //Long memberId = SecurityUtil.getUserId();
         Long memberId = 1L;
         com.wordnote.workbox.entity.WorkBox box = workBoxMapper.postToWorkBox(workBoxPostDto) ;
@@ -47,8 +44,7 @@ public class WorkBoxController {
     }
 
     @PatchMapping
-    public ResponseEntity<WorkBoxResponseDto> patchWorkBox(@RequestParam(required = false) Type type,
-                                                           @RequestBody WorkBoxPatchDto workBoxPatchDto) {
+    public ResponseEntity<WorkBoxResponseDto> patchWorkBox(@RequestBody WorkBoxPatchDto workBoxPatchDto) {
         com.wordnote.workbox.entity.WorkBox box = workBoxMapper.patchToWorkBox(workBoxPatchDto) ;
         com.wordnote.workbox.entity.WorkBox savedBox = workBoxService.createWorkBox(box);
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);
@@ -58,8 +54,7 @@ public class WorkBoxController {
 
     //박스 삭제
     @DeleteMapping("/{boxId}")
-    public ResponseEntity<WorkBoxResponseDto> deleteWorkBox(@RequestParam(required = false) Type type,
-                                                       @PathVariable long boxId) {
+    public ResponseEntity<WorkBoxResponseDto> deleteWorkBox(@PathVariable long boxId) {
         workBoxService.deleteWorkBox(boxId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

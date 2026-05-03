@@ -87,4 +87,14 @@ class BoardController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping
+    public ResponseEntity<BoardResponseDto> deleteAllBoard() {
+
+        //Long memberId = SecurityUtil.getUserId();
+        long memberId = 1L;
+        boardService.deleteAllBoard(memberId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

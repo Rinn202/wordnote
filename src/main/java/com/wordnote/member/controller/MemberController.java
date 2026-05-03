@@ -1,7 +1,7 @@
 package com.wordnote.member.controller;
 
-import com.wordnote.member.dto.request.MemberPostDto;
 import com.wordnote.member.dto.request.MemberPatchDto;
+import com.wordnote.member.dto.request.MemberPostDto;
 import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.mapper.MemberMapper;
@@ -21,10 +21,8 @@ import java.util.List;
 @RequestMapping("/member")
 class MemberController {
 
-    WorkBoxMapper workBoxMapper;
     MemberMapper memberMapper;
     MemberService memberService;
-    WorkBoxService workBoxService;
 
     //전체 조회
     @GetMapping

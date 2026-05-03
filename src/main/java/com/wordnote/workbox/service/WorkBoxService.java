@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class WorkBoxService {
-
     WorkBoxRepository workBoxRepository;
 
     public WorkBox findById(Long boxId) {
@@ -20,8 +19,5 @@ public class WorkBoxService {
 
     public void deleteWorkBox(Long boxId) {
         workBoxRepository.deleteById(boxId);
-    }
-
-    public WorkBox findByTaskId(long taskId) {
     }
 }

@@ -14,8 +14,4 @@ public class BoardResponseDto {
     private Type type;
     private Integer sortIndex;
     private List<WorkBoxResponseDto> boxes;
-
-
-    public BoardResponseDto(List<BoardResponseDto> list) {
-    }
 }

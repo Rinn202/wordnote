@@ -18,7 +18,7 @@ public class WorkBox {
     @Id
     @Column(name = "boxId", updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO) //pk 자동생성
-    private Long BoxId;
+    private Long boxId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boardId") //리스트id로 리스트를 매핑 함
