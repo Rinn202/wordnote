@@ -2,8 +2,6 @@ package com.wordnote.task.entity;
 
 import com.wordnote.workbox.entity.WorkBox;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @AllArgsConstructor

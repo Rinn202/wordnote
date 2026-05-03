@@ -1,6 +1,5 @@
 package com.wordnote.member.service;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +11,7 @@ import java.util.List;
 public class MemberService {
     MemberRepository memberRepository;
 
-    public Member findById(Long memberId){
+    public Member findById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Member not found: " + memberId));
     }
@@ -30,7 +29,7 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
         foundMember.update(
-                updateRequest.getNickname(),updateRequest.getPassword(),
+                updateRequest.getNickname(), updateRequest.getPassword(),
                 updateRequest.getEmail(), updateRequest.getBoards()
         );
         return foundMember;

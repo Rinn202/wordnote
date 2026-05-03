@@ -15,11 +15,11 @@ public class TaskService {
 
     public Task findById(Long taskId){
         return taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("WorkBox not found: " + taskId));
+                .orElseThrow(() -> new RuntimeException("WorkBoxMapper not found: " + taskId));
     }
 
     public Task findByWorKBoxId(long boxId) {
-        return taskRepository.findByBoxId(boxId);
+        return taskRepository.findByBox_BoxId(boxId);
     }
 
     public Task createTask(TaskPostDto task) {

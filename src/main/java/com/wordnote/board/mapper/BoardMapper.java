@@ -6,7 +6,7 @@ import com.wordnote.board.dto.response.BoardResponseDto;
 import com.wordnote.board.entity.Board;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.service.MemberService;
-import com.wordnote.workbox.mapper.WorkBox;
+import com.wordnote.workbox.mapper.WorkBoxMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardMapper {
 
-    private final WorkBox workBoxMapper;
+    private final WorkBoxMapper workBoxMapper;
     public final MemberService memberService;
 
     public BoardResponseDto toResponseDto(Board board) {

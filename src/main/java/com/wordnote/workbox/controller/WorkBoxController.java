@@ -4,7 +4,7 @@ import com.wordnote.board.entity.Type;
 import com.wordnote.workbox.dto.request.WorkBoxPatchDto;
 import com.wordnote.workbox.dto.request.WorkBoxPostDto;
 import com.wordnote.workbox.dto.response.WorkBoxResponseDto;
-import com.wordnote.workbox.mapper.WorkBox;
+import com.wordnote.workbox.mapper.WorkBoxMapper;
 import com.wordnote.workbox.service.WorkBoxService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/box")
 public class WorkBoxController {
     private final WorkBoxService workBoxService;
-    private final WorkBox workBoxMapper;
+    private final WorkBoxMapper workBoxMapper;
 
-    public WorkBoxController(WorkBoxService workBoxService, WorkBox workBoxMapper) {
+    public WorkBoxController(WorkBoxService workBoxService, WorkBoxMapper workBoxMapper) {
         this.workBoxService = workBoxService;
         this.workBoxMapper = workBoxMapper;
     }

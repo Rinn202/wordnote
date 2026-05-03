@@ -7,13 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import com.wordnote.task.entity.Task;
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class WorkBoxResponseDto {
-    private Long BoxId;
+    private Long boxId;
 
     private Status status;
 

@@ -38,7 +38,7 @@ public class Board {
     Member member;
 
 
-//List<WorkBox> 교체, 매핑 유지
+//List<WorkBoxMapper> 교체, 매핑 유지
     public void update(Type type, Integer sortIndex, List<WorkBox> boxes) {
         if (type != null) this.type = type;
         if (sortIndex != null) this.sortIndex = sortIndex;

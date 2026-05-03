@@ -25,7 +25,7 @@ public class TaskController {
                                                              @PathVariable long boxId) {
 
         Task task = taskService.findByWorKBoxId(boxId);
-        TaskResponseDto response = taskMapper.toResponseDto();
+        TaskResponseDto response = taskMapper.toResponseDto(task);
         return ResponseEntity.ok(response);
     }
 

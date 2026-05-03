@@ -3,17 +3,20 @@ package com.wordnote.workbox.mapper;
 import com.wordnote.workbox.dto.request.WorkBoxPatchDto;
 import com.wordnote.workbox.dto.request.WorkBoxPostDto;
 import com.wordnote.workbox.dto.response.WorkBoxResponseDto;
+import com.wordnote.workbox.entity.WorkBox;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@Getter
 @RequiredArgsConstructor
-public class WorkBox {
+public class WorkBoxMapper {
     //post -> Entity 로 변환
-    public com.wordnote.workbox.entity.WorkBox postToWorkBox(WorkBoxPostDto workBoxPostDto) {
+    public WorkBox postToWorkBox(WorkBoxPostDto workBoxPostDto) {
         if (workBoxPostDto == null) return null;
 
-        return com.wordnote.workbox.entity.WorkBox.builder()
+        return WorkBox.builder()
                 .status(workBoxPostDto.getStatus())
                 .alarmTime(workBoxPostDto.getAlarmTime())
                 .expiredAt(workBoxPostDto.getExpiredAt())
@@ -21,10 +24,10 @@ public class WorkBox {
                 .build();
     }
     //patch -> Entity 로 변환
-    public com.wordnote.workbox.entity.WorkBox patchToWorkBox(WorkBoxPatchDto workBoxPatchDto) {
+    public WorkBox patchToWorkBox(WorkBoxPatchDto workBoxPatchDto) {
         if (workBoxPatchDto == null) return null;
 
-        return com.wordnote.workbox.entity.WorkBox.builder()
+        return WorkBox.builder()
                 .status(workBoxPatchDto.getStatus())
                 .alarmTime(workBoxPatchDto.getAlarmTime())
                 .expiredAt(workBoxPatchDto.getExpiredAt())
@@ -33,11 +36,11 @@ public class WorkBox {
     }
 
     //responseDto로 변환
-    public WorkBoxResponseDto toWorkBoxDto(com.wordnote.workbox.entity.WorkBox workBox){
+    public WorkBoxResponseDto toWorkBoxDto(WorkBox workBox){
         if (workBox == null) return null;
 
         return WorkBoxResponseDto.builder()
-                .workBoxId(workBox.getWorkBoxId())
+                .boxId(workBox.getBoxId())
                 .status(workBox.getStatus())
                 .alarmTime(workBox.getAlarmTime())
                 .expiredAt(workBox.getExpiredAt())

@@ -7,8 +7,6 @@ import com.wordnote.board.entity.Board;
 import com.wordnote.board.entity.Type;
 import com.wordnote.board.mapper.BoardMapper;
 import com.wordnote.board.service.BoardService;
-import com.wordnote.task.entity.Task;
-import com.wordnote.workbox.service.WorkBoxService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

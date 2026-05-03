@@ -4,8 +4,6 @@ import com.wordnote.workbox.entity.WorkBox;
 import com.wordnote.workbox.repository.WorkBoxRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class WorkBoxService {
 
@@ -13,7 +11,7 @@ public class WorkBoxService {
 
     public WorkBox findById(Long boxId) {
         return workBoxRepository.findById(boxId)
-                .orElseThrow(() -> new RuntimeException("WorkBox not found: " + boxId));
+                .orElseThrow(() -> new RuntimeException("WorkBoxMapper not found: " + boxId));
     }
 
     public WorkBox createWorkBox(WorkBox box) {

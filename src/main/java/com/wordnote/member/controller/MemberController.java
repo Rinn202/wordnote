@@ -6,7 +6,7 @@ import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.mapper.MemberMapper;
 import com.wordnote.member.service.MemberService;
-import com.wordnote.workbox.mapper.WorkBox;
+import com.wordnote.workbox.mapper.WorkBoxMapper;
 import com.wordnote.workbox.service.WorkBoxService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/member")
 class MemberController {
 
-    WorkBox workBoxMapper;
+    WorkBoxMapper workBoxMapper;
     MemberMapper memberMapper;
     MemberService memberService;
     WorkBoxService workBoxService;
