@@ -1,6 +1,5 @@
 package com.wordnote.workbox.controller;
 
-import com.wordnote.board.entity.Type;
 import com.wordnote.workbox.dto.request.WorkBoxPatchDto;
 import com.wordnote.workbox.dto.request.WorkBoxPostDto;
 import com.wordnote.workbox.dto.response.WorkBoxResponseDto;
@@ -36,7 +35,7 @@ public class WorkBoxController {
     public ResponseEntity<WorkBoxResponseDto> createWorkBox(@RequestBody WorkBoxPostDto workBoxPostDto) {
         //Long memberId = SecurityUtil.getUserId();
         Long memberId = 1L;
-        com.wordnote.workbox.entity.WorkBox box = workBoxMapper.postToWorkBox(workBoxPostDto) ;
+        com.wordnote.workbox.entity.WorkBox box = workBoxMapper.postToWorkBox(workBoxPostDto);
         com.wordnote.workbox.entity.WorkBox savedBox = workBoxService.createWorkBox(box);
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);
 
@@ -45,7 +44,7 @@ public class WorkBoxController {
 
     @PatchMapping
     public ResponseEntity<WorkBoxResponseDto> patchWorkBox(@RequestBody WorkBoxPatchDto workBoxPatchDto) {
-        com.wordnote.workbox.entity.WorkBox box = workBoxMapper.patchToWorkBox(workBoxPatchDto) ;
+        com.wordnote.workbox.entity.WorkBox box = workBoxMapper.patchToWorkBox(workBoxPatchDto);
         com.wordnote.workbox.entity.WorkBox savedBox = workBoxService.createWorkBox(box);
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);
 
