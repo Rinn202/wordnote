@@ -25,7 +25,7 @@ public class WorkBoxMapper {
 
         return foundBox;
     }
-    //매핑 테스크
+    //테스크 변경
     public WorkBox patchToWorkBoxByBoard(WorkBoxContentResponseDto requestOption, WorkBox foundBox) {
         if (requestOption == null) return null;
 

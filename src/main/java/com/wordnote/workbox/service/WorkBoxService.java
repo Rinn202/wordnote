@@ -50,8 +50,8 @@ public class WorkBoxService {
         WorkBox box = workBoxRepository.findById(boxId)
                 .orElseThrow(() -> new EntityNotFoundException("WorkBox not found"));
 
-        workBoxMapper.patchToWorkBoxByBoard(dto, box); // 기존 엔티티에 덮어쓰기
-        return workBoxRepository.save(box);
+        WorkBox newBox = workBoxMapper.patchToWorkBoxByBoard(dto, box); // 기존 엔티티에 덮어쓰기
+        return workBoxRepository.save(newBox);
     }
 
     public WorkBox findById(Long boxId) {
