@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardPostDto {
     private Type type;
-    private Integer sortIndex;
     private Long memberId;
     private List<WorkBoxPostDto> boxes;
 }

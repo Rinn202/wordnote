@@ -27,9 +27,6 @@ public class Board {
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @Column
-    private Integer sortIndex = 1;
-
     @OneToMany(mappedBy = "board") //리스트에게 매핑당함
     List<WorkBox> boxes;
 
@@ -39,9 +36,8 @@ public class Board {
 
 
 //List<WorkBoxMapper> 교체, 매핑 유지
-    public void update(Type type, Integer sortIndex, List<WorkBox> boxes) {
+    public void update(Type type, List<WorkBox> boxes) {
         if (type != null) this.type = type;
-        if (sortIndex != null) this.sortIndex = sortIndex;
 
         if (boxes != null) {
             this.boxes.clear();

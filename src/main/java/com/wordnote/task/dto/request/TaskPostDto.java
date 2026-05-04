@@ -9,7 +9,4 @@ public class TaskPostDto {
 
     @NotBlank
     private String name;
-
-    @NotNull
-    private Long boxId;
 }

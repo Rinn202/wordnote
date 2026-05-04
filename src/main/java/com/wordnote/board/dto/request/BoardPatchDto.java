@@ -1,7 +1,7 @@
 package com.wordnote.board.dto.request;
 
 import com.wordnote.board.entity.Type;
-import com.wordnote.workbox.dto.request.WorkBoxPatchDto;
+import com.wordnote.workbox.dto.request.WorkBoxContentPatchDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardPatchDto {
     private Type type;
-    private Integer sortIndex;
-    private List<WorkBoxPatchDto> boxes;
+    private List<WorkBoxContentPatchDto> boxes;
 }

@@ -24,17 +24,20 @@ public class WorkBox {
     @JoinColumn(name = "boardId") //리스트id로 리스트를 매핑 함
     private Board board;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.READY;
 
+    @Builder.Default
     @Column //북마크
-    private Boolean bookmark;
-
-    @OneToOne(mappedBy = "workBox") //블록은 박스에게 매핑당함
-    private Task task;
+    private Boolean bookmark = false;
 
     @Column
-    private Long alarmId;
+    private Integer sortIndex;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "taskId")
+    private Task task;
 
     @Column //알람설정시간
     private LocalDateTime alarmTime;
@@ -56,5 +59,30 @@ public class WorkBox {
         }
     }
 
+    public void changeStatus(Status next) {
+        if (!this.status.canMoveTo(next)) {
+            throw new IllegalStateException("invalid transition");
+        }
+        this.status = next;
+    }
+
+    public void update(Status status,
+                       Boolean bookmark,
+                       LocalDateTime alarmTime,
+                       LocalDateTime expiredAt,
+                       Integer sortIndex) {
+
+        if (status != null) this.status = status;
+        if (bookmark != null) this.bookmark = bookmark;
+        if (alarmTime != null) this.alarmTime = alarmTime;
+        if (expiredAt != null) this.expiredAt = expiredAt;
+        if (sortIndex != null) this.sortIndex = sortIndex;
+    }
+
+    public void update(Board board, Task task) {
+        if (board != null) this.board = board;
+        if (task != null) this.task = task;
+    }
 }
+
 

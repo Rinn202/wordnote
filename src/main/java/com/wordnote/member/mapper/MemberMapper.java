@@ -4,9 +4,13 @@ import com.wordnote.member.dto.request.MemberPostDto;
 import com.wordnote.member.dto.request.MemberPatchDto;
 import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class MemberMapper {
     //members -> dtos
     public List<MemberResponseDto> toResponseDto(List<Member> memberList) {
@@ -21,10 +25,9 @@ public class MemberMapper {
     //member -> dto
     public MemberResponseDto toResponseDto(Member member) {
         return MemberResponseDto.builder()
-                .memberId(member.getMemberId())
-                .name(member.getName())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
+                .password(member.getPassword())
                 .createdAt(member.getCreatedAt())
                 .build();
     }

@@ -3,13 +3,15 @@ package com.wordnote.member.service;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class MemberService {
-    MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId)
@@ -32,10 +34,12 @@ public class MemberService {
                 updateRequest.getNickname(), updateRequest.getPassword(),
                 updateRequest.getEmail(), updateRequest.getBoards()
         );
-        return foundMember;
+        return memberRepository.save(foundMember);
     }
 
     public void deleteMember(long memberId) {
-        memberRepository.deleteById(memberId);
+        Member foundMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+        memberRepository.delete(foundMember);
     }
 }

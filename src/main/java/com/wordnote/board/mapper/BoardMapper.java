@@ -17,7 +17,7 @@ import java.util.List;
 public class BoardMapper {
 
     private final WorkBoxMapper workBoxMapper;
-    public final MemberService memberService;
+    private final MemberService memberService;
 
     public BoardResponseDto toResponseDto(Board board) {
         if (board == null) return null;
@@ -25,7 +25,6 @@ public class BoardMapper {
         return BoardResponseDto.builder()
                 .boardId(board.getBoardId())
                 .type(board.getType())
-                .sortIndex(board.getSortIndex())
                 .boxes(
                         board.getBoxes() == null || board.getBoxes().isEmpty()
                                 ? List.of()
@@ -47,7 +46,6 @@ public class BoardMapper {
     public Board PatchToBoard(long memberId, BoardPatchDto boardPatchToDto) {
         Board board = Board.builder()
                 .type(boardPatchToDto.getType())
-                .sortIndex(boardPatchToDto.getSortIndex())
                 .member(memberService.findById(memberId))
                 .build();
 
@@ -63,17 +61,9 @@ public class BoardMapper {
 
         Member member = memberService.findById(memberId);
 
-        Board board = Board.builder()
+        return Board.builder()
                 .type(boardPostToDto.getType())
-                .sortIndex(boardPostToDto.getSortIndex())
                 .member(member)
                 .build();
-
-        if (boardPostToDto.getBoxes() != null) {
-            boardPostToDto.getBoxes().stream()
-                    .map(workBoxMapper::postToWorkBox)
-                    .forEach(board::addBox);
-        }
-        return board;
     }
 }

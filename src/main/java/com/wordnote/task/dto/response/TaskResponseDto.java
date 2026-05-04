@@ -8,10 +8,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TaskResponseDto {
+    private Long taskId;
 
-    @NotBlank
     private String name;
 
-    @NotNull
-    private Long workBoxId;
+    private Integer sortIndex;
 }

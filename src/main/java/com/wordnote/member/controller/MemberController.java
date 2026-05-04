@@ -6,6 +6,7 @@ import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.mapper.MemberMapper;
 import com.wordnote.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,11 +17,13 @@ import java.util.List;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/member")
-class MemberController {
+public class MemberController {
 
-    MemberMapper memberMapper;
-    MemberService memberService;
+    private final MemberMapper memberMapper;
+    private final MemberService memberService;
+
 
     //전체 조회
     @GetMapping
@@ -33,7 +36,7 @@ class MemberController {
 
 
     //개별 조회
-    @GetMapping
+    @GetMapping("/mypage")
     public ResponseEntity<MemberResponseDto> getMember() {
         //Long memberId = SecurityUtil.getUserId();
         long memberId = 1L;

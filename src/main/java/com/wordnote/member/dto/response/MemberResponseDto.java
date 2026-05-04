@@ -9,10 +9,9 @@ import java.time.LocalDateTime;
 @Builder
 public class MemberResponseDto {
 
-    private Long memberId;
-    private String name;
     private String nickname;
     private String email;
+    private String password;
 
     private LocalDateTime createdAt;
 }

@@ -7,6 +7,7 @@ import com.wordnote.board.entity.Board;
 import com.wordnote.board.entity.Type;
 import com.wordnote.board.mapper.BoardMapper;
 import com.wordnote.board.service.BoardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,11 +18,12 @@ import java.util.List;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/Boards")
 class BoardController {
 
-    BoardMapper boardMapper;
-    BoardService boardService;
+    private final BoardMapper boardMapper;
+    private final BoardService boardService;
 
     //조회
     @GetMapping
@@ -66,12 +68,13 @@ class BoardController {
     //수정
     @PatchMapping("/{boardId}")
     public ResponseEntity<BoardResponseDto> patchBoard(@RequestParam(required = false) Type type,
-                                                       @RequestBody BoardPatchDto boardPatchDto) {
+                                                       @RequestBody BoardPatchDto boardPatchDto,
+                                                       @PathVariable long boardId) {
         //Long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
 
         Board board = boardMapper.PatchToBoard(memberId, boardPatchDto);
-        Board savedBoard = boardService.patchBoard(memberId, board);
+        Board savedBoard = boardService.patchBoard(memberId, boardId, board);
         BoardResponseDto response = boardMapper.toResponseDto(savedBoard);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);

@@ -2,6 +2,15 @@ package com.wordnote.workbox.entity;
 
 public enum Status {
     READY,
-    PROCESS,
-    DONE
+    IN_PROGRESS,
+    DONE;
+
+    public boolean canMoveTo(Status next) {
+        return switch (this) {
+            case READY -> next == IN_PROGRESS;
+            case IN_PROGRESS -> next == DONE;
+            case DONE -> false;
+        };
+    }
 }
+

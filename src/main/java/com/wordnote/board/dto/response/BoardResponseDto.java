@@ -12,6 +12,5 @@ import java.util.List;
 public class BoardResponseDto {
     private Long boardId;
     private Type type;
-    private Integer sortIndex;
     private List<WorkBoxResponseDto> boxes;
 }

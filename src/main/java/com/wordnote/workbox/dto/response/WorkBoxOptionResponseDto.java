@@ -1,7 +1,6 @@
 package com.wordnote.workbox.dto.response;
 
 import com.wordnote.task.dto.response.TaskResponseDto;
-import com.wordnote.task.entity.Task;
 import com.wordnote.workbox.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,12 +11,10 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class WorkBoxResponseDto {
-    private Long boxId;
-
+public class WorkBoxOptionResponseDto {
     private Status status;
 
-    private TaskResponseDto task;
+    private Long BoxId;
 
     private Boolean bookmark;
 
@@ -26,6 +23,4 @@ public class WorkBoxResponseDto {
     private LocalDateTime alarmTime;
 
     private LocalDateTime expiredAt;
-
-    private LocalDateTime createdAt;
 }

@@ -4,15 +4,16 @@ import com.wordnote.board.entity.Board;
 import com.wordnote.board.repository.BoardRepository;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
+@RequiredArgsConstructor
 @Service
 public class BoardService {
-    BoardRepository boardRepository;
-    MemberService memberService;
+    private final BoardRepository boardRepository;
+    private final MemberService memberService;
 
 
     //생성
@@ -39,10 +40,10 @@ public class BoardService {
     }
 
     //수정
-    public Board patchBoard(long memberId, Board board) {
-        Board target = boardRepository.findByBoardIdAndMember_MemberId(memberId, board.getBoardId());
+    public Board patchBoard(long memberId, long boardId, Board board) {
+        Board target = boardRepository.findByBoardIdAndMember_MemberId(memberId, boardId);
 
-        target.update(board.getType(), board.getSortIndex(), board.getBoxes());
+        target.update(board.getType(), board.getBoxes());
         return target;
     }
 
