@@ -3,8 +3,6 @@ package com.wordnote.board.mapper;
 import com.wordnote.board.dto.request.BoardCreateDto;
 import com.wordnote.board.dto.response.BoardResponseDto;
 import com.wordnote.board.entity.Board;
-import com.wordnote.member.entity.Member;
-import com.wordnote.workbox.entity.WorkBox;
 import com.wordnote.workbox.mapper.WorkBoxMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

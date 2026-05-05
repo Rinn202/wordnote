@@ -1,8 +1,8 @@
 package com.wordnote.task.controller;
 
 import com.wordnote.board.entity.Type;
-import com.wordnote.task.dto.request.TaskPatchDto;
 import com.wordnote.task.dto.request.TaskCreateDto;
+import com.wordnote.task.dto.request.TaskPatchDto;
 import com.wordnote.task.dto.response.TaskResponseDto;
 import com.wordnote.task.entity.Task;
 import com.wordnote.task.mapper.TaskMapper;
@@ -29,7 +29,7 @@ public class TaskController {
     //id로 조회
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskResponseDto> getTaskById(@RequestParam(required = false) Type type,
-                                                             @PathVariable long taskId) {
+                                                       @PathVariable long taskId) {
 
         Task task = taskService.findById(taskId);
         TaskResponseDto response = taskMapper.toResponseDto(task);
@@ -38,7 +38,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List<TaskResponseDto>> getAllTask(@RequestParam(required = false) Type type,
-                                                       @RequestParam(defaultValue = "asc") String sort) {
+                                                            @RequestParam(defaultValue = "asc") String sort) {
 
         List<Task> taskList = taskRepository.findAll();
         List<TaskResponseDto> response = taskMapper.toResponseDtos(taskList);
@@ -48,8 +48,8 @@ public class TaskController {
     //생성
     @PostMapping
     public ResponseEntity<TaskResponseDto> createTask(@RequestParam(required = false) Type type,
-                                                           @RequestBody TaskCreateDto taskCreateDto) {
-        TaskResponseDto response = taskService.createTask(taskCreateDto) ;
+                                                      @RequestBody TaskCreateDto taskCreateDto) {
+        TaskResponseDto response = taskService.createTask(taskCreateDto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -68,7 +68,7 @@ public class TaskController {
     //삭제
     @DeleteMapping("/{taskId}")
     public ResponseEntity<TaskResponseDto> deleteTask(@RequestParam(required = false) Type type,
-                                                       @PathVariable long taskId) {
+                                                      @PathVariable long taskId) {
         taskService.deleteTask(taskId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

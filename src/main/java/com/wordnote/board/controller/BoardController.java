@@ -1,7 +1,7 @@
 package com.wordnote.board.controller;
 
-import com.wordnote.board.dto.request.BoardPatchDto;
 import com.wordnote.board.dto.request.BoardCreateDto;
+import com.wordnote.board.dto.request.BoardPatchDto;
 import com.wordnote.board.dto.response.BoardResponseDto;
 import com.wordnote.board.entity.Type;
 import com.wordnote.board.service.BoardService;

@@ -1,7 +1,7 @@
 package com.wordnote.member.controller;
 
-import com.wordnote.member.dto.request.MemberPatchDto;
 import com.wordnote.member.dto.request.MemberCreateDto;
+import com.wordnote.member.dto.request.MemberPatchDto;
 import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.mapper.MemberMapper;

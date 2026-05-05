@@ -1,7 +1,7 @@
 package com.wordnote.task.service;
 
-import com.wordnote.task.dto.request.TaskPatchDto;
 import com.wordnote.task.dto.request.TaskCreateDto;
+import com.wordnote.task.dto.request.TaskPatchDto;
 import com.wordnote.task.dto.response.TaskResponseDto;
 import com.wordnote.task.entity.Task;
 import com.wordnote.task.mapper.TaskMapper;
@@ -30,7 +30,7 @@ public class TaskService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    public List<Task> findByIds(List<Long> taskIds){
+    public List<Task> findByIds(List<Long> taskIds) {
         return taskRepository.findAllById(taskIds);
     }
 

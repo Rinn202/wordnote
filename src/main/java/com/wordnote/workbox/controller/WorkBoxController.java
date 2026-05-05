@@ -1,7 +1,7 @@
 package com.wordnote.workbox.controller;
 
-import com.wordnote.workbox.dto.request.WorkBoxOptionPatchDto;
 import com.wordnote.workbox.dto.request.WorkBoxCreateDto;
+import com.wordnote.workbox.dto.request.WorkBoxOptionPatchDto;
 import com.wordnote.workbox.dto.response.WorkBoxContentResponseDto;
 import com.wordnote.workbox.dto.response.WorkBoxResponseDto;
 import com.wordnote.workbox.entity.WorkBox;
@@ -54,7 +54,7 @@ public class WorkBoxController {
     //옵션 변경
     @PatchMapping("/option/{boxId}")
     public ResponseEntity<WorkBoxResponseDto> patchWorkBoxOption(@RequestBody WorkBoxOptionPatchDto optionDto,
-                                                           @PathVariable long boxId) {
+                                                                 @PathVariable long boxId) {
         WorkBox savedBox = workBoxService.changeOption(boxId, optionDto);
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);
 
@@ -65,7 +65,7 @@ public class WorkBoxController {
     //상태변경
     @PatchMapping("/state/{boxId}")
     public ResponseEntity<WorkBoxResponseDto> patchWorkBoxState(@RequestBody WorkBoxOptionPatchDto optionDto,
-                                                              @PathVariable long boxId) {
+                                                                @PathVariable long boxId) {
         WorkBox savedBox = workBoxService.changeStatus(boxId, optionDto.getStatus());
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);
 

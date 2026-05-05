@@ -2,9 +2,6 @@ package com.wordnote.board.entity;
 
 import com.wordnote.member.entity.Member;
 import com.wordnote.workbox.entity.WorkBox;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,7 +34,7 @@ public class Board {
     Member member;
 
 
-//List<WorkBoxMapper> 교체, 매핑 유지
+    //List<WorkBoxMapper> 교체, 매핑 유지
     public void update(Type type) {
         if (type != null) this.type = type;
     }
@@ -45,7 +42,9 @@ public class Board {
     public void addBox(WorkBox box) {
         if (box == null) return;
 
-        if (this.boxes == null) { this.boxes = new ArrayList<>();}
+        if (this.boxes == null) {
+            this.boxes = new ArrayList<>();
+        }
 
         this.boxes.add(box);
         box.setBoard(this);

@@ -1,6 +1,5 @@
 package com.wordnote.task.mapper;
 
-import com.wordnote.task.dto.request.TaskCreateDto;
 import com.wordnote.task.dto.response.TaskResponseDto;
 import com.wordnote.task.entity.Task;
 import lombok.RequiredArgsConstructor;

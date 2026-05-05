@@ -1,17 +1,14 @@
 package com.wordnote.board.service;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import com.wordnote.board.dto.request.BoardPatchDto;
 import com.wordnote.board.dto.request.BoardCreateDto;
+import com.wordnote.board.dto.request.BoardPatchDto;
 import com.wordnote.board.dto.response.BoardResponseDto;
 import com.wordnote.board.entity.Board;
 import com.wordnote.board.mapper.BoardMapper;
 import com.wordnote.board.repository.BoardRepository;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.service.MemberService;
-import com.wordnote.workbox.entity.WorkBox;
 import com.wordnote.workbox.repository.WorkBoxRepository;
-import com.wordnote.workbox.service.WorkBoxService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

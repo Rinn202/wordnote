@@ -1,7 +1,6 @@
 package com.wordnote.workbox.dto.response;
 
 import com.wordnote.task.dto.response.TaskResponseDto;
-import com.wordnote.task.entity.Task;
 import com.wordnote.workbox.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

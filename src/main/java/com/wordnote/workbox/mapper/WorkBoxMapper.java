@@ -1,8 +1,8 @@
 package com.wordnote.workbox.mapper;
 
 import com.wordnote.task.mapper.TaskMapper;
-import com.wordnote.workbox.dto.request.WorkBoxOptionPatchDto;
 import com.wordnote.workbox.dto.request.WorkBoxContentPatchDto;
+import com.wordnote.workbox.dto.request.WorkBoxOptionPatchDto;
 import com.wordnote.workbox.dto.response.WorkBoxContentResponseDto;
 import com.wordnote.workbox.dto.response.WorkBoxResponseDto;
 import com.wordnote.workbox.entity.WorkBox;
@@ -25,6 +25,7 @@ public class WorkBoxMapper {
 
         return foundBox;
     }
+
     //테스크 변경
     public WorkBox patchToWorkBoxByBoard(WorkBoxContentResponseDto requestOption, WorkBox foundBox) {
         if (requestOption == null) return null;
