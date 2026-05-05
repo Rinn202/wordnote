@@ -1,7 +1,7 @@
 package com.wordnote.member.controller;
 
 import com.wordnote.member.dto.request.MemberPatchDto;
-import com.wordnote.member.dto.request.MemberPostDto;
+import com.wordnote.member.dto.request.MemberCreateDto;
 import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.mapper.MemberMapper;
@@ -48,9 +48,9 @@ public class MemberController {
 
     //생성
     @PostMapping
-    public ResponseEntity<MemberResponseDto> createMember(@RequestBody MemberPostDto memberPostDto) {
+    public ResponseEntity<MemberResponseDto> createMember(@RequestBody MemberCreateDto memberCreateDto) {
 
-        Member member = memberMapper.PostToMember(memberPostDto);
+        Member member = memberMapper.CreateToMember(memberCreateDto);
         Member savedMember = memberService.createMember(member);
         MemberResponseDto response = memberMapper.toResponseDto(savedMember);
 

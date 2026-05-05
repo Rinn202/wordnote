@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -18,7 +19,7 @@ public class WorkBoxContentResponseDto {
 
     private Board board;
 
-    private Task task;
+    private List<Task> tasks;
 
     private LocalDateTime createdAt;
 }

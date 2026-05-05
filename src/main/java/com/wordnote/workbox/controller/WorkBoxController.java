@@ -1,7 +1,7 @@
 package com.wordnote.workbox.controller;
 
 import com.wordnote.workbox.dto.request.WorkBoxOptionPatchDto;
-import com.wordnote.workbox.dto.request.WorkBoxPostDto;
+import com.wordnote.workbox.dto.request.WorkBoxCreateDto;
 import com.wordnote.workbox.dto.response.WorkBoxContentResponseDto;
 import com.wordnote.workbox.dto.response.WorkBoxResponseDto;
 import com.wordnote.workbox.entity.WorkBox;
@@ -32,11 +32,11 @@ public class WorkBoxController {
 
     //박스 생성
     @PostMapping
-    public ResponseEntity<WorkBoxResponseDto> createWorkBox(@RequestBody WorkBoxPostDto workBoxPostDto) {
+    public ResponseEntity<WorkBoxResponseDto> createWorkBox(@RequestBody WorkBoxCreateDto workBoxCreateDto) {
         //Long memberId = SecurityUtil.getUserId();
         Long memberId = 1L;
-        WorkBox savedBox = workBoxService.createWorkBox(workBoxPostDto);
-        WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);
+        WorkBox box = workBoxService.createWorkBox(memberId, workBoxCreateDto);
+        WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(box);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

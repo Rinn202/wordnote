@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,8 +28,9 @@ public class Board {
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @OneToMany(mappedBy = "board") //리스트에게 매핑당함
-    List<WorkBox> boxes;
+    @Builder.Default
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkBox> boxes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "memberId", updatable = false, nullable = false)
@@ -36,32 +38,22 @@ public class Board {
 
 
 //List<WorkBoxMapper> 교체, 매핑 유지
-    public void update(Type type, List<WorkBox> boxes) {
+    public void update(Type type) {
         if (type != null) this.type = type;
-
-        if (boxes != null) {
-            this.boxes.clear();
-            boxes.forEach(this::addBox);
-        }
     }
 
-    //
     public void addBox(WorkBox box) {
         if (box == null) return;
 
-        if (box.getBoard() != null && box.getBoard() != this) {
-            box.getBoard().boxes.remove(box);
-        }
+        if (this.boxes == null) { this.boxes = new ArrayList<>();}
 
-        if (!this.boxes.contains(box)) {
-            this.boxes.add(box);
-        }
-
+        this.boxes.add(box);
         box.setBoard(this);
     }
 
     public void assignMember(Member member) {
         this.member = member;
     }
+
 }
 

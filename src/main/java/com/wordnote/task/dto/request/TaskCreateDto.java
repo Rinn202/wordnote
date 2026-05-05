@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class TaskPostDto {
+public class TaskCreateDto {
 
     @NotBlank
     private String name;

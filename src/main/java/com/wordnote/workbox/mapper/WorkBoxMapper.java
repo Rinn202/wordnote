@@ -30,7 +30,7 @@ public class WorkBoxMapper {
         if (requestOption == null) return null;
 
         foundBox.update(requestOption.getBoard(),
-                requestOption.getTask());
+                requestOption.getTasks());
 
         return foundBox;
     }
@@ -42,7 +42,7 @@ public class WorkBoxMapper {
         return WorkBoxResponseDto.builder()
                 .boxId(workBox.getBoxId())
                 .status(workBox.getStatus())
-                .task(taskMapper.toResponseDto(workBox.getTask()))
+                .tasks(taskMapper.toResponseDtos(workBox.getTasks()))
                 .alarmTime(workBox.getAlarmTime())
                 .expiredAt(workBox.getExpiredAt())
                 .bookmark(workBox.getBookmark())
@@ -56,7 +56,7 @@ public class WorkBoxMapper {
 
         return WorkBox.builder()
                 .boxId(workBoxContentPatchDto.getBoxId())
-                .task(workBoxContentPatchDto.getTask())
+                .tasks(workBoxContentPatchDto.getTasks())
                 .build();
     }
 }

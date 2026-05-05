@@ -1,5 +1,6 @@
 package com.wordnote.task.mapper;
 
+import com.wordnote.task.dto.request.TaskCreateDto;
 import com.wordnote.task.dto.response.TaskResponseDto;
 import com.wordnote.task.entity.Task;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class TaskMapper {
     }
 
     public List<TaskResponseDto> toResponseDtos(List<Task> tasks) {
+        if (tasks == null) return List.of();
 
         return tasks.stream()
                 .map(this::toResponseDto)

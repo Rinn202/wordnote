@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -35,8 +36,9 @@ public class Member {
     @Column(nullable = false, updatable = false)
     LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "member")
-    List<Board> boards;
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Board> boards = new ArrayList<>();
 
 
     public void update(String nickname, String password, String email, List<Board> boards) {

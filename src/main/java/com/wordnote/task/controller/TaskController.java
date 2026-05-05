@@ -2,7 +2,7 @@ package com.wordnote.task.controller;
 
 import com.wordnote.board.entity.Type;
 import com.wordnote.task.dto.request.TaskPatchDto;
-import com.wordnote.task.dto.request.TaskPostDto;
+import com.wordnote.task.dto.request.TaskCreateDto;
 import com.wordnote.task.dto.response.TaskResponseDto;
 import com.wordnote.task.entity.Task;
 import com.wordnote.task.mapper.TaskMapper;
@@ -36,7 +36,6 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-    //id로 조회
     @GetMapping
     public ResponseEntity<List<TaskResponseDto>> getAllTask(@RequestParam(required = false) Type type,
                                                        @RequestParam(defaultValue = "asc") String sort) {
@@ -49,9 +48,8 @@ public class TaskController {
     //생성
     @PostMapping
     public ResponseEntity<TaskResponseDto> createTask(@RequestParam(required = false) Type type,
-                                                           @RequestBody TaskPostDto taskPostDto) {
-        Task savedTask = taskService.createTask(taskPostDto) ;
-        TaskResponseDto response = taskMapper.toResponseDto(savedTask);
+                                                           @RequestBody TaskCreateDto taskCreateDto) {
+        TaskResponseDto response = taskService.createTask(taskCreateDto) ;
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -61,8 +59,8 @@ public class TaskController {
     public ResponseEntity<TaskResponseDto> patchTask(@RequestParam(required = false) Type type,
                                                      @RequestBody TaskPatchDto taskPatchDto,
                                                      @PathVariable long taskId) {
-        Task savedTask = taskService.updateTask(taskId, taskPatchDto);
-        TaskResponseDto response = taskMapper.toResponseDto(savedTask);
+        Task task = taskService.updateTask(taskId, taskPatchDto);
+        TaskResponseDto response = taskMapper.toResponseDto(task);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

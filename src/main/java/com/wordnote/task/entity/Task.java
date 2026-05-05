@@ -24,12 +24,26 @@ public class Task {
     @Column
     private Integer sortIndex = 0;
 
-    @OneToOne(mappedBy = "task")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "boxId")
     private WorkBox workBox;
 
     public void update(String name, @NotNull Integer sortIndex) {
         if (name != null) this.name = name;
         if (sortIndex != null) this.sortIndex = sortIndex;
+    }
+
+    public void setWorkBox(WorkBox box) {
+        if(box != null) this.workBox = box;
+    }
+
+    //복제
+    public Task copyForWorkBox(WorkBox workBox) {
+        return Task.builder()
+                .name(this.name)
+                .sortIndex(this.sortIndex)
+                .workBox(workBox)
+                .build();
     }
 }
 

@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,9 +36,8 @@ public class WorkBox {
     @Column
     private Integer sortIndex;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "taskId")
-    private Task task;
+    @OneToMany(mappedBy = "workBox", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
     @Column //알람설정시간
     private LocalDateTime alarmTime;
@@ -79,9 +79,13 @@ public class WorkBox {
         if (sortIndex != null) this.sortIndex = sortIndex;
     }
 
-    public void update(Board board, Task task) {
+    public void update(Board board, List<Task> tasks) {
         if (board != null) this.board = board;
-        if (task != null) this.task = task;
+        if (tasks!= null) this.tasks = tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        if (tasks != null) this.tasks = tasks;
     }
 }
 

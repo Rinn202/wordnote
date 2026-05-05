@@ -11,5 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardPatchDto {
     private Type type;
-    private List<WorkBoxContentPatchDto> boxes;
+    private List<Long> boxIds;
 }

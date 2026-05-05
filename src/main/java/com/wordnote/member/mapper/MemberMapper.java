@@ -1,6 +1,7 @@
 package com.wordnote.member.mapper;
 
-import com.wordnote.member.dto.request.MemberPostDto;
+import com.wordnote.board.entity.Board;
+import com.wordnote.member.dto.request.MemberCreateDto;
 import com.wordnote.member.dto.request.MemberPatchDto;
 import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
@@ -24,21 +25,24 @@ public class MemberMapper {
 
     //member -> dto
     public MemberResponseDto toResponseDto(Member member) {
+
+
         return MemberResponseDto.builder()
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .password(member.getPassword())
                 .createdAt(member.getCreatedAt())
+                .boardIds(member.getBoards().stream().map(Board::getBoardId).toList())
                 .build();
     }
 
-    //postDto -> member
-    public Member PostToMember(MemberPostDto memberPostDto) {
+    //createDto -> member
+    public Member CreateToMember(MemberCreateDto memberCreateDto) {
         return Member.builder()
-                .name(memberPostDto.getName())
-                .nickname(memberPostDto.getNickname())
-                .email(memberPostDto.getEmail())
-                .password(memberPostDto.getPassword())
+                .name(memberCreateDto.getName())
+                .nickname(memberCreateDto.getNickname())
+                .email(memberCreateDto.getEmail())
+                .password(memberCreateDto.getPassword())
                 .build();
     }
 
