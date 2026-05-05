@@ -3,7 +3,7 @@ package com.wordnote.member.dto.request;
 import lombok.Getter;
 
 @Getter
-public class MemberPatchDto {
+public class MemberUpdateDto {
 
     private String nickname;
 

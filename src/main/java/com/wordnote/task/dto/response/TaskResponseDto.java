@@ -6,9 +6,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TaskResponseDto {
+
     private Long taskId;
 
     private String name;
-
-    private Integer sortIndex;
 }

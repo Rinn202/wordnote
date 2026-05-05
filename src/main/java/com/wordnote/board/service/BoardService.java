@@ -1,7 +1,7 @@
 package com.wordnote.board.service;
 
 import com.wordnote.board.dto.request.BoardCreateDto;
-import com.wordnote.board.dto.request.BoardPatchDto;
+import com.wordnote.board.dto.request.BoardUpdateDto;
 import com.wordnote.board.dto.response.BoardResponseDto;
 import com.wordnote.board.entity.Board;
 import com.wordnote.board.mapper.BoardMapper;
@@ -39,22 +39,22 @@ public class BoardService {
 
     //전체 검색
     public List<BoardResponseDto> findAll(long memberId) {
-        List<Board> foundBoards = boardRepository.findByMember_MemberId(memberId);
+        List<Board> boards = boardRepository.findByMember_MemberId(memberId);
 
-        return boardMapper.toResponseDtos(foundBoards);
+        return boardMapper.toResponseDtos(boards);
     }
 
     //단일 검색
     public BoardResponseDto findBoardById(long memberId, long boardId) {
-        Board foundBoard = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
+        Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("보드 없음"));
 
-        return boardMapper.toResponseDto(foundBoard);
+        return boardMapper.toResponseDto(board);
     }
 
     //수정
     @Transactional
-    public BoardResponseDto patchBoard(long memberId, long boardId, BoardPatchDto dto) {
+    public BoardResponseDto updateBoard(long memberId, long boardId, BoardUpdateDto dto) {
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("보드 없음")); //기존 보드
 
@@ -64,12 +64,14 @@ public class BoardService {
     }
 
     //전체 삭제
+    @Transactional
     public void deleteAllBoard(long memberId) {
         List<Board> boardList = boardRepository.findByMember_MemberId(memberId);
         boardRepository.deleteAll(boardList);
     }
 
     //단일 삭제
+    @Transactional
     public void deleteBoard(long memberId, long boardId) {
 
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)

@@ -2,7 +2,7 @@ package com.wordnote.member.mapper;
 
 import com.wordnote.board.entity.Board;
 import com.wordnote.member.dto.request.MemberCreateDto;
-import com.wordnote.member.dto.request.MemberPatchDto;
+import com.wordnote.member.dto.request.MemberUpdateDto;
 import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberMapper {
     //members -> dtos
-    public List<MemberResponseDto> toResponseDto(List<Member> memberList) {
+    public List<MemberResponseDto> toResponseDto(List<Member> members) {
 
-        if (memberList == null) return List.of();
+        if (members == null) return List.of();
 
-        return memberList.stream()
+        return members.stream()
                 .map(this::toResponseDto)
                 .toList();
     }
@@ -37,21 +37,21 @@ public class MemberMapper {
     }
 
     //createDto -> member
-    public Member CreateToMember(MemberCreateDto memberCreateDto) {
+    public Member CreateToMember(MemberCreateDto dto) {
         return Member.builder()
-                .name(memberCreateDto.getName())
-                .nickname(memberCreateDto.getNickname())
-                .email(memberCreateDto.getEmail())
-                .password(memberCreateDto.getPassword())
+                .name(dto.getName())
+                .nickname(dto.getNickname())
+                .email(dto.getEmail())
+                .password(dto.getPassword())
                 .build();
     }
 
     //patchDto -> member
-    public Member PatchToMember(MemberPatchDto memberPatchDto) {
+    public Member PatchToMember(MemberUpdateDto memberUpdateDto) {
         return Member.builder()
-                .nickname(memberPatchDto.getNickname())
-                .email(memberPatchDto.getEmail())
-                .password(memberPatchDto.getPassword())
+                .nickname(memberUpdateDto.getNickname())
+                .email(memberUpdateDto.getEmail())
+                .password(memberUpdateDto.getPassword())
                 .build();
     }
 }

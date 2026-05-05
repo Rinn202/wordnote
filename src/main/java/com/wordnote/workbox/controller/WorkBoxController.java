@@ -1,8 +1,7 @@
 package com.wordnote.workbox.controller;
 
 import com.wordnote.workbox.dto.request.WorkBoxCreateDto;
-import com.wordnote.workbox.dto.request.WorkBoxOptionPatchDto;
-import com.wordnote.workbox.dto.response.WorkBoxContentResponseDto;
+import com.wordnote.workbox.dto.request.WorkBoxOptionUpdateDto;
 import com.wordnote.workbox.dto.response.WorkBoxResponseDto;
 import com.wordnote.workbox.entity.WorkBox;
 import com.wordnote.workbox.mapper.WorkBoxMapper;
@@ -32,28 +31,18 @@ public class WorkBoxController {
 
     //박스 생성
     @PostMapping
-    public ResponseEntity<WorkBoxResponseDto> createWorkBox(@RequestBody WorkBoxCreateDto workBoxCreateDto) {
-        //Long memberId = SecurityUtil.getUserId();
-        Long memberId = 1L;
-        WorkBox box = workBoxService.createWorkBox(memberId, workBoxCreateDto);
+    public ResponseEntity<WorkBoxResponseDto> createWorkBox(@RequestBody WorkBoxCreateDto dto) {
+        //long memberId = SecurityUtil.getUserId();
+        long memberId = 1L;
+        WorkBox box = workBoxService.createWorkBox(memberId, dto);
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(box);
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    //테스크 변경
-    @PatchMapping("/{boxId}")
-    public ResponseEntity<WorkBoxResponseDto> patchWorkBox(@RequestBody WorkBoxContentResponseDto contentDto,
-                                                           @PathVariable long boxId) {
-        WorkBox savedBox = workBoxService.updateTask(boxId, contentDto);
-        WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     //옵션 변경
     @PatchMapping("/option/{boxId}")
-    public ResponseEntity<WorkBoxResponseDto> patchWorkBoxOption(@RequestBody WorkBoxOptionPatchDto optionDto,
+    public ResponseEntity<WorkBoxResponseDto> patchWorkBoxOption(@RequestBody WorkBoxOptionUpdateDto optionDto,
                                                                  @PathVariable long boxId) {
         WorkBox savedBox = workBoxService.changeOption(boxId, optionDto);
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);
@@ -64,7 +53,7 @@ public class WorkBoxController {
 
     //상태변경
     @PatchMapping("/state/{boxId}")
-    public ResponseEntity<WorkBoxResponseDto> patchWorkBoxState(@RequestBody WorkBoxOptionPatchDto optionDto,
+    public ResponseEntity<WorkBoxResponseDto> patchWorkBoxState(@RequestBody WorkBoxOptionUpdateDto optionDto,
                                                                 @PathVariable long boxId) {
         WorkBox savedBox = workBoxService.changeStatus(boxId, optionDto.getStatus());
         WorkBoxResponseDto response = workBoxMapper.toWorkBoxDto(savedBox);

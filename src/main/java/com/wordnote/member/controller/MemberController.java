@@ -1,7 +1,7 @@
 package com.wordnote.member.controller;
 
 import com.wordnote.member.dto.request.MemberCreateDto;
-import com.wordnote.member.dto.request.MemberPatchDto;
+import com.wordnote.member.dto.request.MemberUpdateDto;
 import com.wordnote.member.dto.response.MemberResponseDto;
 import com.wordnote.member.entity.Member;
 import com.wordnote.member.mapper.MemberMapper;
@@ -38,7 +38,7 @@ public class MemberController {
     //개별 조회
     @GetMapping("/mypage")
     public ResponseEntity<MemberResponseDto> getMember() {
-        //Long memberId = SecurityUtil.getUserId();
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
 
         Member member = memberService.findById(memberId);
@@ -59,12 +59,12 @@ public class MemberController {
 
     //수정
     @PatchMapping
-    public ResponseEntity<MemberResponseDto> patchMember(@RequestBody MemberPatchDto memberPatchDto) {
-        //Long memberId = SecurityUtil.getUserId();
+    public ResponseEntity<MemberResponseDto> patchMember(@RequestBody MemberUpdateDto memberUpdateDto) {
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
 
-        Member member = memberMapper.PatchToMember(memberPatchDto);
-        Member savedMember = memberService.patchMember(memberId, member);
+        Member member = memberMapper.PatchToMember(memberUpdateDto);
+        Member savedMember = memberService.updateMember(memberId, member);
         MemberResponseDto response = memberMapper.toResponseDto(savedMember);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -74,7 +74,7 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<MemberResponseDto> deleteMember() {
 
-        //Long memberId = SecurityUtil.getUserId();
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
 
         memberService.deleteMember(memberId);

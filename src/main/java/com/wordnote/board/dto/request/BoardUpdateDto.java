@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class BoardPatchDto {
+public class BoardUpdateDto {
     private Type type;
     private List<Long> boxIds;
 }

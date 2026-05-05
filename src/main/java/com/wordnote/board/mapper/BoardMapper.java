@@ -31,10 +31,10 @@ public class BoardMapper {
                 .build();
     }
 
-    public List<BoardResponseDto> toResponseDtos(List<Board> boardList) {
-        if (boardList == null) return List.of();
+    public List<BoardResponseDto> toResponseDtos(List<Board> boards) {
+        if (boards == null) return List.of();
 
-        return boardList.stream()
+        return boards.stream()
                 .map(this::toResponseDto)
                 .toList();
     }

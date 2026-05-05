@@ -2,7 +2,7 @@ package com.wordnote.task.controller;
 
 import com.wordnote.board.entity.Type;
 import com.wordnote.task.dto.request.TaskCreateDto;
-import com.wordnote.task.dto.request.TaskPatchDto;
+import com.wordnote.task.dto.request.TaskUpdateDto;
 import com.wordnote.task.dto.response.TaskResponseDto;
 import com.wordnote.task.entity.Task;
 import com.wordnote.task.mapper.TaskMapper;
@@ -57,9 +57,9 @@ public class TaskController {
     //수정
     @PatchMapping("/{taskId}")
     public ResponseEntity<TaskResponseDto> patchTask(@RequestParam(required = false) Type type,
-                                                     @RequestBody TaskPatchDto taskPatchDto,
+                                                     @RequestBody TaskUpdateDto taskUpdateDto,
                                                      @PathVariable long taskId) {
-        Task task = taskService.updateTask(taskId, taskPatchDto);
+        Task task = taskService.updateTask(taskId, taskUpdateDto);
         TaskResponseDto response = taskMapper.toResponseDto(task);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);

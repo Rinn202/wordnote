@@ -1,8 +1,7 @@
 package com.wordnote.task.entity;
 
-import com.wordnote.workbox.entity.WorkBox;
+import com.wordnote.workboxtask.WorkBoxTask;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -22,29 +21,11 @@ public class Task {
     @Column(nullable = false)
     private String name;
 
-    @Builder.Default
-    @Column
-    private Integer sortIndex = 0;
+    @OneToMany(mappedBy = "task")
+    private List<WorkBoxTask> workBoxTasks;
 
-    @ManyToMany(mappedBy = "tasks")
-    private List<WorkBox> workBoxes;
-
-    public void update(String name, @NotNull Integer sortIndex) {
+    public void update(String name) {
         if (name != null) this.name = name;
-        if (sortIndex != null) this.sortIndex = sortIndex;
-    }
-
-    public void setWorkBox(List<WorkBox> boxes) {
-        if (boxes != null) this.workBoxes = boxes;
-    }
-
-    //복제
-    public Task copyForWorkBox(List<WorkBox> boxes) {
-        return Task.builder()
-                .name(this.name)
-                .sortIndex(this.sortIndex)
-                .workBoxes(boxes)
-                .build();
     }
 }
 

@@ -1,7 +1,7 @@
 package com.wordnote.workbox.entity;
 
 import com.wordnote.board.entity.Board;
-import com.wordnote.task.entity.Task;
+import com.wordnote.workboxtask.WorkBoxTask;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,13 +36,8 @@ public class WorkBox {
     @Column
     private Integer sortIndex;
 
-    @ManyToMany
-    @JoinTable(
-            name = "boxTask",
-            joinColumns = @JoinColumn(name = "boxId"),
-            inverseJoinColumns = @JoinColumn(name = "taskId")
-    )
-    private List<Task> tasks;
+    @OneToMany(mappedBy = "workBox", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkBoxTask> workBoxTasks;
 
     @Column //알람설정시간
     private LocalDateTime alarmTime;
@@ -83,14 +78,18 @@ public class WorkBox {
         if (expiredAt != null) this.expiredAt = expiredAt;
         if (sortIndex != null) this.sortIndex = sortIndex;
     }
+//
+//    public void update(Board board, List<Task> tasks) {
+//        if (board != null) this.board = board;
+//        if (tasks != null) this.tasks = tasks;
+//    }
+//
+//    public void setTasks(List<Task> tasks) {
+//        if (tasks != null) this.tasks = tasks;
+//    }
 
-    public void update(Board board, List<Task> tasks) {
-        if (board != null) this.board = board;
-        if (tasks != null) this.tasks = tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        if (tasks != null) this.tasks = tasks;
+    public void setWorkBoxTasks(List<WorkBoxTask> relations) {
+        if (relations != null) this.workBoxTasks = relations;
     }
 }
 

@@ -16,7 +16,6 @@ public class TaskMapper {
         return TaskResponseDto.builder()
                 .taskId(task.getTaskId())
                 .name(task.getName())
-                .sortIndex(task.getSortIndex())
                 .build();
     }
 

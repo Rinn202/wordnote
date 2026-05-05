@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WorkBoxOptionPatchDto {
+public class WorkBoxOptionUpdateDto {
     private Status status;
 
     private Long BoxId;

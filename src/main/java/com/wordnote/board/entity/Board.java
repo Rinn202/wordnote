@@ -39,17 +39,6 @@ public class Board {
         if (type != null) this.type = type;
     }
 
-    public void addBox(WorkBox box) {
-        if (box == null) return;
-
-        if (this.boxes == null) {
-            this.boxes = new ArrayList<>();
-        }
-
-        this.boxes.add(box);
-        box.setBoard(this);
-    }
-
     public void assignMember(Member member) {
         this.member = member;
     }

@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WorkBoxContentPatchDto {
+public class WorkBoxContentUpdateDto {
 
     private Long BoxId;
 

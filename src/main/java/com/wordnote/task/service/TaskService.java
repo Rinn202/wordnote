@@ -1,13 +1,13 @@
 package com.wordnote.task.service;
 
 import com.wordnote.task.dto.request.TaskCreateDto;
-import com.wordnote.task.dto.request.TaskPatchDto;
+import com.wordnote.task.dto.request.TaskUpdateDto;
 import com.wordnote.task.dto.response.TaskResponseDto;
 import com.wordnote.task.entity.Task;
 import com.wordnote.task.mapper.TaskMapper;
 import com.wordnote.task.repository.TaskRepository;
-import com.wordnote.workbox.mapper.WorkBoxMapper;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +18,6 @@ import java.util.List;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
-    private final WorkBoxMapper workBoxMapper;
-
-//    public Task findById(Long taskId){
-//        return taskRepository.findById(taskId)
-//                .orElseThrow(() -> new RuntimeException("WorkBoxMapper not found: " + taskId));
-//    }
 
     public Task findById(long taskId) {
         return taskRepository.findById(taskId)
@@ -34,8 +28,8 @@ public class TaskService {
         return taskRepository.findAllById(taskIds);
     }
 
+    @Transactional
     public TaskResponseDto createTask(TaskCreateDto dto) {
-        Integer max = taskRepository.findMaxSortIndex();
         Task task = Task.builder()
                 .name(dto.getName())
                 .build();
@@ -45,17 +39,17 @@ public class TaskService {
         return taskMapper.toResponseDto(task);
     }
 
-    public Task updateTask(long taskId, TaskPatchDto patchDto) {
+    @Transactional
+    public Task updateTask(long taskId, TaskUpdateDto patchDto) {
         Task foundTask = taskRepository.findById(taskId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        foundTask.update(
-                patchDto.getName(),
-                patchDto.getSortIndex());
+        foundTask.update(patchDto.getName());
 
         return taskRepository.save(foundTask);
     }
 
+    @Transactional
     public void deleteTask(long taskId) {
         taskRepository.deleteById(taskId);
     }

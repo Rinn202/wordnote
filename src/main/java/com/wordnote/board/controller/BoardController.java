@@ -1,7 +1,7 @@
 package com.wordnote.board.controller;
 
 import com.wordnote.board.dto.request.BoardCreateDto;
-import com.wordnote.board.dto.request.BoardPatchDto;
+import com.wordnote.board.dto.request.BoardUpdateDto;
 import com.wordnote.board.dto.response.BoardResponseDto;
 import com.wordnote.board.entity.Type;
 import com.wordnote.board.service.BoardService;
@@ -25,9 +25,9 @@ class BoardController {
 
     //조회
     @GetMapping
-    public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(required = false) Type type,
+    public ResponseEntity<List<BoardResponseDto>> getAllBoards(@RequestParam(required = false) Type type,
                                                               @RequestParam(defaultValue = "asc") String sort) {
-        //Long memberId = SecurityUtil.getUserId();
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
 
         List<BoardResponseDto> response = boardService.findAll(memberId);
@@ -41,7 +41,7 @@ class BoardController {
     public ResponseEntity<BoardResponseDto> getBoard(@RequestParam(required = false) Type type,
                                                      @RequestParam(defaultValue = "asc") String sort,
                                                      @PathVariable long boardId) {
-        //Long memberId = SecurityUtil.getUserId();
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
 
         BoardResponseDto response = boardService.findBoardById(memberId, boardId);
@@ -50,23 +50,23 @@ class BoardController {
 
     //생성
     @PostMapping
-    public ResponseEntity<BoardResponseDto> createBoard(@RequestBody BoardCreateDto boardCreateDto) {
-        //Long memberId = SecurityUtil.getUserId();
+    public ResponseEntity<BoardResponseDto> postBoard(@RequestBody BoardCreateDto dto) {
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
 
-        BoardResponseDto response = boardService.createBoard(memberId, boardCreateDto);
+        BoardResponseDto response = boardService.createBoard(memberId, dto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     //수정
     @PatchMapping("/{boardId}")
-    public ResponseEntity<BoardResponseDto> patchBoard(@RequestBody BoardPatchDto boardPatchDto,
+    public ResponseEntity<BoardResponseDto> patchBoard(@RequestBody BoardUpdateDto boardUpdateDto,
                                                        @PathVariable long boardId) {
-        //Long memberId = SecurityUtil.getUserId();
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
 
-        BoardResponseDto response = boardService.patchBoard(memberId, boardId, boardPatchDto);
+        BoardResponseDto response = boardService.updateBoard(memberId, boardId, boardUpdateDto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -74,7 +74,7 @@ class BoardController {
     //삭제
     @DeleteMapping("/{boardId}")
     public ResponseEntity<BoardResponseDto> deleteBoard(@PathVariable long boardId) {
-        //Long memberId = SecurityUtil.getUserId();
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
         boardService.deleteBoard(boardId, memberId);
 
@@ -84,7 +84,7 @@ class BoardController {
     @DeleteMapping
     public ResponseEntity<BoardResponseDto> deleteAllBoard() {
 
-        //Long memberId = SecurityUtil.getUserId();
+        //long memberId = SecurityUtil.getUserId();
         long memberId = 1L;
         boardService.deleteAllBoard(memberId);
 
