@@ -1,7 +1,7 @@
 package com.wordnote.workbox.entity;
 
-import com.wordnote.task.entity.Task;
 import com.wordnote.board.entity.Board;
+import com.wordnote.task.entity.Task;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,7 +18,7 @@ public class WorkBox {
 
     @Id
     @Column(name = "boxId", updatable = false, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO) //pk 자동생성
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //pk 자동생성
     private Long boxId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +36,12 @@ public class WorkBox {
     @Column
     private Integer sortIndex;
 
-    @OneToMany(mappedBy = "workBox", cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "boxTask",
+            joinColumns = @JoinColumn(name = "boxId"),
+            inverseJoinColumns = @JoinColumn(name = "taskId")
+    )
     private List<Task> tasks;
 
     @Column //알람설정시간
@@ -81,7 +86,7 @@ public class WorkBox {
 
     public void update(Board board, List<Task> tasks) {
         if (board != null) this.board = board;
-        if (tasks!= null) this.tasks = tasks;
+        if (tasks != null) this.tasks = tasks;
     }
 
     public void setTasks(List<Task> tasks) {

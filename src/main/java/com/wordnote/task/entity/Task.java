@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -24,25 +26,24 @@ public class Task {
     @Column
     private Integer sortIndex = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "boxId")
-    private WorkBox workBox;
+    @ManyToMany(mappedBy = "tasks")
+    private List<WorkBox> workBoxes;
 
     public void update(String name, @NotNull Integer sortIndex) {
         if (name != null) this.name = name;
         if (sortIndex != null) this.sortIndex = sortIndex;
     }
 
-    public void setWorkBox(WorkBox box) {
-        if(box != null) this.workBox = box;
+    public void setWorkBox(List<WorkBox> boxes) {
+        if (boxes != null) this.workBoxes = boxes;
     }
 
     //복제
-    public Task copyForWorkBox(WorkBox workBox) {
+    public Task copyForWorkBox(List<WorkBox> boxes) {
         return Task.builder()
                 .name(this.name)
                 .sortIndex(this.sortIndex)
-                .workBox(workBox)
+                .workBoxes(boxes)
                 .build();
     }
 }
