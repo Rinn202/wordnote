@@ -1,4 +1,7 @@
 spring:
+  sql:
+    init:
+      mode: always
   #  datasource:
   #    url: jdbc:mysql://database-mainproj.ce3ctn9df6gn.ap-northeast-2.rds.amazonaws.com:13306/mainproj
   #    username: admin
@@ -9,53 +12,38 @@ spring:
     driver-class-name: org.h2.Driver # H2 드라이버
     username: sa # DB 사용자명
     password: # DB 비밀번호
-
   h2:
     console:
       enabled: true # H2 콘솔 활성화
       path: /h2-console # 접속 경로 (http://localhost:8080/h2-console)
-
   jpa:
     hibernate:
-      ddl-auto: create # 엔티티 기준으로 테이블 자동 생성/수정
+      ddl-auto: create # 매번 새로 생성 -> 실제 운영시 validate로 바꿔야 함
     show-sql: true # 실행되는 SQL 콘솔 출력
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect # JPA SQL -> H2용으로 번역
+    defer-datasource-initialization: true #초기 파일(data.sql) 추가시 사용
 
-    defer-datasource-initialization: true
-    database-platform: org.hibernate.dialect.H2Dialect # JPA SQL -> H2용으로 번역
-#  sql:
-#    init:
-#      mode: always
-#      data-locations: classpath:/dummy.sql
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${G_CLIENT_ID} #어플리케이션 ID
+            clientSecret: ${G_CLIENT_SECRET} #어플리케이션 시크릿키
+            scope:
+              - email # 사용자 이메일 권한
+              - profile # 사용자 프로필 권한
+jwt:
+  secret-key: ${JWT_SECRET_KEY:your_default_secret_key_32_bytes_long_!!} # 환경변수 권장
+  access-token-expiration-minutes: 30
+  refresh-token-expiration-minutes: 420 # 7시간
 
-#  jpa:
-#    hibernate:
-#      ddl-auto: creat # 매번 새로 생성 -> 실제 운영시 validate로 바꿔야 함
-#    show-sql: true
-#    properties:
-#      hibernate:
-#        format_sql: true
-
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            clientId: ${G_CLIENT_ID} #어플리케이션 ID
-#            clientSecret: ${G_CLIENT_SECRET} #어플리케이션 시크릿키
-#            scope:
-#              - email # 사용자 이메일 권한
-#              - profile # 사용자 프로필 권한
 
 #server:
 #  port: 8080 # 서버 포트
-
-#jwt:
-#  key: ${JWT_SECRET_KEY} # JWT 서명 키
-#  access-exp-min: 5 # Access Token 만료 시간 (분)
-#  refresh-exp-min: 30 # Refresh Token 만료 시간 (분)
 
 logging:
   level:

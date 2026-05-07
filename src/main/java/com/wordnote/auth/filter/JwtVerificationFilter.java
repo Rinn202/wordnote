@@ -1,0 +1,62 @@
+package com.wordnote.auth.filter;
+
+import com.wordnote.auth.utils.JwtTokenizer;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+@RequiredArgsConstructor
+public class JwtVerificationFilter extends OncePerRequestFilter { // 요청당 한 번만 실행
+
+    private final JwtTokenizer jwtTokenizer;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        try {
+            Map<String, Object> claims = verifyJws(request);    //헤더에서 토큰 파싱
+            setAuthenticationToContext(claims); //검증 성공시 SecurityContext에 인증 정보 저장
+        } catch (Exception e) {
+            request.setAttribute("exception", e); //실패시
+        }
+
+        filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");  //헤더의 Authorization: Bearer {token} 확인
+        return authorization == null || !authorization.startsWith("Bearer");
+        //헤더에 Authorization자체가 없거나, 값이 Bearer로 시작하지 않으면 걸러짐
+    }
+
+    private Map<String, Object> verifyJws(HttpServletRequest request) {
+        String jws = request.getHeader("Authorization").replace("Bearer ", "");
+        return jwtTokenizer.getClaims(jws).getPayload(); //있으면 해당 값으로 토큰 생성. payload(=body)
+    }
+
+    private void setAuthenticationToContext(Map<String, Object> claims) {
+        // 토큰의 userId 추출 ->  Principal로 사용
+        String memberId = String.valueOf(claims.get("memberId"));
+        String memberRole = String.valueOf(claims.get("memberRole"));
+
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + memberRole));
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(memberId, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+}

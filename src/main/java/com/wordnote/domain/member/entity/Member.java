@@ -1,0 +1,64 @@
+package com.wordnote.domain.member.entity;
+
+import com.wordnote.domain.board.entity.Board;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Getter
+@Entity
+public class Member {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "memberId")
+    private Long memberId;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column
+    MemberRole role = MemberRole.BASIC;
+
+    @Column(nullable = false, updatable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    LocalDateTime createdAt;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Board> boards = new ArrayList<>();
+
+
+    public void update(String nickname, String password, String email) {
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+    }
+
+    public void encryptPassword(String encryptedPassword) {
+        if (encryptedPassword != null)
+            this.password = encryptedPassword;
+    }
+
+    public void setRole(MemberRole memberRole) {
+        if (memberRole != null)
+            this.role = memberRole;
+    }
+}
