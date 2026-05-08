@@ -3,7 +3,7 @@ package com.wordnote.domain.board.mapper;
 import com.wordnote.domain.board.dto.request.BoardCreateDto;
 import com.wordnote.domain.board.dto.response.BoardResponseDto;
 import com.wordnote.domain.board.entity.Board;
-import com.wordnote.domain.workbox.mapper.WorkBoxMapper;
+import com.wordnote.domain.box.mapper.BoxMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardMapper {
 
-    private final WorkBoxMapper workBoxMapper;
+    private final BoxMapper boxMapper;
 
     public BoardResponseDto toResponseDto(Board board) {
         if (board == null) return null;
@@ -25,7 +25,7 @@ public class BoardMapper {
                         board.getBoxes() == null || board.getBoxes().isEmpty()
                                 ? List.of()
                                 : board.getBoxes().stream()
-                                  .map(workBoxMapper::toBoxResponseDto)
+                                  .map(boxMapper::toBoxResponseDto)
                                   .toList()
                 )
                 .build();

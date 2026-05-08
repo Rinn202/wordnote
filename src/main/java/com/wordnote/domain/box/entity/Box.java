@@ -1,12 +1,13 @@
-package com.wordnote.domain.workbox.entity;
+package com.wordnote.domain.box.entity;
 
 import com.wordnote.domain.board.entity.Board;
-import com.wordnote.domain.workboxtask.WorkBoxTask;
+import com.wordnote.domain.boxtask.BoxTask;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -14,7 +15,7 @@ import java.util.List;
 @Builder
 @Getter
 @Entity
-public class WorkBox {
+public class Box {
 
     @Id
     @Column(name = "boxId", updatable = false, nullable = false)
@@ -26,24 +27,25 @@ public class WorkBox {
     private Board board;
 
     @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.READY;
-
-    @Builder.Default
     @Column //북마크
     private Boolean bookmark = false;
 
     @Column
     private Integer sortIndex;
 
-    @OneToMany(mappedBy = "workBox", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WorkBoxTask> workBoxTasks;
-
-    @Column //알람설정시간
-    private LocalDateTime alarmTime;
+    @OneToMany(mappedBy = "box", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoxTask> boxTasks;
 
     @Column //만료시간
-    private LocalDateTime expiredAt;
+    private LocalTime expireTime;
+
+    @Builder.Default //알람설정시간
+    @Enumerated(EnumType.STRING)
+    private AlarmType alarmType = AlarmType.NONE;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private State state = State.READY;
 
     @Column //생성일자
     @CreationTimestamp
@@ -59,23 +61,21 @@ public class WorkBox {
         }
     }
 
-    public void changeStatus(Status next) {
-        if (!this.status.canMoveTo(next)) {
+    public void changeState(State next) {
+        if (!this.state.canMoveTo(next)) {
             throw new IllegalStateException("invalid transition");
         }
-        this.status = next;
+        this.state = next;
     }
 
-    public void update(Status status,
-                       Boolean bookmark,
-                       LocalDateTime alarmTime,
-                       LocalDateTime expiredAt,
+    public void update(Boolean bookmark,
+                       AlarmType alarmType,
+                       LocalTime expireTime,
                        Integer sortIndex) {
 
-        if (status != null) this.status = status;
         if (bookmark != null) this.bookmark = bookmark;
-        if (alarmTime != null) this.alarmTime = alarmTime;
-        if (expiredAt != null) this.expiredAt = expiredAt;
+        if (alarmType != null) this.alarmType = alarmType;
+        if (expireTime != null) this.expireTime = expireTime;
         if (sortIndex != null) this.sortIndex = sortIndex;
     }
 //
@@ -88,8 +88,8 @@ public class WorkBox {
 //        if (tasks != null) this.tasks = tasks;
 //    }
 
-    public void setWorkBoxTasks(List<WorkBoxTask> relations) {
-        if (relations != null) this.workBoxTasks = relations;
+    public void setBoxTasks(List<BoxTask> relations) {
+        if (relations != null) this.boxTasks = relations;
     }
 }
 

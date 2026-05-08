@@ -1,7 +1,7 @@
 package com.wordnote.domain.board.entity;
 
+import com.wordnote.domain.box.entity.Box;
 import com.wordnote.domain.member.entity.Member;
-import com.wordnote.domain.workbox.entity.WorkBox;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,14 +27,14 @@ public class Board {
 
     @Builder.Default
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WorkBox> boxes = new ArrayList<>();
+    private List<Box> boxes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "memberId", updatable = false, nullable = false)
     Member member;
 
 
-    //List<WorkBoxMapper> 교체, 매핑 유지
+    //List<BoxMapper> 교체, 매핑 유지
     public void update(Type type) {
         if (type != null) this.type = type;
     }

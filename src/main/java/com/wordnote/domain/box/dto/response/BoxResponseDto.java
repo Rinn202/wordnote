@@ -1,21 +1,23 @@
-package com.wordnote.domain.workbox.dto.response;
+package com.wordnote.domain.box.dto.response;
 
+import com.wordnote.domain.box.entity.AlarmType;
+import com.wordnote.domain.box.entity.State;
 import com.wordnote.domain.task.dto.response.TaskResponseDto;
-import com.wordnote.domain.workbox.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
-public class WorkBoxResponseDto {
+public class BoxResponseDto {
     private Long boxId;
 
-    private Status status;
+    private State state;
 
     private List<TaskResponseDto> tasks;
 
@@ -23,9 +25,9 @@ public class WorkBoxResponseDto {
 
     private Integer sortIndex;
 
-    private LocalDateTime alarmTime;
+    private AlarmType alarmType;
 
-    private LocalDateTime expiredAt;
+    private LocalTime expireTime;
 
     private LocalDateTime createdAt;
 }

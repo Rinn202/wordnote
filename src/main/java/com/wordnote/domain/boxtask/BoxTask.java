@@ -1,7 +1,7 @@
-package com.wordnote.domain.workboxtask;
+package com.wordnote.domain.boxtask;
 
+import com.wordnote.domain.box.entity.Box;
 import com.wordnote.domain.task.entity.Task;
-import com.wordnote.domain.workbox.entity.WorkBox;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,15 +9,15 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class WorkBoxTask {
+public class BoxTask {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long workBoxTaskId;
+    private Long boxTaskId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workBoxId")
-    private WorkBox workBox;
+    @JoinColumn(name = "boxId")
+    private Box box;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taskId")

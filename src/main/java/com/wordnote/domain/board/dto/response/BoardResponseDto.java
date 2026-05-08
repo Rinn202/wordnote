@@ -1,7 +1,7 @@
 package com.wordnote.domain.board.dto.response;
 
 import com.wordnote.domain.board.entity.Type;
-import com.wordnote.domain.workbox.dto.response.WorkBoxResponseDto;
+import com.wordnote.domain.box.dto.response.BoxResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,5 +12,5 @@ import java.util.List;
 public class BoardResponseDto {
     private Long boardId;
     private Type type;
-    private List<WorkBoxResponseDto> boxes;
+    private List<BoxResponseDto> boxes;
 }

@@ -11,4 +11,3 @@ public class LogicException extends RuntimeException {
         this.exceptionCode = exceptionCode;     //커스텀 http 표시
     }
 }
-

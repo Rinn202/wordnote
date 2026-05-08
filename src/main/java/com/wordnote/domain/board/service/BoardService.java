@@ -6,9 +6,9 @@ import com.wordnote.domain.board.dto.response.BoardResponseDto;
 import com.wordnote.domain.board.entity.Board;
 import com.wordnote.domain.board.mapper.BoardMapper;
 import com.wordnote.domain.board.repository.BoardRepository;
+import com.wordnote.domain.box.repository.BoxRepository;
 import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.service.MemberService;
-import com.wordnote.domain.workbox.repository.WorkBoxRepository;
 import com.wordnote.exception.ExceptionCode;
 import com.wordnote.exception.LogicException;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,7 +24,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberService memberService;
     private final BoardMapper boardMapper;
-    private final WorkBoxRepository workBoxRepository;
+    private final BoxRepository boxRepository;
 
     //생성
     @Transactional

@@ -1,6 +1,6 @@
 package com.wordnote.domain.task.entity;
 
-import com.wordnote.domain.workboxtask.WorkBoxTask;
+import com.wordnote.domain.boxtask.BoxTask;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +22,7 @@ public class Task {
     private String name;
 
     @OneToMany(mappedBy = "task")
-    private List<WorkBoxTask> workBoxTasks;
+    private List<BoxTask> boxTasks;
 
     public void update(String name) {
         if (name != null) this.name = name;
