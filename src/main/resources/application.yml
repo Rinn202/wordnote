@@ -31,13 +31,13 @@ spring:
       client:
         registration:
           google:
-            clientId: ${G_CLIENT_ID} #어플리케이션 ID
-            clientSecret: ${G_CLIENT_SECRET} #어플리케이션 시크릿키
+            client-id: ${G_CLIENT_ID}
+            client-secret: ${G_CLIENT_SECRET}
             scope:
-              - email # 사용자 이메일 권한
-              - profile # 사용자 프로필 권한
+              - email
+              - profile
 jwt:
-  secret-key: ${JWT_SECRET_KEY:your_default_secret_key_32_bytes_long_!!} # 환경변수 권장
+  secret-key: ${JWT_SECRET_KEY}
   access-token-expiration-minutes: 30
   refresh-token-expiration-minutes: 420 # 7시간
 

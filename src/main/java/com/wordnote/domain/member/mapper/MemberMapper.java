@@ -31,6 +31,7 @@ public class MemberMapper {
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .password(member.getPassword())
+                .profileUri(member.getProfileImageUrl())
                 .boardIds(member.getBoards().stream().map(Board::getBoardId).toList())
                 .build();
     }

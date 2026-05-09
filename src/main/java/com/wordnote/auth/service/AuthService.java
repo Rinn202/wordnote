@@ -38,6 +38,6 @@ public class AuthService {
         claims.put("email", member.getEmail());
 
         String subject = member.getEmail(); //토큰 생성
-        return jwtTokenizer.generateAccessToken(claims, subject, jwtTokenizer.getAccessTokenExpirationMinutes());
+        return jwtTokenizer.generateAccessToken(claims, subject);
     }
 }

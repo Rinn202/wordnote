@@ -4,6 +4,7 @@ import com.wordnote.domain.boxtask.BoxTask;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class Task {
     private String name;
 
     @OneToMany(mappedBy = "task")
-    private List<BoxTask> boxTasks;
+    private List<BoxTask> boxTasks = new ArrayList<>();
 
     public void update(String name) {
         if (name != null) this.name = name;

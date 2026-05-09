@@ -4,6 +4,7 @@ import com.wordnote.auth.utils.SecurityUtil;
 import com.wordnote.domain.box.dto.request.BoxCreateDto;
 import com.wordnote.domain.box.dto.request.BoxOptionChangeDto;
 import com.wordnote.domain.box.dto.request.BoxStateChangeDto;
+import com.wordnote.domain.box.dto.request.BoxTaskMoveRequest;
 import com.wordnote.domain.box.dto.response.BoxResponseDto;
 import com.wordnote.domain.box.service.BoxService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,14 @@ import java.util.List;
 @RequestMapping("/box")
 public class BoxController {
     private final BoxService boxService;
+
+    //테스크 순서 리로더
+    @PutMapping("/{boxId}/tasks/move")
+    public ResponseEntity<Void> moveTask(@PathVariable Long boxId, @RequestBody BoxTaskMoveRequest request
+    ) {
+        boxService.moveTask(boxId, request);
+        return ResponseEntity.ok().build();
+    }
 
     //박스 조회
     @GetMapping("/{boxId}")
@@ -39,7 +48,7 @@ public class BoxController {
     }
 
     //옵션 변경
-    @PatchMapping("/option/{boxId}")
+    @PatchMapping("/{boxId}/option")
     public ResponseEntity<BoxResponseDto> patchBoxOption(@RequestBody BoxOptionChangeDto dto,
                                                          @PathVariable long boxId) {
         long memberId = SecurityUtil.getMemberId();
@@ -50,7 +59,7 @@ public class BoxController {
 
 
     //상태변경
-    @PatchMapping("/state/{boxId}")
+    @PatchMapping("/{boxId}/state")
     public ResponseEntity<BoxResponseDto> patchBoxState(@RequestBody BoxStateChangeDto dto,
                                                         @PathVariable long boxId) {
         long memberId = SecurityUtil.getMemberId();

@@ -1,6 +1,8 @@
 package com.wordnote.auth.config;
 
 import com.wordnote.auth.filter.JwtVerificationFilter;
+import com.wordnote.auth.handler.OAuth2MemberSuccessHandler;
+import com.wordnote.auth.service.CustomOAuth2UserService;
 import com.wordnote.auth.utils.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenizer jwtTokenizer;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,15 +42,12 @@ public class SecurityConfig {
                                 .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
 //                        .anyRequest().permitAll() // 모든 요청을 조건 없이 허용(test)
                 )
-                .addFilterBefore(new JwtVerificationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtVerificationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
+                        .successHandler(oAuth2MemberSuccessHandler)
+                );
 
         return http.build();
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
 }

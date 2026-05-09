@@ -22,6 +22,10 @@ public class Box {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //pk 자동생성
     private Long boxId;
 
+    @Builder.Default
+    @Column
+    String name = "Unnamed";
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boardId") //리스트id로 리스트를 매핑 함
     private Board board;

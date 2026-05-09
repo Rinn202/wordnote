@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class TaskCreateDto {
-
     @NotBlank
     private String name;
 }

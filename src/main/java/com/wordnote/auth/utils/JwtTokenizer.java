@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -28,50 +27,46 @@ public class JwtTokenizer {
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenExpirationMinutes;
 
-    //SecretKey 생성 (암호화)
-    public SecretKey getKey() {
+    // 내부적으로 사용할 SecretKey 생성 (Plain String -> HMAC Key)
+    private SecretKey getSigningKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    //AccessToken 생성
-    public String generateAccessToken(Map<String, Object> claims, String subject, int expirationMinutes) {
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, expirationMinutes);
-        Date expiration = calendar.getTime();
-
-        // 2. 키 가져오기 (기존에 만든 getKey 메서드 활용)
-        Key key = getKey();
+    // AccessToken 생성 (Handler는 claims와 subject만 넘기면 됨)
+    public String generateAccessToken(Map<String, Object> claims, String subject) {
+        Date expiration = getTokenExpiration(accessTokenExpirationMinutes);
 
         return Jwts.builder()
                 .claims(claims)
                 .subject(subject)
-                .issuedAt(Calendar.getInstance().getTime())
+                .issuedAt(new Date())
                 .expiration(expiration)
-                .signWith(getKey())
+                .signWith(getSigningKey())
                 .compact();
     }
 
-    // 3. RefreshToken 생성 (claims x, 보안상)
-    public String generateRefreshToken(String subject, Date expiration) {
+    // RefreshToken 생성
+    public String generateRefreshToken(String subject) {
+        Date expiration = getTokenExpiration(refreshTokenExpirationMinutes);
+
         return Jwts.builder()
                 .subject(subject)
-                .issuedAt(Calendar.getInstance().getTime())
+                .issuedAt(new Date())
                 .expiration(expiration)
-                .signWith(getKey())
+                .signWith(getSigningKey())
                 .compact();
     }
 
-    //토큰 파싱(추출)
+    // 토큰 검증 및 Claims 파싱
     public Jws<Claims> getClaims(String jws) {
         return Jwts.parser()
-                .verifyWith(getKey())
+                .verifyWith(getSigningKey())
                 .build()
-                .parseSignedClaims(jws);    //(변조, 만료 확인후 Claims 반환)
+                .parseSignedClaims(jws);
     }
 
-    // 만료 시간 계산 유틸리티
+    // 만료 시간 계산 로직 캡슐화
     public Date getTokenExpiration(int expirationMinutes) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, expirationMinutes);

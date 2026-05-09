@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -93,5 +94,22 @@ public class MemberService {
         } else {
             member.setRole(MemberRole.BASIC);
         }
+    }
+
+    //구글 회원가입
+    public void processOAuth2User(String email, String name, String profile) {
+        String tempPassword = UUID.randomUUID().toString();
+        Member member = memberRepository.findByEmail(email)
+                .orElse(new Member(email, name, tempPassword, profile)); //name = nickname
+
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void updateRefreshToken(String email, String refreshToken) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        member.setRefreshToken(refreshToken);
     }
 }

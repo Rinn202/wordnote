@@ -21,6 +21,9 @@ public class Member {
     private Long memberId;
 
     @Builder.Default
+    private String profileImageUrl = "https://your-domain.com/default-profile.png";
+
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column
     MemberRole role = MemberRole.BASIC;
@@ -41,10 +44,21 @@ public class Member {
     @Column(nullable = false, updatable = false)
     LocalDateTime createdAt;
 
+    @Column
+    String refreshToken;
+
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Board> boards = new ArrayList<>();
 
+    //구글 인증용 생성자
+    public Member(String email, String name, String password, String profileImageUrl) {
+        this.email = email;
+        this.name = name;
+        this.nickname = name;
+        this.password = password;
+        this.profileImageUrl = profileImageUrl;
+    }
 
     public void update(String nickname, String password, String email) {
         this.nickname = nickname;
@@ -60,5 +74,10 @@ public class Member {
     public void setRole(MemberRole memberRole) {
         if (memberRole != null)
             this.role = memberRole;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        if (refreshToken != null)
+            this.refreshToken = refreshToken;
     }
 }

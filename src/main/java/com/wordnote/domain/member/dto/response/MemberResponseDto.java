@@ -20,4 +20,6 @@ public class MemberResponseDto {
 
     private List<Long> boardIds;
 
+    private String profileUri;
+
 }

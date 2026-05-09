@@ -2,7 +2,6 @@ package com.wordnote.domain.box.dto.response;
 
 import com.wordnote.domain.box.entity.AlarmType;
 import com.wordnote.domain.box.entity.State;
-import com.wordnote.domain.task.dto.response.TaskResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,9 +16,9 @@ import java.util.List;
 public class BoxResponseDto {
     private Long boxId;
 
-    private State state;
+    private String name;
 
-    private List<TaskResponseDto> tasks;
+    private State state;
 
     private Boolean bookmark;
 
@@ -30,4 +29,15 @@ public class BoxResponseDto {
     private LocalTime expireTime;
 
     private LocalDateTime createdAt;
+
+    private List<BoxTaskDetailDto> tasks;
+
+    @Getter
+    @Builder
+    public static class BoxTaskDetailDto {
+        private Long taskId;
+        private String taskName;
+        private Long boxTaskId;   // 중간 엔티티 PK
+        private Integer sortIndex;
+    }
 }
