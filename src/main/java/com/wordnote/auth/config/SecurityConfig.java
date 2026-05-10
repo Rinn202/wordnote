@@ -13,6 +13,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -26,21 +32,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // REST API이므로 csrf 보안은 비활성화
+                .csrf(csrf -> csrf.disable()) //cors
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers ->
-                        headers.frameOptions(frame -> frame.sameOrigin())) // H2 콘솔 사용
+                        headers.frameOptions(frame -> frame.sameOrigin()))
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 X (JWT 방식)
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/auth/**", "/member/signup").permitAll() // 로그인, 회원가입 등은 허용
-                                .requestMatchers("/h2-console/**").permitAll() // 로그인, 회원가입 등은 허용
+                        .requestMatchers("/auth/**", "/member/signup").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
 
-                                .requestMatchers(HttpMethod.GET, "/member").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/box").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/board").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //OPTIONS 메서드 허용 (CORS Preflight 대응)
 
-                                .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
-//                        .anyRequest().permitAll() // 모든 요청을 조건 없이 허용(test)
+                        .requestMatchers(HttpMethod.GET, "/member").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/box").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/board").hasRole("ADMIN")
+
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtVerificationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
@@ -49,5 +57,20 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Refresh"));
+        configuration.setAllowCredentials(true); //쿠키
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 적용
+        return source;
     }
 }

@@ -38,6 +38,7 @@ public class BoxMapper {
                                 .taskId(bt.getTask().getTaskId())
                                 .taskName(bt.getTask().getName())
                                 .sortIndex(bt.getSortIndex())
+                                .isDone(bt.getIsDone())
                                 .build()
                         )
                         .toList();

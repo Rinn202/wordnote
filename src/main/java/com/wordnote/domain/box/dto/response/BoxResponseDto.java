@@ -39,5 +39,6 @@ public class BoxResponseDto {
         private String taskName;
         private Long boxTaskId;   // 중간 엔티티 PK
         private Integer sortIndex;
+        private Boolean isDone;
     }
 }

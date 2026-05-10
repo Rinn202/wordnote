@@ -52,6 +52,7 @@ public class TaskService {
         return taskMapper.toResponseDto(foundTask);
     }
 
+
     @Transactional
     public void deleteTask(long taskId) {
         taskRepository.deleteById(taskId);

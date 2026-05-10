@@ -11,7 +11,6 @@ public class SecurityUtil {
         if (authentication == null || authentication.getPrincipal() == null) {
             throw new LogicException(ExceptionCode.MEMBER_NOT_FOUND);
         }
-        // Principal에 저장된 ID를 꺼내옵니다 (인증 시점에 무엇을 넣었느냐에 따라 다름)
 
         return Long.parseLong(authentication.getName());
     }

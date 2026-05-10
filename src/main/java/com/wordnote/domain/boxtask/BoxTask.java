@@ -23,6 +23,13 @@ public class BoxTask {
     @JoinColumn(name = "taskId")
     private Task task;
 
+    @Column
+    private Boolean isDone = false;
+
     private int sortIndex;
+
+    public void setIsDone(boolean isDone) {
+        this.isDone = isDone;
+    }
 }
 
