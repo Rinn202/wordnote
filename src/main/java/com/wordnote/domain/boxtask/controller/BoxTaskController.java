@@ -1,8 +1,11 @@
 package com.wordnote.domain.boxtask.controller;
 
+import com.wordnote.auth.utils.SecurityUtil;
 import com.wordnote.domain.boxtask.dto.MoveTaskRequest;
+import com.wordnote.domain.boxtask.entity.BoxTask;
 import com.wordnote.domain.boxtask.service.BoxTaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,19 +17,21 @@ import org.springframework.web.bind.annotation.*;
 public class BoxTaskController {
     private final BoxTaskService boxTaskService;
 
-    //박스테스크 리로더
+    //옵션 변경
     @PutMapping("/{boxTaskId}/move")
-    public ResponseEntity<Void> PatchTaskSort(@PathVariable Long boxTaskId,
-                                              @RequestBody MoveTaskRequest request) {
-        boxTaskService.moveTask(request, boxTaskId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<BoxTask> patchBoxTaskOption(@RequestBody MoveTaskRequest dto,
+                                                      @PathVariable long boxTaskId) {
+        long memberId = SecurityUtil.getMemberId();
+        boxTaskService.changeIndex(boxTaskId, dto, memberId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //done 처리
-    @PatchMapping("/{boxTaskId}/state")
-    public ResponseEntity<Void> PatchBoxTaskState(@PathVariable long boxTaskId) {
-        boxTaskService.changeState(boxTaskId);
+    @PatchMapping("/{boxTaskId}/done")
+    public ResponseEntity<BoxTask> patchBoxTaskDone(@PathVariable long boxTaskId) {
+        long memberId = SecurityUtil.getMemberId();
+        boxTaskService.changeDone(boxTaskId);
 
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
