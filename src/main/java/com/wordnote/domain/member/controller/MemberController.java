@@ -3,6 +3,7 @@ package com.wordnote.domain.member.controller;
 import com.wordnote.auth.utils.SecurityUtil;
 import com.wordnote.domain.member.dto.request.MemberCreateDto;
 import com.wordnote.domain.member.dto.request.MemberUpdateDto;
+import com.wordnote.domain.member.dto.request.PasswordRequest;
 import com.wordnote.domain.member.dto.response.MemberResponseDto;
 import com.wordnote.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -43,21 +44,30 @@ public class MemberController {
 
     //생성
     @PostMapping("/signup")
-    public ResponseEntity<MemberResponseDto> createMember(@RequestBody MemberCreateDto memberCreateDto) {
+    public ResponseEntity<MemberResponseDto> createMember(@RequestBody MemberCreateDto dto) {
 
-        MemberResponseDto response = memberService.createMember(memberCreateDto);
+        MemberResponseDto response = memberService.createMember(dto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     //수정
     @PatchMapping
-    public ResponseEntity<MemberResponseDto> patchMember(@RequestBody MemberUpdateDto memberUpdateDto) {
+    public ResponseEntity<MemberResponseDto> patchMember(@RequestBody MemberUpdateDto dto) {
         long memberId = SecurityUtil.getMemberId();
 
-        MemberResponseDto response = memberService.updateMember(memberUpdateDto, memberId);
+        MemberResponseDto response = memberService.updateMember(dto, memberId);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<MemberResponseDto> patchPassword(@RequestBody PasswordRequest dto) {
+        long memberId = SecurityUtil.getMemberId();
+
+        memberService.updatePassword(dto, memberId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //삭제

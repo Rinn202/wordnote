@@ -14,8 +14,6 @@ import java.time.LocalTime;
 public class BoxOptionChangeDto {
     private Boolean bookmark;
 
-    private Integer sortIndex;
-
     private AlarmType alarmType;
 
     private LocalTime expireTime;

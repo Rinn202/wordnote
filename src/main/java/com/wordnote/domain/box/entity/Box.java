@@ -1,8 +1,9 @@
 package com.wordnote.domain.box.entity;
 
 import com.wordnote.domain.board.entity.Board;
-import com.wordnote.domain.boxtask.BoxTask;
+import com.wordnote.domain.boxtask.entity.BoxTask;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -24,7 +25,11 @@ public class Box {
 
     @Builder.Default
     @Column
-    String name = "Unnamed";
+    private String name = "Unnamed";
+
+    @NotNull
+    @Enumerated(EnumType.STRING) //박스타입
+    private BoxType boxType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boardId") //리스트id로 리스트를 매핑 함
@@ -34,7 +39,7 @@ public class Box {
     @Column //북마크
     private Boolean bookmark = false;
 
-    @Column
+    @Column //인덱스
     private Integer sortIndex;
 
     @OneToMany(mappedBy = "box", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -66,31 +71,34 @@ public class Box {
     }
 
     public void changeState(State next) {
-        if (!this.state.canMoveTo(next)) {
-            throw new IllegalStateException("invalid transition");
-        }
         this.state = next;
+
+        if (next == State.READY) {
+            this.boxTasks.forEach(task -> task.setIsDone(false));
+        }
+
+        if (next == State.DONE) {
+            this.boxTasks.forEach(task -> task.setIsDone(true));
+        }
+    }
+
+    public void resetState() {
+        this.state = State.READY;
+    }
+
+    public void changeIndex(Integer sortIndex) {
+        if (sortIndex != null) this.sortIndex = sortIndex;
     }
 
     public void update(Boolean bookmark,
                        AlarmType alarmType,
-                       LocalTime expireTime,
-                       Integer sortIndex) {
+                       LocalTime expireTime) {
 
         if (bookmark != null) this.bookmark = bookmark;
         if (alarmType != null) this.alarmType = alarmType;
         if (expireTime != null) this.expireTime = expireTime;
-        if (sortIndex != null) this.sortIndex = sortIndex;
     }
-//
-//    public void update(Board board, List<Task> tasks) {
-//        if (board != null) this.board = board;
-//        if (tasks != null) this.tasks = tasks;
-//    }
-//
-//    public void setTasks(List<Task> tasks) {
-//        if (tasks != null) this.tasks = tasks;
-//    }
+
 
     public void setBoxTasks(List<BoxTask> relations) {
         if (relations != null) this.boxTasks = relations;

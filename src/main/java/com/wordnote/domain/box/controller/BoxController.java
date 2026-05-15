@@ -56,7 +56,7 @@ public class BoxController {
         long memberId = SecurityUtil.getMemberId();
         BoxResponseDto response = boxService.changeState(boxId, dto.getState(), memberId);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //박스 삭제

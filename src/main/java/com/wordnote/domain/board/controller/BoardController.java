@@ -1,11 +1,11 @@
 package com.wordnote.domain.board.controller;
 
 import com.wordnote.auth.utils.SecurityUtil;
-import com.wordnote.domain.board.dto.request.BoardCreateDto;
 import com.wordnote.domain.board.dto.request.BoardUpdateDto;
+import com.wordnote.domain.board.dto.request.MoveBoxRequest;
 import com.wordnote.domain.board.dto.response.BoardResponseDto;
-import com.wordnote.domain.board.entity.Type;
 import com.wordnote.domain.board.service.BoardService;
+import com.wordnote.domain.box.dto.response.BoxResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +24,40 @@ class BoardController {
 
     private final BoardService boardService;
 
+    //박스인덱스 이동
+    @PutMapping("{boardId}/boxesOrder")
+    public ResponseEntity<BoxResponseDto> putBoxIndex(@RequestBody MoveBoxRequest dto,
+                                                      @PathVariable long boardId) {
+        long memberId = SecurityUtil.getMemberId();
+        boardService.changeIndex(boardId, dto, memberId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    //생성
+    @PostMapping
+    public ResponseEntity<BoardResponseDto> postBoard() {
+
+        long memberId = SecurityUtil.getMemberId();
+
+        BoardResponseDto response = boardService.createBoard(memberId);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    //    //생성 보드 디티오받음
+//    @PostMapping
+//    public ResponseEntity<BoardResponseDto> postBoard(@RequestBody BoardCreateDto dto) {
+//
+//        long memberId = SecurityUtil.getMemberId();
+//
+//        BoardResponseDto response = boardService.createBoard(memberId, dto);
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
+
     //조회
     @GetMapping
-    public ResponseEntity<List<BoardResponseDto>> getAllBoards(@RequestParam(required = false) Type type,
-                                                               @RequestParam(defaultValue = "asc") String sort) {
+    public ResponseEntity<List<BoardResponseDto>> getAllBoards() {
         long memberId = SecurityUtil.getMemberId();
 
         List<BoardResponseDto> response = boardService.findAll(memberId);
@@ -35,27 +65,15 @@ class BoardController {
         return ResponseEntity.ok(response);
     }
 
-
     //개별 조회
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardResponseDto> getBoard(@RequestParam(required = false) Type type,
-                                                     @RequestParam(defaultValue = "asc") String sort,
-                                                     @PathVariable long boardId) {
+    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable long boardId) {
         long memberId = SecurityUtil.getMemberId();
 
         BoardResponseDto response = boardService.findBoardById(memberId, boardId);
         return ResponseEntity.ok(response);
     }
 
-    //생성
-    @PostMapping
-    public ResponseEntity<BoardResponseDto> postBoard(@RequestBody BoardCreateDto dto) {
-
-        long memberId = SecurityUtil.getMemberId();
-
-        BoardResponseDto response = boardService.createBoard(memberId, dto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
 
     //수정
     @PatchMapping("/{boardId}")
@@ -64,7 +82,16 @@ class BoardController {
         long memberId = SecurityUtil.getMemberId();
 
         BoardResponseDto response = boardService.updateBoard(memberId, boardId, boardUpdateDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    //보드 리셋(박스 상태 초기화)
+    @PatchMapping("/{boardId}/reset")
+    public ResponseEntity<BoardResponseDto> patchReset(@PathVariable long boardId) {
+        long memberId = SecurityUtil.getMemberId();
+
+        boardService.boardReset(memberId, boardId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //삭제
@@ -77,6 +104,7 @@ class BoardController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    //전체 삭제
     @DeleteMapping
     public ResponseEntity<BoardResponseDto> deleteAllBoard() {
 

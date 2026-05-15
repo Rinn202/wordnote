@@ -23,14 +23,13 @@ public class MemberMapper {
                 .toList();
     }
 
-    //member -> dto
+    //member -> response
     public MemberResponseDto toResponseDto(Member member) {
 
         return MemberResponseDto.builder()
                 .role(member.getRole())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
-                .password(member.getPassword())
                 .profileUri(member.getProfileImageUrl())
                 .boardIds(member.getBoards().stream().map(Board::getBoardId).toList())
                 .build();
@@ -42,7 +41,7 @@ public class MemberMapper {
                 .name(dto.getName())
                 .nickname(dto.getNickname())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(dto.getPassword()) //생성시에만
                 .build();
     }
 
@@ -51,7 +50,7 @@ public class MemberMapper {
         return Member.builder()
                 .nickname(dto.getNickname())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .profileImageUrl(dto.getProfileUri())
                 .build();
     }
 }

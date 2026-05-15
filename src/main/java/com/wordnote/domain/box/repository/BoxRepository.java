@@ -20,4 +20,6 @@ public interface BoxRepository extends JpaRepository<Box, Long> {
     void deleteByBoxIdAndBoard_Member_MemberId(Long boxId, Long memberId);
 
     List<Box> findByBoard_Member_MemberId(long memberId);
+
+    Optional<Box> findByBoxIdAndBoard_BoardId(Long boxId, Long boardBoardId);
 }

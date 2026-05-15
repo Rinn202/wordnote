@@ -1,6 +1,7 @@
 package com.wordnote.domain.box.dto.response;
 
 import com.wordnote.domain.box.entity.AlarmType;
+import com.wordnote.domain.box.entity.BoxType;
 import com.wordnote.domain.box.entity.State;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,8 @@ public class BoxResponseDto {
     private String name;
 
     private State state;
+
+    private BoxType boxType;
 
     private Boolean bookmark;
 

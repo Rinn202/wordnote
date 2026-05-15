@@ -9,5 +9,5 @@ public class MemberUpdateDto {
 
     private String email;
 
-    private String password;
+    private String profileUri;
 }

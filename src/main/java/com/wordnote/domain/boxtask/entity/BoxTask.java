@@ -1,4 +1,4 @@
-package com.wordnote.domain.boxtask;
+package com.wordnote.domain.boxtask.entity;
 
 import com.wordnote.domain.box.entity.Box;
 import com.wordnote.domain.task.entity.Task;
@@ -28,8 +28,8 @@ public class BoxTask {
 
     private int sortIndex;
 
-    public void setIsDone(boolean isDone) {
-        this.isDone = isDone;
+    public void toggleDone(Boolean isDone) {
+        this.isDone = !this.isDone;
     }
 }
 

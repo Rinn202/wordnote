@@ -2,6 +2,7 @@ package com.wordnote.domain.member.service;
 
 import com.wordnote.domain.member.dto.request.MemberCreateDto;
 import com.wordnote.domain.member.dto.request.MemberUpdateDto;
+import com.wordnote.domain.member.dto.request.PasswordRequest;
 import com.wordnote.domain.member.dto.response.MemberResponseDto;
 import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.entity.MemberRole;
@@ -47,7 +48,7 @@ public class MemberService {
         verifyExistsEmail(member.getEmail());
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
-        member.encryptPassword(encryptedPassword);// 암호화된 비번으로 교체
+        member.setPassword(encryptedPassword);// 암호화된 비번으로 교체
 
         adminMaker(dto, member);
         memberRepository.save(member);
@@ -69,7 +70,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        member.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
+        member.update(dto.getNickname(), dto.getEmail());
 
         return memberMapper.toResponseDto(member);
     }
@@ -111,5 +112,14 @@ public class MemberService {
                 .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
         member.setRefreshToken(refreshToken);
+    }
+
+    @Transactional
+    public void updatePassword(PasswordRequest dto, long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
+        member.setPassword(encryptedPassword); // 암호화
     }
 }

@@ -14,6 +14,7 @@ public enum ExceptionCode {
     INVALID_LOGIN_ATTEMPT(HttpStatus.BAD_REQUEST, "MEMBER-002", "로그인 실패"),
 
     INVALID(HttpStatus.BAD_REQUEST, "COMMON-001", "잘못된 요청"),
+    INVALID_INDEX(HttpStatus.BAD_REQUEST, "COMMON-002", "잘못된 값"),
 
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "DB-001", "이메일 중복"),
     DUPLICATE_DATA(HttpStatus.CONFLICT, "DB-002", "중복 데이터"),
@@ -23,6 +24,7 @@ public enum ExceptionCode {
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-005", "보드를 찾을수 없습니다"),
     BOX_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-006", "박스를 찾을수 없습니다"),
     TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-007", "테스크를 찾을수 없습니다"),
+    BOX_TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-008", "박스테스크를 찾을수 없습니다"),
     DB_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB-999", "DB 오류"),
 
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-999", "서버 오류"),

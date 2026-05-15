@@ -6,6 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MoveTaskRequest {
+
     private Long boxId;
+
     private Integer targetIndex;
 }

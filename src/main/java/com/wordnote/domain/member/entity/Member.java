@@ -60,13 +60,12 @@ public class Member {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void update(String nickname, String password, String email) {
+    public void update(String nickname, String email) {
         this.nickname = nickname;
-        this.password = password;
         this.email = email;
     }
 
-    public void encryptPassword(String encryptedPassword) {
+    public void setPassword(String encryptedPassword) {
         if (encryptedPassword != null)
             this.password = encryptedPassword;
     }
@@ -79,5 +78,10 @@ public class Member {
     public void setRefreshToken(String refreshToken) {
         if (refreshToken != null)
             this.refreshToken = refreshToken;
+    }
+
+    public void changePassword(String password) {
+        if (password != null)
+            this.password = password;
     }
 }

@@ -20,7 +20,6 @@ public class BoardMapper {
 
         return BoardResponseDto.builder()
                 .boardId(board.getBoardId())
-                .type(board.getType())
                 .boxes(
                         board.getBoxes() == null || board.getBoxes().isEmpty()
                                 ? List.of()
@@ -42,7 +41,7 @@ public class BoardMapper {
 
     public Board toBoard(BoardCreateDto dto) {
 
-        return Board.builder().type(dto.getType()).build();
+        return Board.builder().build();
     }
 
 }

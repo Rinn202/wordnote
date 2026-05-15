@@ -14,8 +14,6 @@ public class MemberResponseDto {
 
     private String email;
 
-    private String password;
-
     private MemberRole role;
 
     private List<Long> boardIds;

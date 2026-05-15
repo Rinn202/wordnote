@@ -21,23 +21,13 @@ public class Board {
     @Column(name = "boardId")
     private Long boardId;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private Type type;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Box> boxes = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "memberId", updatable = false, nullable = false)
     Member member;
 
-
-    //List<BoxMapper> 교체, 매핑 유지
-    public void update(Type type) {
-        if (type != null) this.type = type;
-    }
+    @Builder.Default
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Box> boxes = new ArrayList<>();
 
     public void assignMember(Member member) {
         this.member = member;

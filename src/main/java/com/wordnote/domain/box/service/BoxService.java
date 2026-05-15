@@ -9,8 +9,8 @@ import com.wordnote.domain.box.entity.Box;
 import com.wordnote.domain.box.entity.State;
 import com.wordnote.domain.box.mapper.BoxMapper;
 import com.wordnote.domain.box.repository.BoxRepository;
-import com.wordnote.domain.boxtask.BoxTask;
-import com.wordnote.domain.boxtask.BoxTaskRepository;
+import com.wordnote.domain.boxtask.entity.BoxTask;
+import com.wordnote.domain.boxtask.repository.BoxTaskRepository;
 import com.wordnote.domain.task.entity.Task;
 import com.wordnote.domain.task.service.TaskService;
 import com.wordnote.exception.ExceptionCode;
@@ -34,14 +34,13 @@ public class BoxService {
     //박스생성
     @Transactional
     public BoxResponseDto createBox(BoxCreateDto dto, long memberId) {
-
         Integer max = boxRepository.findMaxSortIndex(); //sort
 
         Board board = boardRepository // 보드 조회
                 .findByBoardIdAndMember_MemberId(dto.getBoardId(), memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOARD_NOT_FOUND));
 
-        Box box = Box.builder().sortIndex(max + 1).build();  // 새 Box 생성
+        Box box = boxMapper.toBox(dto, max);  // 새 Box 생성
         box.setBoard(board);       // 박스 - 보드 연결
         Box savedBox = boxRepository.save(box); // 매핑된 박스(PK 생성 + FK 기준 확보)
 

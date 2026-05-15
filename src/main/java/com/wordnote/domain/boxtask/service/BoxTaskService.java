@@ -3,9 +3,9 @@ package com.wordnote.domain.boxtask.service;
 import com.wordnote.domain.box.entity.Box;
 import com.wordnote.domain.box.entity.State;
 import com.wordnote.domain.box.repository.BoxRepository;
-import com.wordnote.domain.boxtask.BoxTask;
-import com.wordnote.domain.boxtask.BoxTaskRepository;
 import com.wordnote.domain.boxtask.dto.MoveTaskRequest;
+import com.wordnote.domain.boxtask.entity.BoxTask;
+import com.wordnote.domain.boxtask.repository.BoxTaskRepository;
 import com.wordnote.exception.ExceptionCode;
 import com.wordnote.exception.LogicException;
 import jakarta.transaction.Transactional;
@@ -20,44 +20,52 @@ public class BoxTaskService {
     private final BoxTaskRepository boxTaskRepository;
     private final BoxRepository boxRepository;
 
-    //박스내 task 위치이동
     @Transactional
-    public void moveTask(MoveTaskRequest request, Long boxTaskId) {
+    public void changeIndex(long boxTaskId, MoveTaskRequest dto, long memberId) {
 
         BoxTask boxTask = boxTaskRepository.findById(boxTaskId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.TASK_NOT_FOUND));
-        List<BoxTask> boxTasks = boxTaskRepository.findByBox_BoxIdOrderBySortIndexAsc(request.getBoxId());
 
-        if (request.getTargetIndex() < 0 ||
-                request.getTargetIndex() > boxTasks.size()) {
-            throw new RuntimeException("요청 index가 list 범위를 초과합니다.");
+        Box box = boxRepository.findByBoxIdAndBoard_Member_MemberId(
+                        dto.getBoxId(), memberId)
+                .orElseThrow(() -> new LogicException(ExceptionCode.BOX_TASK_NOT_FOUND));
+
+        List<BoxTask> boxTasks = box.getBoxTasks();
+
+        if (dto.getTargetIndex() < 0 || dto.getTargetIndex() >= boxTasks.size()) {
+            throw new LogicException(ExceptionCode.INVALID_INDEX);
         }
-        boxTasks.removeIf(bt ->
-                bt.getBoxTaskId().equals(boxTask.getBoxTaskId()));
-        boxTasks.add(request.getTargetIndex(), boxTask); //삭제 후 원하는 자리에 끼워넣기
 
+        boxTasks.remove(boxTask);
+        boxTasks.add(dto.getTargetIndex(), boxTask);
+
+        //index 재정렬
         for (int i = 0; i < boxTasks.size(); i++) {
             boxTasks.get(i).setSortIndex(i);
         }
     }
 
     @Transactional
-    public void changeState(long boxTaskId) {
+    public void changeDone(long boxTaskId) {
         BoxTask boxTask = boxTaskRepository.findById(boxTaskId)
-                .orElseThrow(() -> new LogicException(ExceptionCode.TASK_NOT_FOUND));
-        boxTask.setIsDone(!boxTask.getIsDone());
+                .orElseThrow(() -> new LogicException(ExceptionCode.BOX_TASK_NOT_FOUND));
+        boxTask.toggleDone(boxTask.getIsDone());
 
-        //task - box 상태 연동
+        //============================================================================
+//        Box box = boxRepository.findById(boxTask.getBox().getBoxId())
+//                .orElseThrow(() -> new LogicException(ExceptionCode.BOX_NOT_FOUND));
+
         Box box = boxTask.getBox();
 
-        boolean allDone = !box.getBoxTasks().isEmpty()
-                && box.getBoxTasks().stream()
-                .allMatch(BoxTask::getIsDone);
+        List<BoxTask> boxTasks = box.getBoxTasks();
 
-        boolean anyDone = box.getBoxTasks().stream()
-                .anyMatch(BoxTask::getIsDone);
+        boolean allDone = boxTasks.stream().allMatch(BoxTask::getIsDone);
 
-        if (allDone) {
+        boolean anyDone = boxTasks.stream().anyMatch(BoxTask::getIsDone);
+
+        if (boxTasks.isEmpty()) {
+            box.changeState(State.READY);
+        } else if (allDone) {
             box.changeState(State.DONE);
         } else if (anyDone) {
             box.changeState(State.IN_PROGRESS);

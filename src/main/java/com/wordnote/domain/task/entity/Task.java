@@ -1,6 +1,6 @@
 package com.wordnote.domain.task.entity;
 
-import com.wordnote.domain.boxtask.BoxTask;
+import com.wordnote.domain.boxtask.entity.BoxTask;
 import jakarta.persistence.*;
 import lombok.*;
 
