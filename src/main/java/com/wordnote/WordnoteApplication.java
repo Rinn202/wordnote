@@ -10,4 +10,6 @@ public class WordnoteApplication {
         SpringApplication.run(WordnoteApplication.class, args);
     }
 
+    //리베이스 잘된거 맞나요?
+
 }
