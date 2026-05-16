@@ -21,5 +21,8 @@ public interface BoxRepository extends JpaRepository<Box, Long> {
 
     List<Box> findByBoard_Member_MemberId(long memberId);
 
-    Optional<Box> findByBoxIdAndBoard_BoardId(Long boxId, Long boardBoardId);
+    @Query("SELECT b FROM Box b " +
+            "WHERE b.boxId = :boxId AND b.board.boardId = :boardId " +
+            "ORDER BY b.sortIndex")
+    Optional<Box> findByIdAndBoardId_IndexAsc(Long boxId, long boardId);
 }

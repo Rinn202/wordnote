@@ -1,5 +1,6 @@
 package com.wordnote.auth.service;
 
+import com.wordnote.auth.dto.LoginResponseDto;
 import com.wordnote.auth.utils.JwtTokenizer;
 import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.repository.MemberRepository;
@@ -22,7 +23,7 @@ public class AuthService {
     private final JwtTokenizer jwtTokenizer;
     private final PasswordEncoder passwordEncoder;
 
-    public String login(String email, String password) {
+    public LoginResponseDto login(String email, String password) {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new LogicException(ExceptionCode.INVALID_LOGIN_ATTEMPT)); //유저검색
@@ -38,6 +39,9 @@ public class AuthService {
         claims.put("email", member.getEmail());
 
         String subject = member.getEmail(); //토큰 생성
-        return jwtTokenizer.generateAccessToken(claims, subject);
+        String accessToken = jwtTokenizer.generateAccessToken(claims, subject);
+        String refreshToken = jwtTokenizer.generateRefreshToken(subject);
+
+        return new LoginResponseDto(accessToken, refreshToken, member.getNickname());
     }
 }

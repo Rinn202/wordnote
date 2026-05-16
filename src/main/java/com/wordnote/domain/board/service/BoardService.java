@@ -61,7 +61,7 @@ public class BoardService {
 
     //단일 검색
     public BoardResponseDto findBoardById(long memberId, long boardId) {
-        Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
+        Board board = boardRepository.findBoardWithBoxes(boardId, memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOARD_NOT_FOUND));
 
         return boardMapper.toResponseDto(board);
@@ -107,7 +107,7 @@ public class BoardService {
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOARD_NOT_FOUND));
 
-        Box box = boxRepository.findByBoxIdAndBoard_BoardId(dto.getBoxId(), boardId)
+        Box box = boxRepository.findByIdAndBoardId_IndexAsc(dto.getBoxId(), boardId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOX_NOT_FOUND));
 
         List<Box> boxes = board.getBoxes();

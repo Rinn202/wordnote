@@ -1,6 +1,7 @@
 package com.wordnote.auth.controller;
 
 import com.wordnote.auth.dto.LoginDto;
+import com.wordnote.auth.dto.LoginResponseDto;
 import com.wordnote.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        String accessToken = authService.login(loginDto.getEmail(), loginDto.getPassword());
+        LoginResponseDto response = authService.login(loginDto.getEmail(), loginDto.getPassword());
 
         // 관례적으로 토큰은 헤더에 Authorization: Bearer {token}으로 보냅니다.
-        return ResponseEntity.ok()
-                .header("Authorization", "Bearer " + accessToken)
-                .body("Login Successful");
+        return ResponseEntity.ok(response);
     }
 }

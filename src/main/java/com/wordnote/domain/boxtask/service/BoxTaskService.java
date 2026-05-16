@@ -25,7 +25,6 @@ public class BoxTaskService {
 
         BoxTask boxTask = boxTaskRepository.findById(boxTaskId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.TASK_NOT_FOUND));
-
         Box box = boxRepository.findByBoxIdAndBoard_Member_MemberId(
                         dto.getBoxId(), memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOX_TASK_NOT_FOUND));
@@ -50,10 +49,6 @@ public class BoxTaskService {
         BoxTask boxTask = boxTaskRepository.findById(boxTaskId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOX_TASK_NOT_FOUND));
         boxTask.toggleDone(boxTask.getIsDone());
-
-        //============================================================================
-//        Box box = boxRepository.findById(boxTask.getBox().getBoxId())
-//                .orElseThrow(() -> new LogicException(ExceptionCode.BOX_NOT_FOUND));
 
         Box box = boxTask.getBox();
 
