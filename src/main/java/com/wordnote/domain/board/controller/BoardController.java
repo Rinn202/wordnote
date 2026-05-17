@@ -57,10 +57,12 @@ class BoardController {
 
     //조회
     @GetMapping
-    public ResponseEntity<List<BoardResponseDto>> getAllBoards() {
+    public ResponseEntity<List<BoardResponseDto>> getAllBoards(
+            @RequestParam(value = "currentBoardId", required = false) Long currentBoardId) {
+
         long memberId = SecurityUtil.getMemberId();
 
-        List<BoardResponseDto> response = boardService.findAll(memberId);
+        List<BoardResponseDto> response = boardService.findAll(memberId, currentBoardId);
 
         return ResponseEntity.ok(response);
     }
@@ -70,7 +72,7 @@ class BoardController {
     public ResponseEntity<BoardResponseDto> getBoard(@PathVariable long boardId) {
         long memberId = SecurityUtil.getMemberId();
 
-        BoardResponseDto response = boardService.findBoardById(memberId, boardId);
+        BoardResponseDto response = boardService.findBoardById(boardId, memberId);
         return ResponseEntity.ok(response);
     }
 
@@ -81,7 +83,7 @@ class BoardController {
                                                        @PathVariable long boardId) {
         long memberId = SecurityUtil.getMemberId();
 
-        BoardResponseDto response = boardService.updateBoard(memberId, boardId, boardUpdateDto);
+        BoardResponseDto response = boardService.updateBoard(boardId, boardUpdateDto, memberId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -90,7 +92,7 @@ class BoardController {
     public ResponseEntity<BoardResponseDto> patchReset(@PathVariable long boardId) {
         long memberId = SecurityUtil.getMemberId();
 
-        boardService.boardReset(memberId, boardId);
+        boardService.boardReset(boardId, memberId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -94,9 +94,9 @@ public class Box {
                        AlarmType alarmType,
                        LocalTime expireTime) {
 
-        if (bookmark != null) this.bookmark = bookmark;
-        if (alarmType != null) this.alarmType = alarmType;
-        if (expireTime != null) this.expireTime = expireTime;
+        this.bookmark = bookmark;
+        this.alarmType = alarmType;
+        this.expireTime = expireTime;
     }
 
 

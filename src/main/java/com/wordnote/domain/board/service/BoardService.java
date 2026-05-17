@@ -55,15 +55,15 @@ public class BoardService {
 //    }
 
     //전체 검색
-    public List<BoardResponseDto> findAll(long memberId) {
-        List<Board> boards = boardRepository.findByMember_MemberId(memberId);
+    public List<BoardResponseDto> findAll(long memberId, Long currentBoardId) {
+        List<Board> boards = boardRepository.findBoardsByMemberExceptCurrent(memberId, currentBoardId);
 
         return boardMapper.toResponseDtos(boards);
     }
 
     //단일 검색
-    public BoardResponseDto findBoardById(long memberId, long boardId) {
-        Board board = boardRepository.findBoardWithBoxes(boardId, memberId)
+    public BoardResponseDto findBoardById(long boardId, long memberId) {
+        Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOARD_NOT_FOUND));
 
         return boardMapper.toResponseDto(board);
@@ -71,7 +71,7 @@ public class BoardService {
 
     //수정
     @Transactional
-    public BoardResponseDto updateBoard(long memberId, long boardId, BoardUpdateDto dto) {
+    public BoardResponseDto updateBoard(long boardId, BoardUpdateDto dto, long memberId) {
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("보드 없음")); //기존 보드
 
@@ -87,15 +87,16 @@ public class BoardService {
 
     //단일 삭제
     @Transactional
-    public void deleteBoard(long memberId, long boardId) {
+    public void deleteBoard(long boardId, long memberId) {
 
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("보드 없음"));
         boardRepository.delete(board);
     }
 
+    //리셋
     @Transactional
-    public void boardReset(long memberId, long boardId) {
+    public void boardReset(long boardId, long memberId) {
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("보드 없음"));
 

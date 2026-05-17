@@ -26,12 +26,11 @@ public class Board {
     Member member;
 
     @Builder.Default
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Box> boxes = new ArrayList<>();
 
     public void assignMember(Member member) {
         this.member = member;
     }
-
 }
 

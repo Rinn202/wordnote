@@ -40,7 +40,7 @@ async function req<T>(method: string, path: string, body?: unknown): Promise<T> 
 
 // ─── Board ────────────────────────────────────────────────────────────────────
 // POST   /board              → 201 CREATED
-// GET    /board              → 200 OK
+// GET    /board?currentBoardId={id} → 200 OK
 // GET    /board/{boardId}    → 200 OK
 // PATCH  /board/{boardId}    → 200 OK
 // PUT    /board/{boardId}/reset → 204
@@ -48,7 +48,8 @@ async function req<T>(method: string, path: string, body?: unknown): Promise<T> 
 // DELETE /board/{boardId}    → 204
 export const boardApi = {
     create: () => req<Board>('POST', '/board'),
-    getAll: () => req<Board[]>('GET', '/board'),
+    // api.ts (또는 boardApi 정의된 곳)
+    getAll: (currentBoardId: number) => req<Board[]>('GET', `/board?currentBoardId=${currentBoardId}`),
     getById: (id: number) => req<Board>('GET', `/board/${id}`),
     update: (id: number, body: Partial<Board>) => req<Board>('PATCH', `/board/${id}`, body),
     reset: (id: number) => req<void>('PUT', `/board/${id}/reset`),

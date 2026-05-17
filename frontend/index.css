@@ -51,7 +51,7 @@ html, body, #root {
 /* ── App layout ─────────────────────────────────────────────────── */
 .app {
     display: grid;
-    grid-template-rows: 52px 1fr auto;
+    grid-template-rows: 52px 1fr;
     height: 100vh;
     overflow: hidden;
 }
@@ -77,7 +77,7 @@ html, body, #root {
 
 .logo {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--text2);
     letter-spacing: .05em;
@@ -135,13 +135,39 @@ html, body, #root {
     color: var(--text);
 }
 
-/* ── Boards area ─────────────────────────────────────────────────── */
-.boards-area {
+/* ── Main area ───────────────────────────────────────────────────── */
+.main-area {
     display: grid;
-    grid-template-columns: 1fr 1.6fr;
+    grid-template-columns: 1fr 20%;
     overflow: hidden;
 }
 
+/* ── Boards area ─────────────────────────────────────────────────── */
+.boards-area {
+    display: grid;
+    grid-template-columns: 1fr 50%;
+    overflow: hidden;
+}
+
+/* ── TaskPool 우측 사이드바 ──────────────────────────────────────── */
+.task-sidebar {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: var(--surface);
+    border-left: 0.5px solid var(--border);
+}
+
+.task-sidebar::-webkit-scrollbar {
+    width: 3px;
+}
+
+.task-sidebar::-webkit-scrollbar-thumb {
+    background: var(--border2);
+    border-radius: 2px;
+}
+
+/* ── Board col ───────────────────────────────────────────────────── */
 .board-col {
     display: flex;
     flex-direction: column;
@@ -244,56 +270,28 @@ html, body, #root {
 }
 
 /* ── Drop zone ───────────────────────────────────────────────────── */
-
 .drop-zone {
-    position: relative;
-    height: 44px;
+    height: 36px;
+    border: 1.5px dashed var(--border2);
     border-radius: var(--radius);
+    background: rgba(255, 255, 255, .5);
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: splitIn .18s ease forwards;
+    font-size: 10px;
+    color: var(--text3);
+    animation: splitIn .15s ease;
 }
 
 @keyframes splitIn {
-    from { height: 0; opacity: 0; }
-    to   { height: 44px; opacity: 1; }
-}
-
-.drop-zone::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    background-color: rgba(255, 255, 255, .5);
-    background-image:
-        repeating-linear-gradient(90deg, var(--border2) 0, var(--border2) 8px, transparent 0, transparent 16px),
-        repeating-linear-gradient(90deg, var(--border2) 0, var(--border2) 8px, transparent 0, transparent 16px),
-        repeating-linear-gradient(0deg,  var(--border2) 0, var(--border2) 8px, transparent 0, transparent 16px),
-        repeating-linear-gradient(0deg,  var(--border2) 0, var(--border2) 8px, transparent 0, transparent 16px);
-    background-size:  16px 1.5px, 16px 1.5px, 1.5px 16px, 1.5px 16px;
-    background-position: 0 0, 0 100%, 0 0, 100% 0;
-    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-    animation: dashMove 1.2s linear infinite;
-}
-
-/* ✅ keyframes 안에서는 px 고정값으로 */
-@keyframes dashMove {
-    from { background-position: 0 0,    0 100%,  0 0,    100% 0; }
-    to   { background-position: 16px 0, 0 100%,  0 -16px, 100% 0; }
-}
-
-.drop-zone i {
-    position: relative;
-    z-index: 1;
-    font-size: 14px;
-    color: var(--text3);
-    animation: bounce .6s ease infinite alternate;
-}
-
-@keyframes bounce {
-    from { transform: translateY(-2px); }
-    to   { transform: translateY(2px); }
+    from {
+        height: 0;
+        opacity: 0;
+    }
+    to {
+        height: 36px;
+        opacity: 1;
+    }
 }
 
 /* ── Box card ────────────────────────────────────────────────────── */
@@ -302,7 +300,7 @@ html, body, #root {
     border: 0.5px solid var(--border);
     border-radius: var(--radius);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     cursor: pointer;
     transition: border-color .15s, box-shadow .15s;
     position: relative;
@@ -318,8 +316,10 @@ html, body, #root {
 }
 
 .box-card.expired {
-    filter: grayscale(.7);
-    opacity: .7;
+    border: 2px solid #D32F2F;
+    box-shadow: 0 0 15px rgba(211, 47, 47, 0.4), inset 0 0 10px rgba(211, 47, 47, 0.1);
+    background-color: #FFF5F5;
+    animation: pulse-glow 2s infinite ease-in-out;
 }
 
 .box-card.in-progress {
@@ -330,6 +330,17 @@ html, body, #root {
     border-left: 3px solid var(--done-c);
 }
 
+/* 만료 애니메이션 */
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(211, 47, 47, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(211, 47, 47, 0.6);
+    }
+}
+
+/* 삭제 애니메이션 */
 .box-card.removing {
     animation: removeBox .3s ease forwards;
 }
@@ -339,6 +350,29 @@ html, body, #root {
         opacity: 0;
         max-height: 0;
         margin: 0;
+        padding: 0;
+        border-width: 0;
+    }
+}
+
+/* DONE 전환 애니메이션 */
+.box-card.completing {
+    animation: completeBox .3s ease forwards;
+}
+
+@keyframes completeBox {
+    0% {
+        background: var(--surface);
+    }
+    40% {
+        background: var(--done-bg);
+        border-color: var(--done-b);
+    }
+    100% {
+        opacity: 0;
+        max-height: 0;
+        margin: 0;
+        padding: 0;
         border-width: 0;
     }
 }
@@ -352,41 +386,44 @@ html, body, #root {
     color: var(--text3);
     font-size: 13px;
     cursor: grab;
-    padding: 0 2px 0 4px;
+    padding: 10px 2px 0 4px;
 }
 
 .box-body {
     flex: 1;
-    padding: 9px 6px;
+    padding: 7px 4px;
     min-width: 0;
 }
 
 .box-name {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
-    color: var(--text2);
-    margin-bottom: 4px;
+    color: var(--text3);
+    margin-bottom: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* ── Task chip ───────────────────────────────────────────────────── */
 .tasks-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 3px;
 }
 
+/* 다중 task */
 .task-chip {
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 10px;
     border: 0.5px solid var(--border2);
-    background: var(--surface2);
-    color: var(--text2);
+    color: var(--text);
     cursor: pointer;
     transition: all .12s;
     white-space: nowrap;
+    line-height: 1.4;
 }
 
 .task-chip:hover {
@@ -401,17 +438,43 @@ html, body, #root {
     text-decoration: line-through;
 }
 
+/* 단독 task */
+.task-chip.task-chip-single {
+    font-size: 15px;
+    font-weight: 400;
+    padding: 0;
+    border: none;
+    background: transparent;
+    padding: 2px 3px;
+    border-radius: 10px;
+}
+
+.task-chip.task-chip-single:hover {
+    color: var(--routine);
+    background: transparent;
+}
+
+.task-chip.task-chip-single.done-task {
+    background: transparent;
+    border: none;
+    color: var(--done-c);
+    text-decoration: line-through;
+}
+
+/* ── Box actions ────────────────────────────────── */
 .box-actions {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 1px;
-    padding: 0 6px;
+    padding: 8px 10px;
     flex-shrink: 0;
+    flex-wrap: wrap;
 }
 
 .act-btn {
-    width: 26px;
-    height: 26px;
+    margin-right: 10px;
+    height: 24px;
     border: none;
     background: transparent;
     color: var(--text3);
@@ -420,7 +483,7 @@ html, body, #root {
     justify-content: center;
     cursor: pointer;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 13px;
     transition: all .12s;
 }
 
@@ -442,16 +505,16 @@ html, body, #root {
 }
 
 .state-btn {
-    padding: 3px 8px;
-    border-radius: 20px;
+    padding: 5px 5px;
+    border-radius: 5px;
     border: 0.5px solid;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
     transition: all .15s;
     font-family: 'IBM Plex Mono', monospace;
-    margin-left: 2px;
+    margin-top: 2px;
 }
 
 .state-btn.ready {
@@ -476,33 +539,9 @@ html, body, #root {
     filter: brightness(.95);
 }
 
-.box-card.completing {
-    animation: completeBox .3s ease forwards;
-}
-
-@keyframes completeBox {
-    to {
-        opacity: 0;
-        transform: translateX(40px);
-        max-height: 0;
-        margin: 0;
-    }
-}
-
-/* ── TaskPool footer ──────────────────────────────────────────────── */
-.pool-footer {
-    border-top: 0.5px solid var(--border);
-    background: var(--surface);
-    max-height: 220px;
-    overflow-y: auto;
-}
-
-.pool-footer::-webkit-scrollbar {
-    height: 3px;
-}
-
+/* ── TaskPool (사이드바) ─────────────────────────────────────────── */
 .task-pool {
-    padding: 10px 14px;
+    padding: 10px 12px;
 }
 
 .task-pool-header {
@@ -526,8 +565,9 @@ html, body, #root {
 }
 
 .toggle-btn {
-    font-size: 11px;
-    padding: 3px 10px;
+    font-size: 13px;
+    padding: 3px 30px;
+    margin-left: 3px;
     border-radius: 6px;
     border: none;
     background: transparent;
@@ -546,16 +586,16 @@ html, body, #root {
 .task-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px;
     margin-bottom: 8px;
 }
 
 .task-item {
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 20px;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 10px;
     border: 0.5px solid var(--border2);
-    background: var(--surface2);
+    background: var(--surface);
     color: var(--text2);
     cursor: pointer;
     transition: all .12s;
@@ -588,14 +628,14 @@ html, body, #root {
 }
 
 .task-new-input {
-    font-size: 11px;
+    font-size: 13px;
     padding: 4px 10px;
     border-radius: 20px;
     border: 0.5px dashed var(--border2);
     background: transparent;
     color: var(--text);
     outline: none;
-    width: 160px;
+    width: 100%;
     font-family: 'Noto Sans KR', sans-serif;
 }
 
@@ -604,7 +644,7 @@ html, body, #root {
 }
 
 .task-new-input:focus {
-    border-color: var(--routine);
+    border-color: var(--event);
 }
 
 .create-row {
@@ -614,12 +654,14 @@ html, body, #root {
     padding-top: 8px;
     border-top: 0.5px solid var(--border);
     margin-top: 4px;
+    flex-wrap: wrap;
 }
 
 .box-name-input {
     flex: 1;
-    font-size: 12px;
-    padding: 6px 10px;
+    min-width: 3px;
+    font-size: 13px;
+    padding: 5px 8px;
     border-radius: var(--radius);
     border: 0.5px solid var(--border2);
     background: var(--surface2);
@@ -636,9 +678,9 @@ html, body, #root {
 .create-box-btn {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    padding: 6px 12px;
+    gap: 4px;
+    font-size: 11px;
+    padding: 5px 10px;
     border-radius: var(--radius);
     border: 0.5px solid var(--routine);
     background: var(--routine-bg);
@@ -647,6 +689,7 @@ html, body, #root {
     font-weight: 500;
     transition: all .15s;
     font-family: 'Noto Sans KR', sans-serif;
+    white-space: nowrap;
 }
 
 .create-box-btn:hover {
@@ -730,6 +773,20 @@ html, body, #root {
     align-items: center;
     gap: 5px;
     padding-top: 4px;
+    white-space: nowrap;
+}
+
+.option-alarm-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.option-select-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
 .toggle-pill {
@@ -749,12 +806,6 @@ html, body, #root {
     background: var(--done-bg);
     border-color: var(--done-b);
     color: var(--done-c);
-}
-
-.option-select-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
 }
 
 .select-chip {
@@ -875,8 +926,15 @@ html, body, #root {
     gap: 4px;
 }
 
+/* ✅ 보드 목록 행: 불러오기 + 삭제 */
+.board-list-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 .board-list-item {
-    width: 100%;
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -900,6 +958,34 @@ html, body, #root {
     margin-left: auto;
     font-size: 11px;
     color: var(--text3);
+}
+
+/* ✅ 보드 삭제 버튼 */
+.board-delete-btn {
+    width: 30px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface2);
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all .15s;
+}
+
+.board-delete-btn:hover:not(:disabled) {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: var(--danger-bg);
+}
+
+.board-delete-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 .confirm-msg {
@@ -962,4 +1048,32 @@ html, body, #root {
 .clock-owl-label {
     font-size: 10px;
     color: var(--text3);
+}
+
+.col-tab-group {
+    display: flex;
+    gap: 2px;
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 2px;
+    margin-left: 6px;
+}
+
+.col-tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.col-tab.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
 }

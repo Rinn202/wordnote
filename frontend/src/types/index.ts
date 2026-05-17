@@ -91,7 +91,8 @@ export interface LoginResponse {
 }
 
 // ─── UI State ─────────────────────────────────────────────────────────────────
-export type TabType = 'ACTIVE' | 'DONE';          // ACTIVE = READY + IN_PROGRESS
+// ✅ 'ALL' 추가 — 할일 + 완료 전체 표시
+export type TabType = 'ALL' | 'ACTIVE' | 'DONE';
 
 export interface DragState {
     draggingBoxId: number | null;

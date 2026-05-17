@@ -67,7 +67,7 @@ export default function TaskPool({boardId, onBoxCreated}: Props) {
                         </button>
                     ))}
                 </div>
-                <span className="pool-label">태스크 선택 후 박스 생성</span>
+                <span className="pool-label"></span>
             </div>
 
             <div className="task-grid">

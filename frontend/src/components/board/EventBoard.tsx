@@ -1,5 +1,5 @@
-import React from 'react';
-import type {Box, BoxState} from '../../types';
+import React, {useState} from 'react';
+import type {Box, BoxState, TabType} from '../../types';
 import BoxCard from './BoxCard';
 import {useDragDrop} from '../../hooks/useDragDrop';
 
@@ -13,56 +13,62 @@ interface Props {
 }
 
 export default function EventBoard({
-    boxes, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
-}: Props) {
+                                       boxes, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
+                                   }: Props) {
+    const [tab, setTab] = useState<TabType>('ACTIVE');
     const {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave} =
         useDragDrop(onReorder as any, 'EVENT');
+
+    const filtered = tab === 'ALL' ? boxes
+        : tab === 'DONE' ? boxes.filter(b => b.state === 'DONE')
+            : boxes.filter(b => b.state !== 'DONE');
 
     return (
         <div className="board-col event-col">
             <div className="col-header">
                 <span className="col-label event">EVENT</span>
-                <span className="col-count">{boxes.length}개</span>
+                <div className="col-tab-group">
+                    {(['ALL', 'ACTIVE', 'DONE'] as TabType[]).map(t => (
+                        <button
+                            key={t}
+                            className={`col-tab ${tab === t ? 'active' : ''}`}
+                            onClick={() => setTab(t)}
+                        >
+                            {t === 'ALL' ? '전체' : t === 'ACTIVE' ? '할일' : '완료'}
+                        </button>
+                    ))}
+                </div>
+                <span className="col-count">{filtered.length}개</span>
             </div>
             <div className="boxes-list" onDrop={onDrop} onDragLeave={onDragLeave}>
-                {boxes.map((box, index) => (
+                {filtered.map((box, index) => (
                     <React.Fragment key={box.boxId}>
                         {overIndex === index && draggingId !== box.boxId && (
-                            <div
-                                className="drop-zone"
-                                onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
-                            >
+                            <div className="drop-zone" onDragOver={e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }}>
                                 <i className="ti ti-arrow-down" aria-hidden="true"/>
                             </div>
                         )}
                         {draggingId !== box.boxId && (
-                            <div
-                                draggable
-                                onDragStart={() => onDragStart(box.boxId, index)}
-                                onDragOver={e => onDragOver(e, index)}
-                                onDragEnd={onDragEnd}
-                            >
-                                <BoxCard
-                                    box={box}
-                                    onStateChange={onStateChange}
-                                    onDelete={onDelete}
-                                    onUpdate={onUpdate}
-                                    onOpenOption={onOpenOption}
-                                    isDragging={false}
-                                />
+                            <div draggable onDragStart={() => onDragStart(box.boxId, index)}
+                                 onDragOver={e => onDragOver(e, index)} onDragEnd={onDragEnd}>
+                                <BoxCard box={box} onStateChange={onStateChange} onDelete={onDelete} onUpdate={onUpdate}
+                                         onOpenOption={onOpenOption} isDragging={false}/>
                             </div>
                         )}
                     </React.Fragment>
                 ))}
-                {overIndex === boxes.length && draggingId !== null && (
-                    <div
-                        className="drop-zone"
-                        onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
-                    >
+                {overIndex === filtered.length && draggingId !== null && (
+                    <div className="drop-zone" onDragOver={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }}>
                         <i className="ti ti-arrow-down" aria-hidden="true"/>
                     </div>
                 )}
-                {boxes.length === 0 && (
+                {filtered.length === 0 && (
                     <div className="empty-board">
                         <i className="ti ti-calendar-event" aria-hidden="true"/>
                         <p>이벤트 박스가 없습니다</p>

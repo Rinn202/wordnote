@@ -32,7 +32,7 @@ public class BoxTask {
         this.isDone = !this.isDone;
     }
 
-    public void resetDone(){
+    public void resetDone() {
         this.isDone = false;
     }
 }

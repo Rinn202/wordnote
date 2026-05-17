@@ -27,12 +27,12 @@ function isExpired(expireTime: string | null): boolean {
 }
 
 export default function BoxCard({
-    box, onStateChange, onDelete, onUpdate, onOpenOption, isDragging, dragHandleProps,
-}: Props) {
+                                    box, onStateChange, onDelete, onUpdate, onOpenOption, isDragging, dragHandleProps,
+                                }: Props) {
     const [removing, setRemoving] = useState(false);
     const [completing, setCompleting] = useState(false);
     const expired = isExpired(box.expireTime);
-    const showName = box.tasks.length > 1;
+    const isSingle = box.tasks.length === 1; // ✅ 단독 task 여부
 
     const handleStateClick = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -92,18 +92,24 @@ export default function BoxCard({
             removing ? 'removing' : '',
             completing ? 'completing' : '',
         ].filter(Boolean).join(' ')}
-            onClick={() => onOpenOption(box)}
+             onClick={() => onOpenOption(box)}
         >
             <div className="box-grip" {...dragHandleProps} onClick={e => e.stopPropagation()}>
                 <i className="ti ti-grip-vertical" aria-hidden="true"/>
             </div>
+
             <div className="box-body">
-                {showName && <p className="box-name">{box.name}</p>}
+                {/* ✅ 다중 task일 때만 박스명 표시 */}
+                {!isSingle && <p className="box-name">{box.name}</p>}
                 <div className="tasks-row">
                     {box.tasks.map(t => (
                         <span
                             key={t.boxTaskId}
-                            className={`task-chip ${t.isDone ? 'done-task' : ''}`}
+                            className={[
+                                'task-chip',
+                                isSingle ? 'task-chip-single' : '', // ✅ 단독 스타일
+                                t.isDone ? 'done-task' : '',
+                            ].filter(Boolean).join(' ')}
                             onClick={e => handleTaskToggle(e, t.boxTaskId)}
                         >
                             {t.taskName}
@@ -111,6 +117,7 @@ export default function BoxCard({
                     ))}
                 </div>
             </div>
+
             <div className="box-actions" onClick={e => e.stopPropagation()}>
                 <button
                     className={`act-btn ${box.alarmType !== 'NONE' ? 'alarmed' : ''}`}

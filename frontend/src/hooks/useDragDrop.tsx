@@ -9,13 +9,13 @@ export function useDragDrop(
     const [overIndex, setOverIndex] = useState<number | null>(null);
     const dragIndex = useRef<number>(-1);
 
-const onDragStart = useCallback((boxId: number, index: number) => {
-    dragIndex.current = index;
-    // 한 프레임 뒤에 숨김 → 브라우저가 고스트 이미지 먼저 캡처하게
-    requestAnimationFrame(() => {
-        setDraggingId(boxId);
-    });
-}, []);
+    const onDragStart = useCallback((boxId: number, index: number) => {
+        dragIndex.current = index;
+        // 한 프레임 뒤에 숨김 → 브라우저가 고스트 이미지 먼저 캡처하게
+        requestAnimationFrame(() => {
+            setDraggingId(boxId);
+        });
+    }, []);
 
     const onDragOver = useCallback((e: React.DragEvent<HTMLElement>, index: number) => {
         e.preventDefault();
@@ -41,15 +41,15 @@ const onDragStart = useCallback((boxId: number, index: number) => {
 
     const onDrop = useCallback(async (e: React.DragEvent<HTMLElement>) => {
         e.preventDefault();
-        
+
         const currentDraggingId = draggingId;
         const currentOverIndex = overIndex;
-        
+
         // 먼저 상태 초기화 → UI 즉시 복구
         setDraggingId(null);
         setOverIndex(null);
         dragIndex.current = -1;
-        
+
         if (currentDraggingId === null || currentOverIndex === null) return;
         if (currentOverIndex !== dragIndex.current) {
             await onReorder(currentDraggingId, currentOverIndex, boardType);
@@ -71,5 +71,5 @@ const onDragStart = useCallback((boxId: number, index: number) => {
         }
     }, []);
 
-   return {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave};
+    return {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave};
 }

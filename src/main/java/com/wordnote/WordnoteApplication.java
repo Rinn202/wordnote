@@ -1,6 +1,5 @@
 package com.wordnote;
 
-import com.wordnote.domain.task.dto.response.TaskResponseDto;
 import com.wordnote.domain.task.entity.Task;
 import com.wordnote.domain.task.repository.TaskRepository;
 import org.springframework.boot.CommandLineRunner;
