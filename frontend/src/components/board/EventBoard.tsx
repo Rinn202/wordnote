@@ -13,8 +13,8 @@ interface Props {
 }
 
 export default function EventBoard({
-                                       boxes, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
-                                   }: Props) {
+    boxes, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
+}: Props) {
     const {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd} =
         useDragDrop(onReorder as any, 'EVENT');
 
@@ -24,35 +24,44 @@ export default function EventBoard({
                 <span className="col-label event">EVENT</span>
                 <span className="col-count">{boxes.length}개</span>
             </div>
-            <div
-                className="boxes-list"
-                onDragOver={e => onDragOver(e, boxes.length)}
-                onDrop={onDrop}
-            >
+            <div className="boxes-list" onDrop={onDrop}>
                 {boxes.map((box, index) => (
                     <React.Fragment key={box.boxId}>
                         {overIndex === index && draggingId !== box.boxId && (
-                            <div className="drop-zone visible">
+                            <div
+                                className="drop-zone"
+                                onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                            >
                                 <i className="ti ti-arrow-down" aria-hidden="true"/>
                             </div>
                         )}
-                        <div
-                            draggable
-                            onDragStart={() => onDragStart(box.boxId, index)}
-                            onDragOver={e => onDragOver(e, index)}
-                            onDragEnd={onDragEnd}
-                        >
-                            <BoxCard
-                                box={box}
-                                onStateChange={onStateChange}
-                                onDelete={onDelete}
-                                onUpdate={onUpdate}
-                                onOpenOption={onOpenOption}
-                                isDragging={draggingId === box.boxId}
-                            />
-                        </div>
+                        {draggingId !== box.boxId && (
+                            <div
+                                draggable
+                                onDragStart={() => onDragStart(box.boxId, index)}
+                                onDragOver={e => onDragOver(e, index)}
+                                onDragEnd={onDragEnd}
+                            >
+                                <BoxCard
+                                    box={box}
+                                    onStateChange={onStateChange}
+                                    onDelete={onDelete}
+                                    onUpdate={onUpdate}
+                                    onOpenOption={onOpenOption}
+                                    isDragging={false}
+                                />
+                            </div>
+                        )}
                     </React.Fragment>
                 ))}
+                {overIndex === boxes.length && draggingId !== null && (
+                    <div
+                        className="drop-zone"
+                        onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                    >
+                        <i className="ti ti-arrow-down" aria-hidden="true"/>
+                    </div>
+                )}
                 {boxes.length === 0 && (
                     <div className="empty-board">
                         <i className="ti ti-calendar-event" aria-hidden="true"/>

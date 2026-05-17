@@ -27,14 +27,8 @@ function isExpired(expireTime: string | null): boolean {
 }
 
 export default function BoxCard({
-                                    box,
-                                    onStateChange,
-                                    onDelete,
-                                    onUpdate,
-                                    onOpenOption,
-                                    isDragging,
-                                    dragHandleProps,
-                                }: Props) {
+    box, onStateChange, onDelete, onUpdate, onOpenOption, isDragging, dragHandleProps,
+    }: Props) {
     const [removing, setRemoving] = useState(false);
     const expired = isExpired(box.expireTime);
     const showName = box.tasks.length > 1;
@@ -78,17 +72,15 @@ export default function BoxCard({
         IN_PROGRESS: 'IN PROG',
         DONE: 'DONE',
     };
-
-    return (
-        <div
-            className={[
-                'box-card',
-                box.state === 'IN_PROGRESS' ? 'in-progress' : '',
-                box.state === 'DONE' ? 'done-state' : '',
-                expired ? 'expired' : '',
-                isDragging ? 'dragging' : '',
-                removing ? 'removing' : '',
-            ].filter(Boolean).join(' ')}
+      return (
+        <div className={[
+            'box-card',
+            box.state === 'IN_PROGRESS' ? 'in-progress' : '',
+            box.state === 'DONE' ? 'done-state' : '',
+            expired ? 'expired' : '',
+            isDragging ? 'dragging-card' : '',
+            removing ? 'removing' : '',
+        ].filter(Boolean).join(' ')}
             onClick={() => onOpenOption(box)}
         >
             {/* drag handle */}

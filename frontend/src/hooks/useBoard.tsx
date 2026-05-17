@@ -90,36 +90,35 @@ export function useBoard() {
     ) => {
         if (!board) return;
 
-        // 낙관적 업데이트
-        setBoard(prev => {
-            if (!prev) return prev;
-            const typed = prev.boxes.filter(b => b.boxType === boardType);
-            const others = prev.boxes.filter(b => b.boxType !== boardType);
-            const from = typed.findIndex(b => b.boxId === boxId);
-            if (from === -1) return prev;
-            const reordered = [...typed];
-            const [item] = reordered.splice(from, 1);
-            reordered.splice(targetIndex, 0, item);
-            const merged = boardType === 'ROUTINE'
-                ? [...reordered, ...others]
-                : [...others, ...reordered];
-            return {...prev, boxes: merged};
-        });
-
-        // ✅ 전체 배열 기준 targetIndex로 변환해서 서버에 전송
+        // ✅ 서버 전송용 계산은 현재 board 상태 기준으로 먼저 수행
         const allBoxes = board.boxes;
         const typedBoxes = allBoxes.filter(b => b.boxType === boardType);
         const otherBoxes = allBoxes.filter(b => b.boxType !== boardType);
 
-        // 타입별 배열에서 targetIndex 위치의 박스가 전체 배열에서 몇 번째인지 계산
-        const targetBox = typedBoxes[targetIndex];
-        const globalTargetIndex = targetBox
-            ? allBoxes.findIndex(b => b.boxId === targetBox.boxId)
-            : boardType === 'ROUTINE'
-                ? typedBoxes.length - 1                        // ROUTINE 마지막
-                : otherBoxes.length + typedBoxes.length - 1;   // EVENT 마지막
+        const fromIndex = typedBoxes.findIndex(b => b.boxId === boxId);
+        if (fromIndex === -1) return;
 
-        await boardApi.reorderBox(board.boardId, {boxId, targetIndex: globalTargetIndex});
+        // 타입별 배열에서 reorder 수행
+        const reordered = [...typedBoxes];
+        const [item] = reordered.splice(fromIndex, 1);
+        reordered.splice(targetIndex, 0, item);
+
+        // 전체 배열로 병합 (순서: ROUTINE → EVENT)
+        const merged = boardType === 'ROUTINE'
+            ? [...reordered, ...otherBoxes]
+            : [...otherBoxes, ...reordered];
+
+        // ✅ 전체 배열에서 해당 boxId의 새 위치를 계산
+        const globalTargetIndex = merged.findIndex(b => b.boxId === boxId);
+
+        // 낙관적 업데이트 (이미 계산된 merged 사용)
+        setBoard(prev => prev ? {...prev, boxes: merged} : prev);
+
+        // 서버 전송
+        await boardApi.reorderBox(board.boardId, {
+            boxId,
+            targetIndex: globalTargetIndex,
+        });
     }, [board]);
 
     // ── 박스 옵션 패치 후 로컬 반영 ──────────────────────────────────────────

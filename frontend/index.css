@@ -244,28 +244,56 @@ html, body, #root {
 }
 
 /* ── Drop zone ───────────────────────────────────────────────────── */
+
 .drop-zone {
-    height: 36px;
-    border: 1.5px dashed var(--border2);
+    position: relative;
+    height: 44px;
     border-radius: var(--radius);
-    background: rgba(255, 255, 255, .5);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
-    color: var(--text3);
-    animation: splitIn .15s ease;
+    animation: splitIn .18s ease forwards;
 }
 
 @keyframes splitIn {
-    from {
-        height: 0;
-        opacity: 0;
-    }
-    to {
-        height: 36px;
-        opacity: 1;
-    }
+    from { height: 0; opacity: 0; }
+    to   { height: 44px; opacity: 1; }
+}
+
+.drop-zone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    background-color: rgba(255, 255, 255, .5);
+    background-image:
+        repeating-linear-gradient(90deg, var(--border2) 0, var(--border2) 8px, transparent 0, transparent 16px),
+        repeating-linear-gradient(90deg, var(--border2) 0, var(--border2) 8px, transparent 0, transparent 16px),
+        repeating-linear-gradient(0deg,  var(--border2) 0, var(--border2) 8px, transparent 0, transparent 16px),
+        repeating-linear-gradient(0deg,  var(--border2) 0, var(--border2) 8px, transparent 0, transparent 16px);
+    background-size:  16px 1.5px, 16px 1.5px, 1.5px 16px, 1.5px 16px;
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    animation: dashMove 1.2s linear infinite;
+}
+
+/* ✅ keyframes 안에서는 px 고정값으로 */
+@keyframes dashMove {
+    from { background-position: 0 0,    0 100%,  0 0,    100% 0; }
+    to   { background-position: 16px 0, 0 100%,  0 -16px, 100% 0; }
+}
+
+.drop-zone i {
+    position: relative;
+    z-index: 1;
+    font-size: 14px;
+    color: var(--text3);
+    animation: bounce .6s ease infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: translateY(-2px); }
+    to   { transform: translateY(2px); }
 }
 
 /* ── Box card ────────────────────────────────────────────────────── */

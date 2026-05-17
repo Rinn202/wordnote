@@ -13,9 +13,9 @@ interface Props {
 }
 
 export default function RoutineBoard({
-                                         boxes, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
-                                     }: Props) {
-    const {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd} =
+    boxes, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
+}: Props) {
+    const {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave} =
         useDragDrop(onReorder as any, 'ROUTINE');
 
     return (
@@ -24,36 +24,44 @@ export default function RoutineBoard({
                 <span className="col-label routine">ROUTINE</span>
                 <span className="col-count">{boxes.length}개</span>
             </div>
-            <div
-                className="boxes-list"
-                onDragOver={e => onDragOver(e, boxes.length)}
-                onDrop={onDrop}
-            >
+            <div className="boxes-list" onDrop={onDrop} onDragLeave={onDragLeave}>
                 {boxes.map((box, index) => (
                     <React.Fragment key={box.boxId}>
-                        {/* 끼워넣기 드롭존 */}
                         {overIndex === index && draggingId !== box.boxId && (
-                            <div className="drop-zone visible">
+                            <div
+                                className="drop-zone"
+                                onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                            >
                                 <i className="ti ti-arrow-down" aria-hidden="true"/>
                             </div>
                         )}
-                        <div
-                            draggable
-                            onDragStart={() => onDragStart(box.boxId, index)}
-                            onDragOver={e => onDragOver(e, index)}
-                            onDragEnd={onDragEnd}
-                        >
-                            <BoxCard
-                                box={box}
-                                onStateChange={onStateChange}
-                                onDelete={onDelete}
-                                onUpdate={onUpdate}
-                                onOpenOption={onOpenOption}
-                                isDragging={draggingId === box.boxId}
-                            />
-                        </div>
+                        {draggingId !== box.boxId && (
+                            <div
+                                draggable
+                                onDragStart={() => onDragStart(box.boxId, index)}
+                                onDragOver={e => onDragOver(e, index)}
+                                onDragEnd={onDragEnd}
+                            >
+                                <BoxCard
+                                    box={box}
+                                    onStateChange={onStateChange}
+                                    onDelete={onDelete}
+                                    onUpdate={onUpdate}
+                                    onOpenOption={onOpenOption}
+                                    isDragging={false}
+                                />
+                            </div>
+                        )}
                     </React.Fragment>
                 ))}
+                {overIndex === boxes.length && draggingId !== null && (
+                    <div
+                        className="drop-zone"
+                        onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                    >
+                        <i className="ti ti-arrow-down" aria-hidden="true"/>
+                    </div>
+                )}
                 {boxes.length === 0 && (
                     <div className="empty-board">
                         <i className="ti ti-layout-list" aria-hidden="true"/>
