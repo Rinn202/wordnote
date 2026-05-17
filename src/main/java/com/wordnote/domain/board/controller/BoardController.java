@@ -25,7 +25,7 @@ class BoardController {
     private final BoardService boardService;
 
     //박스인덱스 이동
-    @PutMapping("{boardId}/boxesOrder")
+    @PutMapping("/{boardId}/boxesOrder")
     public ResponseEntity<BoxResponseDto> putBoxIndex(@RequestBody MoveBoxRequest dto,
                                                       @PathVariable long boardId) {
         long memberId = SecurityUtil.getMemberId();

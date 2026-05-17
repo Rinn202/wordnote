@@ -39,16 +39,16 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/member/signup").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
+                                .requestMatchers("/auth/**", "/member/signup").permitAll()
+                                .requestMatchers("/h2-console/**").permitAll()
 
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //OPTIONS 메서드 허용 (CORS Preflight 대응)
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //OPTIONS 메서드 허용 (CORS Preflight 대응)
+//
+//                        .requestMatchers(HttpMethod.GET, "/member").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.GET, "/box").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.GET, "/board").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/member").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/box").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/board").hasRole("ADMIN")
-
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtVerificationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
@@ -63,8 +63,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS", "PUT"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Refresh"));
         configuration.setAllowCredentials(true); //쿠키

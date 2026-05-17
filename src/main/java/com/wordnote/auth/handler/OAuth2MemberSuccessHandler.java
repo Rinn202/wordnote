@@ -58,7 +58,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
     private URI createURI(String accessToken, String refreshToken) {
         return UriComponentsBuilder
-                .fromUriString("http://localhost:3000/login-success")
+                .fromUriString("http://localhost:5173/login-success")
                 .queryParam("access_token", accessToken)
                 .queryParam("refresh_token", refreshToken)
                 .build()

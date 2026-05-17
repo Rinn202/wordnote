@@ -1,0 +1,924 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #F5F3EE;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE8;
+    --border: #E2DDD6;
+    --border2: #C8C3BB;
+    --text: #2C2A26;
+    --text2: #6B6760;
+    --text3: #A09C97;
+
+    --routine: #0F6E56;
+    --routine-bg: #E1F5EE;
+    --routine-b: #9FE1CB;
+    --event: #185FA5;
+    --event-bg: #E6F1FB;
+    --event-b: #B5D4F4;
+
+    --ready-c: #444441;
+    --progress-c: #BA7517;
+    --progress-bg: #FAEEDA;
+    --progress-b: #FAC775;
+    --done-c: #3B6D11;
+    --done-bg: #EAF3DE;
+    --done-b: #C0DD97;
+
+    --danger: #A32D2D;
+    --danger-bg: #FCEBEB;
+    --bookmark: #BA7517;
+
+    --radius: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+}
+
+html, body, #root {
+    height: 100%;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ── App layout ─────────────────────────────────────────────────── */
+.app {
+    display: grid;
+    grid-template-rows: 52px 1fr auto;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ── Topbar ──────────────────────────────────────────────────────── */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    gap: 12px;
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    position: relative;
+    z-index: 10;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: .05em;
+}
+
+.tab-group {
+    display: flex;
+    gap: 3px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 3px;
+}
+
+.tab {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.tab.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+.topbar-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.icon-btn {
+    width: 30px;
+    height: 30px;
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all .15s;
+}
+
+.icon-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+}
+
+/* ── Boards area ─────────────────────────────────────────────────── */
+.boards-area {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    overflow: hidden;
+}
+
+.board-col {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 0.5px solid var(--border);
+}
+
+.board-col:last-child {
+    border-right: none;
+}
+
+.col-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px 8px;
+    border-bottom: 0.5px solid var(--border);
+    background: var(--surface);
+}
+
+.col-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: var(--radius);
+    border: 0.5px solid;
+}
+
+.col-label.routine {
+    color: var(--routine);
+    background: var(--routine-bg);
+    border-color: var(--routine-b);
+}
+
+.col-label.event {
+    color: var(--event);
+    background: var(--event-bg);
+    border-color: var(--event-b);
+}
+
+.col-count {
+    font-size: 11px;
+    color: var(--text3);
+    margin-left: auto;
+}
+
+.boxes-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.boxes-list::-webkit-scrollbar {
+    width: 3px;
+}
+
+.boxes-list::-webkit-scrollbar-thumb {
+    background: var(--border2);
+    border-radius: 2px;
+}
+
+.empty-board {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text3);
+    font-size: 12px;
+}
+
+.empty-board i {
+    font-size: 24px;
+}
+
+.loading-state {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--text2);
+    font-size: 13px;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Drop zone ───────────────────────────────────────────────────── */
+.drop-zone {
+    height: 36px;
+    border: 1.5px dashed var(--border2);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text3);
+    animation: splitIn .15s ease;
+}
+
+@keyframes splitIn {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+    to {
+        height: 36px;
+        opacity: 1;
+    }
+}
+
+/* ── Box card ────────────────────────────────────────────────────── */
+.box-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+    position: relative;
+    overflow: hidden;
+}
+
+.box-card:hover {
+    border-color: var(--border2);
+}
+
+.box-card.dragging {
+    opacity: .4;
+}
+
+.box-card.expired {
+    filter: grayscale(.7);
+    opacity: .7;
+}
+
+.box-card.in-progress {
+    border-left: 3px solid var(--progress-c);
+}
+
+.box-card.done-state {
+    border-left: 3px solid var(--done-c);
+}
+
+.box-card.removing {
+    animation: removeBox .3s ease forwards;
+}
+
+@keyframes removeBox {
+    to {
+        opacity: 0;
+        max-height: 0;
+        margin: 0;
+        border-width: 0;
+    }
+}
+
+.box-grip {
+    width: 22px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text3);
+    font-size: 13px;
+    cursor: grab;
+    padding: 0 2px 0 4px;
+}
+
+.box-body {
+    flex: 1;
+    padding: 9px 6px;
+    min-width: 0;
+}
+
+.box-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text2);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tasks-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.task-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .12s;
+    white-space: nowrap;
+}
+
+.task-chip:hover {
+    border-color: var(--routine);
+    color: var(--routine);
+}
+
+.task-chip.done-task {
+    background: var(--done-bg);
+    border-color: var(--done-b);
+    color: var(--done-c);
+    text-decoration: line-through;
+}
+
+.box-actions {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    padding: 0 6px;
+    flex-shrink: 0;
+}
+
+.act-btn {
+    width: 26px;
+    height: 26px;
+    border: none;
+    background: transparent;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all .12s;
+}
+
+.act-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+}
+
+.act-btn.bookmarked {
+    color: var(--bookmark);
+}
+
+.act-btn.alarmed {
+    color: var(--event);
+}
+
+.act-btn.danger:hover {
+    color: var(--danger);
+}
+
+.state-btn {
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 0.5px solid;
+    font-size: 9px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .15s;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-left: 2px;
+}
+
+.state-btn.ready {
+    background: var(--surface2);
+    border-color: var(--border2);
+    color: var(--ready-c);
+}
+
+.state-btn.in-progress {
+    background: var(--progress-bg);
+    border-color: var(--progress-b);
+    color: var(--progress-c);
+}
+
+.state-btn.done {
+    background: var(--done-bg);
+    border-color: var(--done-b);
+    color: var(--done-c);
+}
+
+.state-btn:hover {
+    filter: brightness(.95);
+}
+
+/* ── TaskPool footer ──────────────────────────────────────────────── */
+.pool-footer {
+    border-top: 0.5px solid var(--border);
+    background: var(--surface);
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.pool-footer::-webkit-scrollbar {
+    height: 3px;
+}
+
+.task-pool {
+    padding: 10px 14px;
+}
+
+.task-pool-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.pool-label {
+    font-size: 11px;
+    color: var(--text3);
+}
+
+.type-toggle {
+    display: flex;
+    gap: 3px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 2px;
+}
+
+.toggle-btn {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all .12s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.toggle-btn.active {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.task-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.task-item {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .12s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.task-item:hover {
+    border-color: var(--routine);
+    color: var(--routine);
+    background: var(--routine-bg);
+}
+
+.task-item.event-type:hover {
+    border-color: var(--event);
+    color: var(--event);
+    background: var(--event-bg);
+}
+
+.task-item.selected {
+    border-color: var(--routine);
+    color: var(--routine);
+    background: var(--routine-bg);
+    font-weight: 500;
+}
+
+.task-item.selected.event-type {
+    border-color: var(--event);
+    color: var(--event);
+    background: var(--event-bg);
+}
+
+.task-new-input {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 0.5px dashed var(--border2);
+    background: transparent;
+    color: var(--text);
+    outline: none;
+    width: 160px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.task-new-input::placeholder {
+    color: var(--text3);
+}
+
+.task-new-input:focus {
+    border-color: var(--routine);
+}
+
+.create-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 0.5px solid var(--border);
+    margin-top: 4px;
+}
+
+.box-name-input {
+    flex: 1;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    outline: none;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.box-name-input:focus {
+    border-color: var(--routine);
+    background: var(--surface);
+}
+
+.create-box-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--routine);
+    background: var(--routine-bg);
+    color: var(--routine);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all .15s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.create-box-btn:hover {
+    background: var(--routine);
+    color: #fff;
+}
+
+.create-box-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ── Box option side panel ────────────────────────────────────────── */
+.side-panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, .15);
+}
+
+.side-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    background: var(--surface);
+    border-left: 0.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    animation: slideIn .2s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.option-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.option-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 0.5px solid var(--border);
+}
+
+.option-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.option-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.option-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.option-label {
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding-top: 4px;
+}
+
+.toggle-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.toggle-pill.on {
+    background: var(--done-bg);
+    border-color: var(--done-b);
+    color: var(--done-c);
+}
+
+.option-select-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.select-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .12s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.select-chip.selected {
+    border-color: var(--event);
+    background: var(--event-bg);
+    color: var(--event);
+}
+
+.time-input {
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    outline: none;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.time-input:focus {
+    border-color: var(--event);
+}
+
+.save-btn {
+    margin-top: auto;
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--routine);
+    background: var(--routine);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity .15s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.save-btn:hover {
+    opacity: .9;
+}
+
+.save-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ── Modal ───────────────────────────────────────────────────────── */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, .3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-box {
+    width: 90%;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+    animation: popIn .2s ease;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 0.5px solid var(--border);
+}
+
+.modal-title {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.modal-body {
+    padding: 16px;
+}
+
+.modal-empty {
+    font-size: 12px;
+    color: var(--text3);
+    text-align: center;
+    padding: 20px 0;
+}
+
+.board-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.board-list-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.board-list-item:hover {
+    border-color: var(--border2);
+    background: var(--surface);
+}
+
+.board-list-count {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text3);
+}
+
+.confirm-msg {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 16px;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.confirm-btn {
+    flex: 1;
+    padding: 9px;
+    border-radius: var(--radius);
+    border: 0.5px solid;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.confirm-btn.secondary {
+    border-color: var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+}
+
+.confirm-btn.primary {
+    border-color: var(--routine);
+    background: var(--routine);
+    color: #fff;
+}
+
+.confirm-btn:hover {
+    opacity: .85;
+}
+
+/* ── ClockOwl ────────────────────────────────────────────────────── */
+.clock-owl {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.clock-owl-emoji {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.clock-owl-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.clock-owl-label {
+    font-size: 10px;
+    color: var(--text3);
+}
