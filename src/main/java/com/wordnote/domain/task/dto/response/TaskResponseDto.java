@@ -9,5 +9,7 @@ public class TaskResponseDto {
 
     private Long taskId;
 
+    private Long memberId;
+
     private String name;
 }

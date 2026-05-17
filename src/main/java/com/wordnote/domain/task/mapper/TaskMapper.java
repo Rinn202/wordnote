@@ -16,6 +16,7 @@ public class TaskMapper {
         return TaskResponseDto.builder()
                 .taskId(task.getTaskId())
                 .name(task.getName())
+                .memberId(task.getMemberId())
                 .build();
     }
 

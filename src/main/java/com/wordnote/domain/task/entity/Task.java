@@ -15,7 +15,7 @@ import java.util.List;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "taskId", updatable = false, nullable = false)
     private Long taskId;
 
@@ -25,8 +25,18 @@ public class Task {
     @OneToMany(mappedBy = "task")
     private List<BoxTask> boxTasks = new ArrayList<>();
 
+    @Column
+    private Long memberId;
+
+    public Task(Long memberId, String name) {
+        this.memberId = memberId;
+        this.name = name;
+    }
+
     public void update(String name) {
         if (name != null) this.name = name;
     }
+
+
 }
 

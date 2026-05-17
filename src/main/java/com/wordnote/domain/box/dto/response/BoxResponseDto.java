@@ -40,7 +40,7 @@ public class BoxResponseDto {
     public static class BoxTaskDetailDto {
         private Long taskId;
         private String taskName;
-        private Long boxTaskId;   // 중간 엔티티 PK
+        private Long boxTaskId;
         private Integer sortIndex;
         private Boolean isDone;
     }

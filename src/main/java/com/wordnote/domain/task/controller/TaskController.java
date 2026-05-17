@@ -1,5 +1,6 @@
 package com.wordnote.domain.task.controller;
 
+import com.wordnote.auth.utils.SecurityUtil;
 import com.wordnote.domain.task.dto.request.TaskCreateDto;
 import com.wordnote.domain.task.dto.request.TaskUpdateDto;
 import com.wordnote.domain.task.dto.response.TaskResponseDto;
@@ -21,26 +22,22 @@ public class TaskController {
     private final TaskService taskService;
     private final TaskRepository taskRepository;
 
-
-    //id로 조회
-    @GetMapping("/{taskId}")
-    public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable long taskId) {
-
-        TaskResponseDto response = taskService.findById(taskId);
-        return ResponseEntity.ok(response);
-    }
-
+    //전체조회
     @GetMapping
     public ResponseEntity<List<TaskResponseDto>> getAllTask() {
 
-        List<TaskResponseDto> response = taskService.findAll();
+        long memberId = SecurityUtil.getMemberId();
+
+        List<TaskResponseDto> response = taskService.findAllByMemberId(memberId);
+
         return ResponseEntity.ok(response);
     }
 
     //생성
     @PostMapping
     public ResponseEntity<TaskResponseDto> createTask(@RequestBody TaskCreateDto taskCreateDto) {
-        TaskResponseDto response = taskService.createTask(taskCreateDto);
+        long memberId = SecurityUtil.getMemberId();
+        TaskResponseDto response = taskService.createTask(taskCreateDto, memberId);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -49,7 +46,9 @@ public class TaskController {
     @PatchMapping("/{taskId}")
     public ResponseEntity<TaskResponseDto> patchTask(@RequestBody TaskUpdateDto taskUpdateDto,
                                                      @PathVariable long taskId) {
-        TaskResponseDto response = taskService.updateTask(taskId, taskUpdateDto);
+        long memberId = SecurityUtil.getMemberId();
+
+        TaskResponseDto response = taskService.updateTask(taskId, taskUpdateDto, memberId);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -57,7 +56,9 @@ public class TaskController {
     //삭제
     @DeleteMapping("/{taskId}")
     public ResponseEntity<TaskResponseDto> deleteTask(@PathVariable long taskId) {
-        taskService.deleteTask(taskId);
+        long memberId = SecurityUtil.getMemberId();
+
+        taskService.deleteTask(taskId, memberId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
