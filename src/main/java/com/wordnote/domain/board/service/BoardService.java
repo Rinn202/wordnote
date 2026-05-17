@@ -7,7 +7,9 @@ import com.wordnote.domain.board.entity.Board;
 import com.wordnote.domain.board.mapper.BoardMapper;
 import com.wordnote.domain.board.repository.BoardRepository;
 import com.wordnote.domain.box.entity.Box;
+import com.wordnote.domain.box.entity.BoxType;
 import com.wordnote.domain.box.repository.BoxRepository;
+import com.wordnote.domain.boxtask.entity.BoxTask;
 import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.service.MemberService;
 import com.wordnote.exception.ExceptionCode;
@@ -97,7 +99,12 @@ public class BoardService {
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("보드 없음"));
 
-        board.getBoxes().forEach(Box::resetState);
+        board.getBoxes().forEach(box -> {
+            box.resetState();                              // 박스 리셋
+            box.getBoxTasks().forEach(BoxTask::resetDone); // 태스크 리셋
+        });
+
+        board.getBoxes().removeIf(box -> box.getBoxType() == BoxType.EVENT);
     }
 
     //박스 순서변경

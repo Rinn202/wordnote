@@ -31,5 +31,9 @@ public class BoxTask {
     public void toggleDone(Boolean isDone) {
         this.isDone = !this.isDone;
     }
+
+    public void resetDone(){
+        this.isDone = false;
+    }
 }
 

@@ -86,7 +86,7 @@ class BoardController {
     }
 
     //보드 리셋(박스 상태 초기화)
-    @PatchMapping("/{boardId}/reset")
+    @PutMapping("/{boardId}/reset")
     public ResponseEntity<BoardResponseDto> patchReset(@PathVariable long boardId) {
         long memberId = SecurityUtil.getMemberId();
 
