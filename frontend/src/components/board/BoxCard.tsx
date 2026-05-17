@@ -28,14 +28,21 @@ function isExpired(expireTime: string | null): boolean {
 
 export default function BoxCard({
     box, onStateChange, onDelete, onUpdate, onOpenOption, isDragging, dragHandleProps,
-    }: Props) {
+}: Props) {
     const [removing, setRemoving] = useState(false);
+    const [completing, setCompleting] = useState(false);
     const expired = isExpired(box.expireTime);
     const showName = box.tasks.length > 1;
 
     const handleStateClick = async (e: React.MouseEvent) => {
         e.stopPropagation();
         const next = nextState(box.state);
+        if (next === 'DONE') {
+            setCompleting(true);
+            await new Promise(res => setTimeout(res, 300));
+            await onStateChange(box.boxId, next);
+            return;
+        }
         await onStateChange(box.boxId, next);
     };
 
@@ -43,12 +50,14 @@ export default function BoxCard({
         e.stopPropagation();
         await taskApi.done(boxTaskId);
 
-        const updated = await boxApi.getById(box.boxId);
-        onUpdate(updated);
-
-        if (updated.tasks.length === 0) {
-            setRemoving(true);
-            setTimeout(() => onDelete(box.boxId), 300);
+        const remainingTasks = box.tasks.filter(t => t.boxTaskId !== boxTaskId && !t.isDone);
+        if (remainingTasks.length === 0) {
+            setCompleting(true);
+            await new Promise(res => setTimeout(res, 300));
+            onDelete(box.boxId);
+        } else {
+            const updated = await boxApi.getById(box.boxId);
+            onUpdate(updated);
         }
     };
 
@@ -72,23 +81,22 @@ export default function BoxCard({
         IN_PROGRESS: 'IN PROG',
         DONE: 'DONE',
     };
-      return (
+
+    return (
         <div className={[
             'box-card',
             box.state === 'IN_PROGRESS' ? 'in-progress' : '',
             box.state === 'DONE' ? 'done-state' : '',
             expired ? 'expired' : '',
-            isDragging ? 'dragging-card' : '',
+            isDragging ? 'dragging' : '',
             removing ? 'removing' : '',
+            completing ? 'completing' : '',
         ].filter(Boolean).join(' ')}
             onClick={() => onOpenOption(box)}
         >
-            {/* drag handle */}
             <div className="box-grip" {...dragHandleProps} onClick={e => e.stopPropagation()}>
                 <i className="ti ti-grip-vertical" aria-hidden="true"/>
             </div>
-
-            {/* body */}
             <div className="box-body">
                 {showName && <p className="box-name">{box.name}</p>}
                 <div className="tasks-row">
@@ -98,13 +106,11 @@ export default function BoxCard({
                             className={`task-chip ${t.isDone ? 'done-task' : ''}`}
                             onClick={e => handleTaskToggle(e, t.boxTaskId)}
                         >
-              {t.taskName}
-            </span>
+                            {t.taskName}
+                        </span>
                     ))}
                 </div>
             </div>
-
-            {/* actions */}
             <div className="box-actions" onClick={e => e.stopPropagation()}>
                 <button
                     className={`act-btn ${box.alarmType !== 'NONE' ? 'alarmed' : ''}`}

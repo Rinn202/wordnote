@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 interface Props {
     open: boolean;
@@ -8,7 +8,7 @@ interface Props {
     width?: number;
 }
 
-export default function Modal({open, title, onClose, children, width = 400}: Props) {
+export default function Modal({ open, title, onClose, children, width = 400 }: Props) {
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
@@ -23,18 +23,18 @@ export default function Modal({open, title, onClose, children, width = 400}: Pro
         <div className="modal-backdrop" onClick={onClose}>
             <div
                 className="modal-box"
-                style={{maxWidth: width}}
+                style={{ maxWidth: width, overflow: 'visible' }}
                 onClick={e => e.stopPropagation()}
             >
                 {title && (
                     <div className="modal-header">
                         <span className="modal-title">{title}</span>
                         <button className="icon-btn" onClick={onClose} aria-label="닫기">
-                            <i className="ti ti-x" aria-hidden="true"/>
+                            <i className="ti ti-x" aria-hidden="true" />
                         </button>
                     </div>
                 )}
-                <div className="modal-body">{children}</div>
+                <div className="modal-body" style={{ overflow: 'visible' }}>{children}</div>
             </div>
         </div>
     );

@@ -175,6 +175,15 @@ export function useBoard() {
         dragOverItemIndex.current = null;
     }, [board, reorderBox]);
 
+    const [completingId, setCompletingId] = useState<number | null>(null);
+
+    const completeBox = useCallback(async (boxId: number) => {
+        setCompletingId(boxId);
+        await new Promise(res => setTimeout(res, 300));
+        setCompletingId(null);
+        removeBox(boxId);
+    }, [removeBox]);
+
     return {
         board,
         tab,
@@ -191,6 +200,9 @@ export function useBoard() {
         updateBoxLocal,
         addBox,
         filterBoxes,
+
+        completingId,  
+        completeBox,  
 
         // 드래그 관련 상태와 함수
         dragItemIndex,

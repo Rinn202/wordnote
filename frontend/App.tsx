@@ -132,22 +132,22 @@ function BoardApp({onLogout}: { onLogout: () => void }) {
                 </div>
             ) : board ? (
                 <main className="boards-area">
-                    <RoutineBoard
-                        boxes={routineBoxes}
-                        onStateChange={patchBoxState}
-                        onDelete={removeBox}
-                        onUpdate={updateBoxLocal}
-                        onOpenOption={setOptionBox}
-                        onReorder={(id, idx) => reorderBox(id, idx, 'ROUTINE')}
-                    />
-                    <EventBoard
-                        boxes={eventBoxes}
-                        onStateChange={patchBoxState}
-                        onDelete={removeBox}
-                        onUpdate={updateBoxLocal}
-                        onOpenOption={setOptionBox}
-                        onReorder={(id, idx) => reorderBox(id, idx, 'EVENT')}
-                    />
+                <RoutineBoard
+                    boxes={routineBoxes}
+                    onStateChange={patchBoxState}
+                    onDelete={removeBox}
+                    onUpdate={updateBoxLocal}
+                    onOpenOption={setOptionBox}
+                    onReorder={(id, idx) => reorderBox(id, idx, 'ROUTINE')}
+                />
+                <EventBoard
+                    boxes={eventBoxes}
+                    onStateChange={patchBoxState}
+                    onDelete={removeBox}
+                    onUpdate={updateBoxLocal}
+                    onOpenOption={setOptionBox}
+                    onReorder={(id, idx) => reorderBox(id, idx, 'EVENT')}
+                />
                 </main>
             ) : null}
 

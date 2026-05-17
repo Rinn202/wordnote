@@ -476,6 +476,19 @@ html, body, #root {
     filter: brightness(.95);
 }
 
+.box-card.completing {
+    animation: completeBox .3s ease forwards;
+}
+
+@keyframes completeBox {
+    to {
+        opacity: 0;
+        transform: translateX(40px);
+        max-height: 0;
+        margin: 0;
+    }
+}
+
 /* ── TaskPool footer ──────────────────────────────────────────────── */
 .pool-footer {
     border-top: 0.5px solid var(--border);

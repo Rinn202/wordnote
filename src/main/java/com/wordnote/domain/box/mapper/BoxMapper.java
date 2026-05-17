@@ -17,7 +17,7 @@ import java.util.Optional;
 public class BoxMapper {
 
     //dto -> entity
-    //상태, 북마크, 알람시간, 만료시간, 정렬인덱스
+    //상태, 북마크, 알람시간, 만료시간
     public void patchToBoxOption(BoxOptionChangeDto boxPatchDto, Box foundBox) {
         if (boxPatchDto == null) return;
 

@@ -15,7 +15,7 @@ interface Props {
 export default function EventBoard({
     boxes, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
 }: Props) {
-    const {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd} =
+    const {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave} =
         useDragDrop(onReorder as any, 'EVENT');
 
     return (
@@ -24,7 +24,7 @@ export default function EventBoard({
                 <span className="col-label event">EVENT</span>
                 <span className="col-count">{boxes.length}개</span>
             </div>
-            <div className="boxes-list" onDrop={onDrop}>
+            <div className="boxes-list" onDrop={onDrop} onDragLeave={onDragLeave}>
                 {boxes.map((box, index) => (
                     <React.Fragment key={box.boxId}>
                         {overIndex === index && draggingId !== box.boxId && (
