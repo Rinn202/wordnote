@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import type {Board} from '../types';
 import {boardApi} from '../api';
 
@@ -10,10 +10,14 @@ export function useBoards(
     const [loadModalOpen, setLoadModalOpen] = useState(false);
     const [deletingBoardId, setDeletingBoardId] = useState<number | null>(null);
 
+    const loadAllBoards = useCallback(async (boardId: number) => {
+        const boards = await boardApi.getAll(boardId);
+        setAllBoards(boards);
+    }, []);
+
     const handleLoadClick = async () => {
         if (!currentBoardId) return;
-        const boards = await boardApi.getAll(currentBoardId);
-        setAllBoards(boards);
+        await loadAllBoards(currentBoardId);
         setLoadModalOpen(true);
     };
 
@@ -22,7 +26,7 @@ export function useBoards(
         setDeletingBoardId(boardId);
         try {
             await boardApi.delete(boardId);
-            setAllBoards(prev => prev.filter(b => b.boardId !== boardId));
+            setAllBoards(prev => prev.filter((b: Board) => b.boardId !== boardId));
             if (currentBoardId === boardId) {
                 await onNewBoard();
                 setLoadModalOpen(false);
@@ -37,6 +41,7 @@ export function useBoards(
         loadModalOpen,
         setLoadModalOpen,
         deletingBoardId,
+        loadAllBoards,
         handleLoadClick,
         handleDeleteBoard,
     };

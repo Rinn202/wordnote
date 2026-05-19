@@ -21,25 +21,35 @@ export default function RoutineBoard({
 
     const filtered = tab === 'ALL' ? boxes
         : tab === 'DONE' ? boxes.filter(b => b.state === 'DONE')
-            : boxes.filter(b => b.state !== 'DONE');
-
+            : tab === 'BOOKMARK' ? boxes.filter(b => b.bookmark)
+                : boxes.filter(b => b.state !== 'DONE');
     return (
         <div className="board-col">
             <div className="col-header">
                 <div className="col-header-top">
-                    <span className="col-label routine">ROUTINE</span>
-                    <span className="col-count">{filtered.length}개</span>
+    <span style={{
+        fontFamily: 'PyeongchangPeace, sans-serif',
+        fontWeight: 700,
+        fontSize: 28,
+        color: 'rgba(0,0,0,0.07)',
+        letterSpacing: '.04em',
+        lineHeight: 1,
+        marginLeft: 'auto',
+        userSelect: 'none',
+    }}>ROUTINE</span>
                 </div>
                 <div className="col-tabs">
-                    {(['ALL', 'ACTIVE', 'DONE'] as TabType[]).map(t => (
+                    {(['ALL', 'ACTIVE', 'DONE', 'BOOKMARK'] as TabType[]).map(t => (
                         <button
                             key={t}
                             className={`col-tab ${tab === t ? 'active' : ''}`}
                             onClick={() => setTab(t)}
                         >
-                            {t === 'ALL' ? '전체' : t === 'ACTIVE' ? '할 일' : '완료'}
+                            {t === 'ALL' ? '전체' : t === 'ACTIVE' ? '할 일' : t === 'DONE' ? '완료' :
+                                <i className="ti ti-bookmark" aria-hidden="true"/>}
                         </button>
                     ))}
+                    <span className="col-count">{filtered.length}개</span>
                 </div>
             </div>
 

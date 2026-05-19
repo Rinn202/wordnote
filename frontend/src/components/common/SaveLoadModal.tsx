@@ -1,5 +1,5 @@
 import Modal from './Modal'; // 프로젝트 내 모달 경로에 맞게 수정하세요
-import {Board} from '../../pages/WordNote';
+import {Board} from '../../types';
 
 interface SaveLoadModalProps {
     open: boolean;

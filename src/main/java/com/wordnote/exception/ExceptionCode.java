@@ -26,6 +26,7 @@ public enum ExceptionCode {
     BOX_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-006", "박스를 찾을수 없습니다"),
     TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-007", "테스크를 찾을수 없습니다"),
     BOX_TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-008", "박스테스크를 찾을수 없습니다"),
+    BOARD_COUNT_LIMIT(HttpStatus.BAD_REQUEST, "DB-009", "최대 보드 개수를 초과하였습니다"),
     DB_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB-999", "DB 오류"),
 
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-999", "서버 오류"),

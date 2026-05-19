@@ -21,7 +21,7 @@ export default function Topbar({
     return (
         <header className="topbar" ref={topbarRef}>
             <div className="logo-area">
-                <span className="logo">daily·board</span>
+                <span className="logo">오늘 하루</span>
             </div>
 
             <div className="topbar-divider"/>

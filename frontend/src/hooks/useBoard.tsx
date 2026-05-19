@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useState} from 'react';
 import type {Board, BoardType, Box, BoxState} from '../types';
 import {boardApi, boxApi} from '../api';
 
@@ -6,39 +6,39 @@ const LAST_BOARD_KEY = 'lastBoardId';
 
 export function useBoard() {
     const [board, setBoard] = useState<Board | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const initialized = useRef(false);
-
-    const initBoard = useCallback(async () => {
-        if (initialized.current) return;
-        initialized.current = true;
-
-        setLoading(true);
-        try {
-            const lastId = localStorage.getItem(LAST_BOARD_KEY);
-            if (lastId) {
-                const b = await boardApi.getById(Number(lastId));
-                setBoard(b);
-            } else {
-                const b = await boardApi.create();
-                localStorage.setItem(LAST_BOARD_KEY, String(b.boardId));
-                setBoard(b);
-            }
-        } catch (e) {
-            setError('보드를 불러오지 못했습니다.');
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+    const [loading, setLoading] = useState(true);
 
     const loadBoard = useCallback(async (boardId: number) => {
         setLoading(true);
         try {
+            // 현재 보드가 비어있으면 삭제
+            if (board && board.boxes.length === 0) {
+                await boardApi.delete(board.boardId);
+            }
             const b = await boardApi.getById(boardId);
             localStorage.setItem(LAST_BOARD_KEY, String(boardId));
             setBoard(b);
+        } finally {
+            setLoading(false);
+        }
+    }, [board]);
+
+    const initBoard = useCallback(async () => {
+        const lastId = localStorage.getItem(LAST_BOARD_KEY);
+        if (!lastId) {
+            setLoading(false); // lastId 없을 때 로딩 종료
+            return;
+        }
+        setLoading(true);
+        try {
+            const b = await boardApi.getById(Number(lastId));
+            setBoard(b);
+        } catch (error: any) {
+            setLoading(false); // ← 추가
+            const status = error?.response?.status;
+            if (status !== 401) {
+                localStorage.removeItem(LAST_BOARD_KEY);
+            }
         } finally {
             setLoading(false);
         }
@@ -130,7 +130,7 @@ export function useBoard() {
     }, []);
 
     return {
-        board, loading, error,
+        board, loading,
         initBoard, loadBoard, createNewBoard, resetBoard,
         patchBoxState, removeBox, reorderBox,
         updateBoxLocal, addBox,

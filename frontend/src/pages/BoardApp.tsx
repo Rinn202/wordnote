@@ -7,6 +7,8 @@ import EventBoard from '../components/board/EventBoard';
 import TaskPool from '../components/task/TaskPool';
 import BoxOptionPanel from '../components/box/BoxOptionPanel';
 import BoardModals from '../components/common/BoardModals';
+import BoardSidebar from '../components/layout/BoardSidebar';
+import type {Box} from '../types';
 
 export default function BoardApp({onLogout}: { onLogout: () => void }) {
     const {
@@ -30,8 +32,9 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
         handleCloseToast, handleNewBoardClick,
     } = useBoardApp();
 
-    const routineBoxes = currentBoard?.boxes.filter(b => b.boxType === 'ROUTINE') ?? [];
-    const eventBoxes = currentBoard?.boxes.filter(b => b.boxType === 'EVENT') ?? [];
+    const routineBoxes = currentBoard?.boxes.filter((b: Box) => b.boxType === 'ROUTINE') ?? [];
+    const eventBoxes = currentBoard?.boxes.filter((b: Box) => b.boxType === 'EVENT') ?? [];
+    const usedTaskIds = allBoxes.flatMap(b => b.tasks.map(t => t.taskId));
 
     return (
         <div className="app">
@@ -52,38 +55,126 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                 </div>
             ) : currentBoard ? (
                 <div style={{
-                    padding: '12px',
-                    background: 'var(--bg)',
-                    overflow: 'hidden',
                     display: 'flex',
-                    flexDirection: 'column',
-                    height: '100vh',
-                    boxSizing: 'border-box'
+                    flex: 1,
+                    overflow: 'hidden',
+                    maxWidth: '1500px',
+                    margin: '0 auto',
+                    width: '100%'
                 }}>
-                    <div style={{
-                        background: 'transparent',
-                        borderRadius: '5px',
-                        border: '1px solid var(--border)',
-                        overflow: 'hidden',
-                        flex: 1,
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 20%'
-                    }}>
-                        <main className="boards-area">
+                    <BoardSidebar
+                        currentBoardId={currentBoard.boardId}
+                        allBoards={allBoards}
+                        deletingBoardId={deletingBoardId}
+                        onLoadBoard={loadBoard}
+                        onDeleteBoard={handleDeleteBoard}
+                        onNewBoard={handleNewBoardClick}
+                    />
+                    <div style={{flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden'}}>
+                        <div style={{
+                            background: 'transparent',
+                            border: '1px solid var(--border)',
+                            overflow: 'hidden',
+                            flex: 1,
+                            display: 'grid',
+                            gridTemplateColumns: '1fr 1fr'
+                        }}>
                             <RoutineBoard boxes={routineBoxes} onStateChange={patchBoxState} onDelete={removeBox}
                                           onUpdate={updateBoxLocal} onOpenOption={setOptionBox}
                                           onReorder={(id, idx) => reorderBox(id, idx, 'ROUTINE')}/>
                             <EventBoard boxes={eventBoxes} onStateChange={patchBoxState} onDelete={removeBox}
                                         onUpdate={updateBoxLocal} onOpenOption={setOptionBox}
                                         onReorder={(id, idx) => reorderBox(id, idx, 'EVENT')}/>
-                        </main>
-                        <aside className="task-sidebar" style={{borderLeft: '1px solid var(--border)'}}>
-                            <TaskPool boardId={currentBoard.boardId} onBoxCreated={addBox}/>
-                        </aside>
+                        </div>
+                        <Footer boardId={currentBoard.boardId} total={allBoxes.length} {...allBoxesStats} />
                     </div>
-                    <Footer boardId={currentBoard.boardId} total={allBoxes.length} {...allBoxesStats} />
+                    <aside className="task-sidebar"
+                           style={{width: '250px', borderLeft: '1px solid var(--border)', flexShrink: 0}}>
+                        <TaskPool
+                            boardId={currentBoard.boardId}
+                            onBoxCreated={addBox}
+                            usedTaskIds={usedTaskIds}
+                        />
+                    </aside>
                 </div>
             ) : null}
+
+            {!loading && !currentBoard && (
+                <div style={{
+                    position: 'fixed',
+                    inset: 0,
+                    background: 'rgba(40,36,30,0.72)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 9999
+                }}>
+                    <div style={{
+                        background: 'var(--surface2)',
+                        border: '1.5px dashed var(--border2)',
+                        borderRadius: '14px',
+                        padding: '44px 52px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '20px',
+                        textAlign: 'center',
+                        animation: 'popIn .3s cubic-bezier(.34,1.56,.64,1)'
+                    }}>
+                        <div style={{
+                            width: 52,
+                            height: 52,
+                            borderRadius: '50%',
+                            background: 'var(--done-bg)',
+                            border: '1.5px solid var(--done-b)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: 22,
+                            color: 'var(--done-c)'
+                        }}>
+                            <i className="ti ti-layout-board" aria-hidden="true"/>
+                        </div>
+                        <div style={{
+                            fontFamily: 'GowunBatang, serif',
+                            fontSize: 18,
+                            fontWeight: 700,
+                            color: 'var(--text)',
+                            letterSpacing: '.01em',
+                            lineHeight: 1.5
+                        }}>
+                            아직 보드가 없습니다
+                        </div>
+                        <div style={{
+                            fontFamily: 'GowunBatang, serif',
+                            fontSize: 13,
+                            color: 'var(--text3)',
+                            lineHeight: 1.7
+                        }}>
+                            새 보드를 만들어 오늘의 할 일을<br/>정리해보세요.
+                        </div>
+                        <button onClick={createNewBoard} style={{
+                            marginTop: 4,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            fontFamily: 'GowunBatang, serif',
+                            fontSize: 15,
+                            fontWeight: 700,
+                            padding: '11px 28px',
+                            borderRadius: 8,
+                            border: '1.5px dashed var(--done-b)',
+                            background: 'var(--done-bg)',
+                            color: 'var(--done-c)',
+                            cursor: 'pointer',
+                            letterSpacing: '.03em'
+                        }}>
+                            <i className="ti ti-plus" aria-hidden="true"/>
+                            새 보드 만들기
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {optionBox && (
                 <div className="side-panel-overlay" onClick={() => setOptionBox(null)}>

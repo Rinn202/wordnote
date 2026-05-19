@@ -4,6 +4,7 @@ import com.wordnote.auth.filter.JwtVerificationFilter;
 import com.wordnote.auth.handler.OAuth2MemberSuccessHandler;
 import com.wordnote.auth.service.CustomOAuth2UserService;
 import com.wordnote.auth.utils.JwtTokenizer;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +52,13 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtVerificationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 302 대신 401 반환(401, 403 발생시 프론트에서 쓰래기 토큰 제거)
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Unauthorized\"}");
+                        })
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
                         .successHandler(oAuth2MemberSuccessHandler)

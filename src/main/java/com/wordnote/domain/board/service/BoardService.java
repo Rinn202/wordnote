@@ -34,6 +34,12 @@ public class BoardService {
     public BoardResponseDto createBoard(long memberId) {
         Member member = memberService.findById(memberId);
 
+        long count = boardRepository.countByMember(member);
+
+        if (count >= 11) {
+            throw new LogicException(ExceptionCode.BOARD_COUNT_LIMIT);
+        }
+
         Board board = Board.builder().build();
         board.assignMember(member);
 
