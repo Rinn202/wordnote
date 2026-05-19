@@ -93,6 +93,7 @@ export interface Member {
     role: 'BASIC' | 'ADMIN';
     boardIds: number[];
     profileUri: string;
+    createdAt: string;
 }
 
 export interface LoginRequest {

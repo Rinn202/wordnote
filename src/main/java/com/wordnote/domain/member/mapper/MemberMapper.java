@@ -30,6 +30,7 @@ public class MemberMapper {
                 .role(member.getRole())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
+                .createdAt(member.getCreatedAt())
                 .profileUri(member.getProfileImageUrl())
                 .boardIds(member.getBoards().stream().map(Board::getBoardId).toList())
                 .build();
@@ -45,7 +46,7 @@ public class MemberMapper {
                 .build();
     }
 
-    //patchDto -> member
+    //patchDto -> member 필요없어서 사용안하는중
     public Member updateToMember(MemberUpdateDto dto) {
         return Member.builder()
                 .nickname(dto.getNickname())

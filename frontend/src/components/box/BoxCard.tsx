@@ -29,7 +29,7 @@ export default function BoxCard({
                                 }: Props) {
     const [removing, setRemoving] = useState(false);
     const [completing] = useState(false);
-    const expired = isExpired(box.expireTime);
+    const expired = isExpired(box.expireTime) && box.state !== 'DONE';
 
     /* 태스크 토글 */
     const handleTaskToggle = async (e: React.MouseEvent, boxTaskId: number) => {

@@ -1,5 +1,6 @@
 import {useRef} from 'react';
 import {useTopbarTheme} from '../../hooks/useTopbarTheme';
+import {useNavigate} from 'react-router-dom';
 
 interface Props {
     clockStr: string;
@@ -17,6 +18,7 @@ export default function Topbar({
                                }: Props) {
     const topbarRef = useRef<HTMLElement>(null);
     useTopbarTheme(topbarRef);
+    const navigate = useNavigate();
 
     return (
         <header className="topbar" ref={topbarRef}>
@@ -37,7 +39,7 @@ export default function Topbar({
             </div>
 
             <div className="topbar-actions">
-                <button className="icon-btn" title="마이페이지">
+                <button className="icon-btn" title="마이페이지" onClick={() => navigate('/member/mypage')}>
                     <i className="ti ti-user" aria-hidden="true"/>
                 </button>
                 <button className="icon-btn" title="새 보드" onClick={onNewBoard}>

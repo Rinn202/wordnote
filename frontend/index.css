@@ -965,7 +965,7 @@ html, body, #root {
 
 .option-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
@@ -994,6 +994,8 @@ html, body, #root {
 }
 
 .toggle-pill {
+    display: inline-flex;
+    align-items: center;
     font-size: 11px;
     font-weight: 500;
     padding: 4px 12px;
@@ -1013,6 +1015,8 @@ html, body, #root {
 }
 
 .select-chip {
+    display: inline-flex;
+    align-items: center;
     font-size: 11px;
     padding: 3px 10px;
     border-radius: 20px;
@@ -1049,9 +1053,9 @@ html, body, #root {
     margin-top: auto;
     padding: 11px;
     border-radius: var(--radius);
-    border: 1px solid var(--routine);
-    background: var(--routine);
-    color: #fff;
+    border: 1px solid var(--done-b);
+    background: var(--done-bg);
+    color: var(--done-c);
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
@@ -1080,7 +1084,6 @@ html, body, #root {
 }
 
 .modal-box {
-    width: 90%;
     background: var(--surface);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);

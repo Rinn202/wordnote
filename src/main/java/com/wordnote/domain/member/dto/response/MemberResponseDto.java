@@ -4,6 +4,7 @@ import com.wordnote.domain.member.entity.MemberRole;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,5 +20,7 @@ public class MemberResponseDto {
     private List<Long> boardIds;
 
     private String profileUri;
+
+    private LocalDateTime createdAt;
 
 }
