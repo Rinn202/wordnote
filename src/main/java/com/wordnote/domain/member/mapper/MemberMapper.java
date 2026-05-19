@@ -5,6 +5,7 @@ import com.wordnote.domain.member.dto.request.MemberCreateDto;
 import com.wordnote.domain.member.dto.request.MemberUpdateDto;
 import com.wordnote.domain.member.dto.response.MemberResponseDto;
 import com.wordnote.domain.member.entity.Member;
+import com.wordnote.domain.member.entity.MemberRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,7 @@ public class MemberMapper {
                 .nickname(dto.getNickname())
                 .email(dto.getEmail())
                 .password(dto.getPassword()) //생성시에만
+                .role(MemberRole.BASIC)
                 .build();
     }
 

@@ -57,6 +57,7 @@ public class Member {
         this.name = name;
         this.nickname = name;
         this.password = password;
+        this.role = MemberRole.BASIC;
         this.profileImageUrl = profileImageUrl;
     }
 
