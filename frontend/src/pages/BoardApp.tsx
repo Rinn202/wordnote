@@ -112,7 +112,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                     <div style={{
                         background: 'var(--surface2)',
                         border: '1.5px dashed var(--border2)',
-                        borderRadius: '14px',
+                        borderRadius: '44px',
                         padding: '44px 52px',
                         display: 'flex',
                         flexDirection: 'column',
@@ -122,18 +122,18 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                         animation: 'popIn .3s cubic-bezier(.34,1.56,.64,1)'
                     }}>
                         <div style={{
-                            width: 52,
-                            height: 52,
-                            borderRadius: '50%',
-                            background: 'var(--done-bg)',
-                            border: '1.5px solid var(--done-b)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: 22,
-                            color: 'var(--done-c)'
-                        }}>
-                            <i className="ti ti-layout-board" aria-hidden="true"/>
+    width: 52,
+    height: 52,
+    borderRadius: '50%',
+    background: '#fffbea',
+    border: '1.8px solid #f9c74f',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 22,
+    color: '#f9c74f'
+}}>
+                            <i className="ti ti-note" aria-hidden="true"/>
                         </div>
                         <div style={{
                             fontFamily: 'GowunBatang, serif',
@@ -143,7 +143,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                             letterSpacing: '.01em',
                             lineHeight: 1.5
                         }}>
-                            아직 보드가 없습니다
+                            첫 보드를 만들어 보세요
                         </div>
                         <div style={{
                             fontFamily: 'GowunBatang, serif',
@@ -157,20 +157,20 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                             marginTop: 4,
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: 8,
-                            fontFamily: 'GowunBatang, serif',
-                            fontSize: 15,
+                            gap: 10,
+                            fontFamily: 'PyeongchangPeace, serif',
+                            fontSize: 17,
                             fontWeight: 700,
-                            padding: '11px 28px',
-                            borderRadius: 8,
-                            border: '1.5px dashed var(--done-b)',
-                            background: 'var(--done-bg)',
-                            color: 'var(--done-c)',
+                            padding: '13px 32px',
+                            borderRadius: 999,
+                            border: '2px solid #f9c74f',
+                            background: '#ffdc43',
+                            color: '#b07d00',
                             cursor: 'pointer',
-                            letterSpacing: '.03em'
+                            letterSpacing: '.04em',
+                            transition: 'transform .15s'
                         }}>
-                            <i className="ti ti-plus" aria-hidden="true"/>
-                            새 보드 만들기
+                            START
                         </button>
                     </div>
                 </div>
