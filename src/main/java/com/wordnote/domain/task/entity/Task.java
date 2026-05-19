@@ -28,6 +28,9 @@ public class Task {
     @Column
     private Long memberId;
 
+    @Column
+    private String category;
+
     public Task(Long memberId, String name) {
         this.memberId = memberId;
         this.name = name;

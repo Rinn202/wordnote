@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import type {AlarmType, Box} from '../../types';
 import {boxApi} from '../../api';
-import Modal from './Modal';
+import Modal from '../common/Modal';
 
 interface Props {
     box: Box;
@@ -9,14 +9,13 @@ interface Props {
     onUpdate: (box: Box) => void;
 }
 
-// ✅ NONE 제거 — 선택 안 한 상태가 없음, 재클릭 시 해제
 const ALARM_OPTIONS: { value: AlarmType; label: string }[] = [
     {value: 'AT_TIME', label: '정시'},
     {value: 'TEN_MINUTES_BEFORE', label: '10분 전'},
     {value: 'THIRTY_MINUTES_BEFORE', label: '30분 전'},
 ];
 
-const HOURS = Array.from({length: 12}, (_, i) => i + 1); // 1~12
+const HOURS = Array.from({length: 12}, (_, i) => i + 1);
 const MINUTES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
 const parse24h = (hhmm: string): { hour: number; minute: number; isPm: boolean } => {
@@ -44,19 +43,25 @@ function TimeDropdown({
     format?: (v: number) => string;
 }) {
     const [open, setOpen] = useState(false);
+    const [rect, setRect] = useState<DOMRect | null>(null);
     const ref = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLDivElement>(null);
     const fmt = format ?? ((v: number) => String(v).padStart(2, '0'));
 
     useEffect(() => {
         if (!open) return;
-        const handler = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+        const handler = (e: Event) => {
+            if (listRef.current && listRef.current.contains(e.target as Node)) return;
+            setOpen(false);
         };
-        document.addEventListener('mousedown', handler);
-        return () => document.removeEventListener('mousedown', handler);
+        window.addEventListener('scroll', handler, true);
+        window.addEventListener('resize', handler);
+        return () => {
+            window.removeEventListener('scroll', handler, true);
+            window.removeEventListener('resize', handler);
+        };
     }, [open]);
 
-    const listRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (!open || !listRef.current) return;
         const selected = listRef.current.querySelector('[data-selected="true"]') as HTMLElement;
@@ -66,7 +71,11 @@ function TimeDropdown({
     return (
         <div ref={ref} style={{position: 'relative'}}>
             <button
-                onClick={() => setOpen(o => !o)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setRect(ref.current?.getBoundingClientRect() ?? null);
+                    setOpen(o => !o);
+                }}
                 style={{
                     display: 'flex', alignItems: 'center', gap: 4,
                     padding: '5px 8px',
@@ -83,63 +92,72 @@ function TimeDropdown({
             </button>
 
             {open && (
-                <div
-                    ref={listRef}
-                    style={{
-                        position: 'absolute', top: 'calc(100% + 4px)', left: 0,
-                        zIndex: 100, background: 'var(--surface)',
-                        border: '0.5px solid var(--border2)',
-                        borderRadius: 'var(--radius)',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-                        maxHeight: 180, overflowY: 'auto', minWidth: 70,
-                    }}
-                >
-                    {options.map(opt => (
-                        <button
-                            key={opt}
-                            data-selected={opt === value}
-                            onClick={() => {
-                                onChange(opt);
-                                setOpen(false);
-                            }}
-                            style={{
-                                display: 'block', width: '100%', padding: '6px 12px',
-                                background: opt === value ? 'var(--routine)' : 'transparent',
-                                color: opt === value ? '#fff' : 'var(--text)',
-                                border: 'none', textAlign: 'left', fontSize: 13,
-                                fontFamily: 'IBM Plex Mono, monospace', cursor: 'pointer',
-                            }}
-                            onMouseEnter={e => {
-                                if (opt !== value) (e.currentTarget as HTMLElement).style.background = 'var(--surface2)';
-                            }}
-                            onMouseLeave={e => {
-                                if (opt !== value) (e.currentTarget as HTMLElement).style.background = 'transparent';
-                            }}
-                        >
-                            {fmt(opt)}
-                        </button>
-                    ))}
-                </div>
+                <>
+                    <div
+                        style={{position: 'fixed', inset: 0, zIndex: 9998}}
+                        onClick={() => setOpen(false)}
+                    />
+                    <div
+                        ref={listRef}
+                        style={{
+                            position: 'fixed',
+                            top: rect ? rect.bottom + 4 : 0,
+                            left: rect ? rect.left : 0,
+                            zIndex: 9999,
+                            background: 'var(--surface)',
+                            border: '0.5px solid var(--border2)',
+                            borderRadius: 'var(--radius)',
+                            boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                            maxHeight: 180, overflowY: 'auto', minWidth: 70,
+                        }}
+                    >
+                        {options.map(opt => (
+                            <button
+                                key={opt}
+                                data-selected={opt === value}
+                                onClick={() => {
+                                    onChange(opt);
+                                    setOpen(false);
+                                }}
+                                style={{
+                                    display: 'block', width: '100%', padding: '6px 12px',
+                                    background: opt === value ? 'var(--routine)' : 'transparent',
+                                    color: opt === value ? '#fff' : 'var(--text)',
+                                    border: 'none', textAlign: 'left', fontSize: 13,
+                                    fontFamily: 'IBM Plex Mono, monospace', cursor: 'pointer',
+                                }}
+                                onMouseEnter={e => {
+                                    if (opt !== value) (e.currentTarget as HTMLElement).style.background = 'var(--surface2)';
+                                }}
+                                onMouseLeave={e => {
+                                    if (opt !== value) (e.currentTarget as HTMLElement).style.background = 'transparent';
+                                }}
+                            >
+                                {fmt(opt)}
+                            </button>
+                        ))}
+                    </div>
+                </>
             )}
         </div>
     );
 }
 
 export default function BoxOptionPanel({box, onClose, onUpdate}: Props) {
-    // ✅ NONE이면 null로 초기화 (선택 없음 상태)
+    const validHasTime = !!box.expireTime && box.expireTime !== '00:00:00';
+
     const [alarmType, setAlarmType] = useState<AlarmType | null>(
-        box.alarmType === 'NONE' ? null : box.alarmType
+        !validHasTime ? null : (box.alarmType === 'NONE' ? null : box.alarmType)
     );
     const [bookmark, setBookmark] = useState(box.bookmark);
     const [saving, setSaving] = useState(false);
-    const [hasTime, setHasTime] = useState(!!box.expireTime);
+    const [hasTime, setHasTime] = useState(validHasTime);
 
     const initial = box.expireTime ? parse24h(box.expireTime.slice(0, 5)) : null;
     const [hour, setHour] = useState(initial?.hour ?? 9);
     const [minute, setMinute] = useState(initial?.minute ?? 0);
     const [isPm, setIsPm] = useState(initial?.isPm ?? false);
 
-    // ✅ 같은 칩 재클릭 시 선택 해제 (= NONE)
     const handleAlarmClick = (value: AlarmType) => {
         setAlarmType(prev => prev === value ? null : value);
     };
@@ -150,7 +168,7 @@ export default function BoxOptionPanel({box, onClose, onUpdate}: Props) {
         try {
             await boxApi.patchOption(box.boxId, {
                 bookmark,
-                alarmType: alarmType ?? 'NONE',  // null → NONE으로 전송
+                alarmType: alarmType ?? 'NONE',
                 expireTime: expireTime ? `${expireTime}:00` : null,
             });
             const updated = await boxApi.getById(box.boxId);
@@ -179,24 +197,6 @@ export default function BoxOptionPanel({box, onClose, onUpdate}: Props) {
                         </button>
                     </div>
 
-                    {/* ✅ 알람 — 가로 표시, 없음 제거, 재클릭 해제 */}
-                    <div className="option-row">
-                        <label className="option-label">
-                            <i className="ti ti-bell" aria-hidden="true"/> 알람
-                        </label>
-                        <div className="option-alarm-group">
-                            {ALARM_OPTIONS.map(o => (
-                                <button
-                                    key={o.value}
-                                    className={`select-chip ${alarmType === o.value ? 'selected' : ''}`}
-                                    onClick={() => handleAlarmClick(o.value)}
-                                >
-                                    {o.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
                     {/* 만료시간 */}
                     <div className="option-row">
                         <label className="option-label">
@@ -205,7 +205,13 @@ export default function BoxOptionPanel({box, onClose, onUpdate}: Props) {
                         <div style={{display: 'flex', alignItems: 'center', gap: 6}}>
                             <button
                                 className={`toggle-pill ${hasTime ? 'on' : ''}`}
-                                onClick={() => setHasTime(v => !v)}
+                                onClick={() => {
+                                    setHasTime(v => {
+                                        const next = !v;
+                                        if (!next) setAlarmType(null);
+                                        return next;
+                                    });
+                                }}
                                 style={{marginRight: 4}}
                             >
                                 {hasTime ? 'ON' : 'OFF'}
@@ -249,6 +255,27 @@ export default function BoxOptionPanel({box, onClose, onUpdate}: Props) {
                             )}
                         </div>
                     </div>
+
+                    {/* 알람 — 만료시간 ON일 때만 표시 */}
+                    {hasTime && (
+                        <div className="option-row">
+                            <label className="option-label">
+                                <i className="ti ti-bell" aria-hidden="true"/> 알람
+                            </label>
+                            <div className="option-alarm-group">
+                                {ALARM_OPTIONS.map(opt => (
+                                    <button
+                                        key={opt.value}
+                                        type="button"
+                                        className={`select-chip ${alarmType === opt.value ? 'selected' : ''}`}
+                                        onClick={() => handleAlarmClick(opt.value)}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     <button
                         className="save-btn"

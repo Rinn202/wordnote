@@ -1,5 +1,7 @@
 package com.wordnote.auth.service;
 
+import com.wordnote.auth.utils.PrincipalDetails;
+import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -27,8 +29,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String name = (String) attributes.get("name");
         String profile = (String) attributes.get("picture");
 
-        memberService.processOAuth2User(email, name, profile);
+        Member member = memberService.processOAuth2User(email, name, profile);
 
-        return oAuth2User;
+        return new PrincipalDetails(member, attributes);
     }
 }

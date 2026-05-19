@@ -23,7 +23,7 @@ export default function Modal({open, title, onClose, children, width = 400}: Pro
         <div className="modal-backdrop" onClick={onClose}>
             <div
                 className="modal-box"
-                style={{maxWidth: width, overflow: 'visible'}}
+                style={{width, maxWidth: '90vw', overflow: 'hidden'}}  // 모달 박스는 hidden
                 onClick={e => e.stopPropagation()}
             >
                 {title && (
@@ -34,7 +34,7 @@ export default function Modal({open, title, onClose, children, width = 400}: Pro
                         </button>
                     </div>
                 )}
-                <div className="modal-body" style={{overflow: 'visible'}}>{children}</div>
+                <div className="modal-body">{children}</div>
             </div>
         </div>
     );

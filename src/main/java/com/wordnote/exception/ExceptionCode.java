@@ -8,6 +8,7 @@ public enum ExceptionCode {
 
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH-001", "인증 필요"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "AUTH-002", "권한 없음"),
+    TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "AUTH-003", "유효하지 않은 토큰입니다."),
     AUTH_ERROR(HttpStatus.UNAUTHORIZED, "AUTH-999", "인증 오류"),
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER-001", "회원 없음"),

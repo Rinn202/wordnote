@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import type {Box, BoxState, TabType} from '../../types';
-import BoxCard from './BoxCard';
+import BoxCard from '../box/BoxCard';
 import {useDragDrop} from '../../hooks/useDragDrop';
 
 interface Props {
@@ -26,45 +26,64 @@ export default function EventBoard({
     return (
         <div className="board-col event-col">
             <div className="col-header">
-                <span className="col-label event">EVENT</span>
-                <div className="col-tab-group">
+                <div className="col-header-top">
+                    <span className="col-label event">EVENT</span>
+                    <span className="col-count">{filtered.length}개</span>
+                </div>
+                <div className="col-tabs">
                     {(['ALL', 'ACTIVE', 'DONE'] as TabType[]).map(t => (
                         <button
                             key={t}
                             className={`col-tab ${tab === t ? 'active' : ''}`}
                             onClick={() => setTab(t)}
                         >
-                            {t === 'ALL' ? '전체' : t === 'ACTIVE' ? '할일' : '완료'}
+                            {t === 'ALL' ? '전체' : t === 'ACTIVE' ? '할 일' : '완료'}
                         </button>
                     ))}
                 </div>
-                <span className="col-count">{filtered.length}개</span>
             </div>
+
             <div className="boxes-list" onDrop={onDrop} onDragLeave={onDragLeave}>
                 {filtered.map((box, index) => (
                     <React.Fragment key={box.boxId}>
                         {overIndex === index && draggingId !== box.boxId && (
-                            <div className="drop-zone" onDragOver={e => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                            }}>
+                            <div
+                                className="drop-zone"
+                                onDragOver={e => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                }}
+                            >
                                 <i className="ti ti-arrow-down" aria-hidden="true"/>
                             </div>
                         )}
                         {draggingId !== box.boxId && (
-                            <div draggable onDragStart={() => onDragStart(box.boxId, index)}
-                                 onDragOver={e => onDragOver(e, index)} onDragEnd={onDragEnd}>
-                                <BoxCard box={box} onStateChange={onStateChange} onDelete={onDelete} onUpdate={onUpdate}
-                                         onOpenOption={onOpenOption} isDragging={false}/>
+                            <div
+                                draggable
+                                onDragStart={() => onDragStart(box.boxId, index)}
+                                onDragOver={e => onDragOver(e, index)}
+                                onDragEnd={onDragEnd}
+                            >
+                                <BoxCard
+                                    box={box}
+                                    onStateChange={onStateChange}
+                                    onDelete={onDelete}
+                                    onUpdate={onUpdate}
+                                    onOpenOption={onOpenOption}
+                                    isDragging={false}
+                                />
                             </div>
                         )}
                     </React.Fragment>
                 ))}
                 {overIndex === filtered.length && draggingId !== null && (
-                    <div className="drop-zone" onDragOver={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }}>
+                    <div
+                        className="drop-zone"
+                        onDragOver={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }}
+                    >
                         <i className="ti ti-arrow-down" aria-hidden="true"/>
                     </div>
                 )}

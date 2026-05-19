@@ -1,0 +1,67 @@
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useBoard} from './useBoard';
+import {useBoards} from './useBoards';
+import type {AlarmToast} from './useAlarm';
+import {useAlarm} from './useAlarm';
+import {useClock} from './useClock';
+import type {Box} from '../types';
+
+export function useBoardApp() {
+    const {board: currentBoard, ...boardActions} = useBoard();
+    const {clockStr, dateStr} = useClock();
+
+    const [optionBox, setOptionBox] = useState<Box | null>(null);
+    const [newBoardConfirmOpen, setNewBoardConfirmOpen] = useState(false);
+    const [alarmToasts, setAlarmToasts] = useState<AlarmToast[]>([]);
+
+    const allBoxes = useMemo(() => currentBoard?.boxes ?? [], [currentBoard?.boxes]);
+
+    const boards = useBoards(currentBoard?.boardId, boardActions.createNewBoard);
+
+    const handleAlarm = useCallback((toast: AlarmToast) => {
+        setAlarmToasts(prev => [...prev, toast]);
+    }, []);
+
+    const {stopAudio} = useAlarm(allBoxes, handleAlarm);
+
+    const handleCloseToast = useCallback((boxId: number) => {
+        setAlarmToasts(prev => {
+            const next = prev.filter(t => t.boxId !== boxId);
+            if (next.length === 0) stopAudio();
+            return next;
+        });
+    }, [stopAudio]);
+
+    const handleNewBoardClick = () => {
+        if ((currentBoard?.boxes.length ?? 0) > 0) setNewBoardConfirmOpen(true);
+        else boardActions.createNewBoard();
+    };
+
+    useEffect(() => {
+        boardActions.initBoard();
+    }, [boardActions.initBoard]);
+
+    const allBoxesStats = {
+        todo: allBoxes.filter(b => b.state === 'READY').length,
+        prog: allBoxes.filter(b => b.state === 'IN_PROGRESS').length,
+        done: allBoxes.filter(b => b.state === 'DONE').length,
+        alarm: allBoxes.filter(b => b.alarmType && b.alarmType !== 'NONE' && b.state !== 'DONE').length,
+    };
+
+
+    return {
+        currentBoard,
+        boardActions,
+        boards,
+        clockStr,
+        dateStr,
+        optionBox, setOptionBox,
+        newBoardConfirmOpen, setNewBoardConfirmOpen,
+        alarmToasts,
+        allBoxes,
+        allBoxesStats,
+        handleAlarm,
+        handleCloseToast,
+        handleNewBoardClick,
+    };
+}

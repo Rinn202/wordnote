@@ -1,5 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap');
-@import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
+@font-face {
+    font-family: 'GowunBatang';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunBatang-Regular.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'GowunBatang';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunBatang-Bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'OngleipParkDahyeon';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'JoseonBoldMyongjo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunKm.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -8,42 +33,50 @@
 }
 
 :root {
-    --bg: #F5F3EE;
+    --bg: #F5F2EA;
     --surface: #FFFFFF;
-    --surface2: #F0EDE8;
-    --border: #E2DDD6;
-    --border2: #C8C3BB;
-    --text: #2C2A26;
-    --text2: #6B6760;
-    --text3: #A09C97;
+    --surface2: #FAF8F4;
+    --surface3: #F5F1E8;
+    --border: #EAE5DC;
+    --border2: #D2CCC3;
+    --border3: #DEDAD4;
 
-    --routine: #0F6E56;
-    --routine-bg: #E1F5EE;
-    --routine-b: #9FE1CB;
-    --event: #185FA5;
-    --event-bg: #E6F1FB;
-    --event-b: #B5D4F4;
+    --text: #3A3830;
+    --text2: #7A7770;
+    --text3: #ADA9A3;
+    --text4: #6b6762;
 
-    --ready-c: #444441;
-    --progress-c: #BA7517;
-    --progress-bg: #FAEEDA;
-    --progress-b: #FAC775;
-    --done-c: #3B6D11;
-    --done-bg: #EAF3DE;
-    --done-b: #C0DD97;
+    /* routine — coral/red */
+    --routine: #C03428;
+    --routine-bg: #FFF0EE;
+    --routine-b: #F5B8B2;
+    --routine-tab-bg: #FFD9D5;
 
-    --danger: #A32D2D;
-    --danger-bg: #FCEBEB;
-    --bookmark: #BA7517;
+    /* event — purple */
+    --event: #C26A00;
+    --event-bg: #FFF4E6;
+    --event-b: #ffd392;
+    --event-tab-bg: #ffefce;
+
+    --progress-c: #C07B10;
+    --progress-bg: #FFF2D6;
+    --progress-b: #FFCC70;
+
+    --done-c: #3D7210;
+    --done-bg: #E8F8D8;
+    --done-b: #BADE90;
+
+    --danger: #A83030;
+    --danger-bg: #FFF0F0;
+    --bookmark: #C07B10;
 
     --radius: 8px;
     --radius-lg: 12px;
-    --radius-xl: 16px;
 }
 
 html, body, #root {
     height: 100%;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
     background: var(--bg);
     color: var(--text);
 }
@@ -51,7 +84,7 @@ html, body, #root {
 /* ── App layout ─────────────────────────────────────────────────── */
 .app {
     display: grid;
-    grid-template-rows: 52px 1fr;
+    grid-template-rows: 64px 1fr 38px;
     height: 100vh;
     overflow: hidden;
 }
@@ -61,10 +94,10 @@ html, body, #root {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 16px;
-    gap: 12px;
-    background: var(--surface);
-    border-bottom: 0.5px solid var(--border);
+    padding: 0 50px;
+    gap: 14px;
+    background: var(--surface3);
+    border-bottom: 1px solid var(--border);
     position: relative;
     z-index: 10;
 }
@@ -72,67 +105,134 @@ html, body, #root {
 .logo-area {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .logo {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text2);
-    letter-spacing: .05em;
-}
-
-.tab-group {
-    display: flex;
-    gap: 3px;
-    background: var(--surface2);
-    border-radius: var(--radius);
-    padding: 3px;
-}
-
-.tab {
-    font-size: 12px;
-    font-weight: 500;
-    padding: 5px 14px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all .15s;
-    font-family: 'Noto Sans KR', sans-serif;
-}
-
-.tab.active {
-    background: var(--surface);
+    font-family: 'OngleipParkDahyeon', cursive;
+    font-size: 24px;
     color: var(--text);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+    letter-spacing: .02em;
+}
+
+.topbar-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--border3);
+    flex-shrink: 0;
+}
+
+.topbar-clock-area {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.topbar-clock {
+    font-family: 'JoseonBoldMyongjo', serif;
+    font-size: 20px;
+    color: var(--text);
+    letter-spacing: .04em;
+    line-height: 1;
+}
+
+.topbar-date {
+    font-size: 11px;
+    color: var(--text3);
+    line-height: 1;
+}
+
+.topbar-notice {
+    flex: 1;
+    background: var(--surface);
+    border: 1.5px dashed var(--border3);
+    border-radius: 8px;
+    padding: 6px 14px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.topbar-notice i {
+    font-size: 14px;
+    color: var(--text4);
+}
+
+.topbar-notice span {
+    font-size: 12px;
+    color: var(--text3);
 }
 
 .topbar-actions {
     display: flex;
     gap: 6px;
+    flex-shrink: 0;
 }
 
 .icon-btn {
-    width: 30px;
-    height: 30px;
-    border: 0.5px solid var(--border2);
-    border-radius: var(--radius);
-    background: var(--surface);
-    color: var(--text2);
+    width: 32px;
+    height: 32px;
+    border: 1.5px dashed var(--border2);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text3);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 15px;
     transition: all .15s;
+    overflow: visible; /* ← 추가 */
+    flex-shrink: 0; /* ← 추가 */
 }
 
 .icon-btn:hover {
+    border-color: var(--text3);
+    color: var(--text2);
     background: var(--surface2);
-    color: var(--text);
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+.app-footer {
+    background: var(--surface3);
+    border-top: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--text3);
+}
+
+.footer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--routine-b);
+}
+
+.footer-right {
+    display: flex;
+    gap: 14px;
+}
+
+.footer-stat {
+    font-size: 11px;
+    color: var(--text4);
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.footer-stat span {
+    color: var(--text3);
 }
 
 /* ── Main area ───────────────────────────────────────────────────── */
@@ -149,13 +249,13 @@ html, body, #root {
     overflow: hidden;
 }
 
-/* ── TaskPool 우측 사이드바 ──────────────────────────────────────── */
+/* ── TaskPool 사이드바 ───────────────────────────────────────────── */
 .task-sidebar {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     background: var(--surface);
-    border-left: 0.5px solid var(--border);
+    border-left: 1px solid var(--border);
 }
 
 .task-sidebar::-webkit-scrollbar {
@@ -171,58 +271,148 @@ html, body, #root {
 .board-col {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    border-right: 0.5px solid var(--border);
+    overflow: visible;
+    border-right: 1px solid var(--border);
+    position: relative;
 }
 
 .board-col:last-child {
     border-right: none;
 }
 
+/* ── Col header & 탭 ─────────────────────────────────────────────── */
 .col-header {
     display: flex;
+    flex-direction: column;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+    position: relative;
+    z-index: 2;
+}
+
+.col-header-top {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 14px 8px;
-    border-bottom: 0.5px solid var(--border);
-    background: var(--surface);
+    gap: 6px;
+    padding: 10px 12px 7px;
 }
 
 .col-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: .08em;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
     text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: var(--radius);
-    border: 0.5px solid;
+    padding: 4px 16px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
 }
 
 .col-label.routine {
-    color: var(--routine);
-    background: var(--routine-bg);
-    border-color: var(--routine-b);
+    background: var(--routine-b);
+    color: #464646;
 }
 
 .col-label.event {
-    color: var(--event);
-    background: var(--event-bg);
-    border-color: var(--event-b);
+    background: var(--event-b);
+    color: #464646;
 }
 
 .col-count {
-    font-size: 11px;
-    color: var(--text3);
+    font-size: 13px;
+    color: var(--text4);
     margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
 }
 
+/* 위로 튀어나오는 탭 — 위쪽만 둥근 사각형 */
+.col-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 10px;
+    overflow: visible;
+    margin-bottom: -1px;
+
+}
+
+.col-tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 3px 10px 4px;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border3);
+    border-bottom: none;
+    background: #fff8f8;
+    color: var(--text3);
+    cursor: pointer;
+    font-family: 'GowunBatang', serif;
+    position: relative;
+    z-index: 1;
+    transition: all .12s;
+    margin-right: 3px;
+}
+
+.col-tab:hover {
+    background: #E0DCD5;
+}
+
+.col-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    font-weight: 700;
+    border-color: var(--border2);
+    border-bottom: 2px solid var(--surface2);
+    margin-bottom: -2px;
+    z-index: 3;
+}
+
+.col-tab.active::after {
+    display: none;
+}
+
+/* 루틴 탭 */
+.board-col .col-tab {
+    background: var(--routine-tab-bg);
+    color: var(--routine);
+    border-color: var(--routine-b);
+}
+
+.board-col .col-tab:hover {
+    background: #ffa8a8;
+}
+
+.board-col .col-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--routine-b);
+    border-bottom: 2px solid var(--surface2);
+}
+
+/* 이벤트 탭 */
+.board-col.event-col .col-tab {
+    background: var(--event-tab-bg);
+    color: var(--event);
+    border-color: var(--event-b);
+}
+
+.board-col.event-col .col-tab:hover {
+    background: #ffc935;
+}
+
+.board-col.event-col .col-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--event-b);
+    border-bottom: 2px solid var(--surface2);
+}
+
+/* ── boxes-list ─────────────────────────────────────────────────── */
 .boxes-list {
     flex: 1;
     overflow-y: auto;
-    padding: 10px;
+    background: var(--surface);
     display: flex;
     flex-direction: column;
-    gap: 6px;
 }
 
 .boxes-list::-webkit-scrollbar {
@@ -242,13 +432,283 @@ html, body, #root {
     justify-content: center;
     gap: 8px;
     color: var(--text3);
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .empty-board i {
-    font-size: 24px;
+    font-size: 26px;
 }
 
+/* ── Box card  ──────────────────────────────────────── */
+.box-card {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    position: relative;
+    border-left: 3px solid transparent;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    transition: background .12s;
+}
+
+.box-card:hover {
+    background: #FDFAF5;
+}
+
+.box-card.dragging {
+    opacity: .4;
+}
+
+.box-card.in-progress {
+    border-left-color: var(--progress-b);
+}
+
+.box-card.done-state {
+    border-left-color: var(--done-b);
+    opacity: .7;
+}
+
+.box-card.expired {
+    border-left-color: #D32F2F;
+    background: #FFF8F8;
+    animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        background: #FFF8F8;
+    }
+    50% {
+        background: #FFE8E8;
+    }
+}
+
+.box-card.removing {
+    animation: removeBox .3s ease forwards;
+}
+
+@keyframes removeBox {
+    to {
+        opacity: 0;
+        max-height: 0;
+        border-width: 0;
+    }
+}
+
+.box-card.completing {
+    animation: completeBox .3s ease forwards;
+}
+
+@keyframes completeBox {
+    0% {
+        background: var(--surface);
+    }
+    40% {
+        background: var(--done-bg);
+    }
+    100% {
+        opacity: 0;
+        max-height: 0;
+        border-width: 0;
+    }
+}
+
+/* 박스 이름 행 */
+.box-name-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px 4px;
+    min-height: 24px;
+    overflow: hidden;
+}
+
+.box-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 박스 액션 버튼 */
+.box-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.act-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    border: 1.5px dashed var(--border2);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--text4);
+    cursor: pointer;
+    transition: all .12s;
+}
+
+.select-chip.disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.act-btn:hover {
+    border-color: var(--text3);
+    color: var(--text2);
+    border-style: solid;
+}
+
+.act-btn.bookmarked {
+    border-style: solid;
+    border-color: var(--progress-b);
+    color: var(--bookmark);
+}
+
+.act-btn.alarmed {
+    border-style: solid;
+    border-color: var(--event-b);
+    color: var(--event);
+}
+
+.act-btn.danger:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+/* ── Task row ────────────────────────────────────────────────────── */
+.task-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 11px 0 24px;
+    height: 28px;
+    border-bottom: 1px solid #F0EDE8;
+    cursor: pointer;
+}
+
+.task-row:last-child {
+    border-bottom: none;
+}
+
+.task-row:hover .task-txt {
+    color: var(--routine);
+}
+
+/* 다중 태스크일 때 텍스트 스타일  */
+.task-txt {
+    font-size: 15px;
+    color: var(--text);
+    flex: 1;
+    font-family: 'GowunBatang', serif;
+}
+
+.task-txt.done {
+    color: var(--text4);
+    text-decoration: line-through;
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+
+.task-check {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    border: 1px solid var(--border2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+}
+
+.task-check.done {
+    background: var(--done-bg);
+    border-color: var(--done-b);
+    color: var(--done-c);
+}
+
+.task-check.prog {
+    background: var(--progress-bg);
+    border-color: var(--progress-b);
+    color: var(--progress-c);
+}
+
+.box-grip {
+    display: none;
+}
+
+.box-sep {
+    height: 5px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.task-check-inline {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
+/*단일 태스크 */
+.box-single-task {
+    font-size: 15px;
+    color: var(--text);
+    flex: 5;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'GowunBatang', serif;
+    cursor: pointer;
+}
+
+.box-single-task.done {
+    color: var(--text4);
+    text-decoration: line-through;
+}
+
+.box-single-task:hover {
+    color: var(--routine);
+}
+
+/* ── Drop zone ───────────────────────────────────────────────────── */
+.drop-zone {
+    height: 32px;
+    border: 1.5px dashed var(--border2);
+    background: rgba(255, 255, 255, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--text3);
+    animation: splitIn .15s ease;
+}
+
+@keyframes splitIn {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+    to {
+        height: 32px;
+        opacity: 1;
+    }
+}
+
+/* ── Loading ─────────────────────────────────────────────────────── */
 .loading-state {
     grid-column: 1 / -1;
     display: flex;
@@ -256,7 +716,7 @@ html, body, #root {
     justify-content: center;
     gap: 10px;
     color: var(--text2);
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .spin {
@@ -269,279 +729,9 @@ html, body, #root {
     }
 }
 
-/* ── Drop zone ───────────────────────────────────────────────────── */
-.drop-zone {
-    height: 36px;
-    border: 1.5px dashed var(--border2);
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, .5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    color: var(--text3);
-    animation: splitIn .15s ease;
-}
-
-@keyframes splitIn {
-    from {
-        height: 0;
-        opacity: 0;
-    }
-    to {
-        height: 36px;
-        opacity: 1;
-    }
-}
-
-/* ── Box card ────────────────────────────────────────────────────── */
-.box-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: flex-start;
-    cursor: pointer;
-    transition: border-color .15s, box-shadow .15s;
-    position: relative;
-    overflow: hidden;
-}
-
-.box-card:hover {
-    border-color: var(--border2);
-}
-
-.box-card.dragging {
-    opacity: .4;
-}
-
-.box-card.expired {
-    border: 2px solid #D32F2F;
-    box-shadow: 0 0 15px rgba(211, 47, 47, 0.4), inset 0 0 10px rgba(211, 47, 47, 0.1);
-    background-color: #FFF5F5;
-    animation: pulse-glow 2s infinite ease-in-out;
-}
-
-.box-card.in-progress {
-    border-left: 3px solid var(--progress-c);
-}
-
-.box-card.done-state {
-    border-left: 3px solid var(--done-c);
-}
-
-/* 만료 애니메이션 */
-@keyframes pulse-glow {
-    0%, 100% {
-        box-shadow: 0 0 12px rgba(211, 47, 47, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(211, 47, 47, 0.6);
-    }
-}
-
-/* 삭제 애니메이션 */
-.box-card.removing {
-    animation: removeBox .3s ease forwards;
-}
-
-@keyframes removeBox {
-    to {
-        opacity: 0;
-        max-height: 0;
-        margin: 0;
-        padding: 0;
-        border-width: 0;
-    }
-}
-
-/* DONE 전환 애니메이션 */
-.box-card.completing {
-    animation: completeBox .3s ease forwards;
-}
-
-@keyframes completeBox {
-    0% {
-        background: var(--surface);
-    }
-    40% {
-        background: var(--done-bg);
-        border-color: var(--done-b);
-    }
-    100% {
-        opacity: 0;
-        max-height: 0;
-        margin: 0;
-        padding: 0;
-        border-width: 0;
-    }
-}
-
-.box-grip {
-    width: 22px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text3);
-    font-size: 13px;
-    cursor: grab;
-    padding: 10px 2px 0 4px;
-}
-
-.box-body {
-    flex: 1;
-    padding: 7px 4px;
-    min-width: 0;
-}
-
-.box-name {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--text3);
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* ── Task chip ───────────────────────────────────────────────────── */
-.tasks-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3px;
-}
-
-/* 다중 task */
-.task-chip {
-    font-size: 13px;
-    font-weight: 500;
-    padding: 2px 7px;
-    border-radius: 10px;
-    border: 0.5px solid var(--border2);
-    color: var(--text);
-    cursor: pointer;
-    transition: all .12s;
-    white-space: nowrap;
-    line-height: 1.4;
-}
-
-.task-chip:hover {
-    border-color: var(--routine);
-    color: var(--routine);
-}
-
-.task-chip.done-task {
-    background: var(--done-bg);
-    border-color: var(--done-b);
-    color: var(--done-c);
-    text-decoration: line-through;
-}
-
-/* 단독 task */
-.task-chip.task-chip-single {
-    font-size: 15px;
-    font-weight: 400;
-    padding: 0;
-    border: none;
-    background: transparent;
-    padding: 2px 3px;
-    border-radius: 10px;
-}
-
-.task-chip.task-chip-single:hover {
-    color: var(--routine);
-    background: transparent;
-}
-
-.task-chip.task-chip-single.done-task {
-    background: transparent;
-    border: none;
-    color: var(--done-c);
-    text-decoration: line-through;
-}
-
-/* ── Box actions ────────────────────────────────── */
-.box-actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1px;
-    padding: 8px 10px;
-    flex-shrink: 0;
-    flex-wrap: wrap;
-}
-
-.act-btn {
-    margin-right: 10px;
-    height: 24px;
-    border: none;
-    background: transparent;
-    color: var(--text3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 13px;
-    transition: all .12s;
-}
-
-.act-btn:hover {
-    background: var(--surface2);
-    color: var(--text);
-}
-
-.act-btn.bookmarked {
-    color: var(--bookmark);
-}
-
-.act-btn.alarmed {
-    color: var(--event);
-}
-
-.act-btn.danger:hover {
-    color: var(--danger);
-}
-
-.state-btn {
-    padding: 5px 5px;
-    border-radius: 5px;
-    border: 0.5px solid;
-    font-size: 10px;
-    font-weight: 500;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all .15s;
-    font-family: 'IBM Plex Mono', monospace;
-    margin-top: 2px;
-}
-
-.state-btn.ready {
-    background: var(--surface2);
-    border-color: var(--border2);
-    color: var(--ready-c);
-}
-
-.state-btn.in-progress {
-    background: var(--progress-bg);
-    border-color: var(--progress-b);
-    color: var(--progress-c);
-}
-
-.state-btn.done {
-    background: var(--done-bg);
-    border-color: var(--done-b);
-    color: var(--done-c);
-}
-
-.state-btn:hover {
-    filter: brightness(.95);
-}
-
-/* ── TaskPool (사이드바) ─────────────────────────────────────────── */
+/* ── TaskPool ────────────────────────────────────────────────────── */
 .task-pool {
-    padding: 10px 12px;
+    padding: 12px 14px;
 }
 
 .task-pool-header {
@@ -552,30 +742,34 @@ html, body, #root {
 }
 
 .pool-label {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text3);
+    letter-spacing: .08em;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
 }
 
+/* 태스크 유형 토글 버튼 */
 .type-toggle {
     display: flex;
     gap: 3px;
     background: var(--surface2);
     border-radius: var(--radius);
     padding: 2px;
+    margin: 5px 0;
 }
 
 .toggle-btn {
     font-size: 13px;
-    padding: 3px 30px;
-    margin-left: 3px;
+    padding: 3px 10px;
     border-radius: 6px;
     border: none;
     background: transparent;
     color: var(--text2);
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 700;
     transition: all .12s;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
 }
 
 .toggle-btn.active {
@@ -590,16 +784,17 @@ html, body, #root {
     margin-bottom: 8px;
 }
 
+/* 태스크 아이템 */
 .task-item {
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 10px;
-    border: 0.5px solid var(--border2);
-    background: var(--surface);
+    font-size: 13px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
     color: var(--text2);
     cursor: pointer;
     transition: all .12s;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
 }
 
 .task-item:hover {
@@ -618,7 +813,6 @@ html, body, #root {
     border-color: var(--routine);
     color: var(--routine);
     background: var(--routine-bg);
-    font-weight: 500;
 }
 
 .task-item.selected.event-type {
@@ -627,82 +821,86 @@ html, body, #root {
     background: var(--event-bg);
 }
 
+/* 새 태스크 입력창 */
 .task-new-input {
-    font-size: 13px;
-    padding: 4px 10px;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: 1px dashed var(--border2);
     border-radius: 20px;
-    border: 0.5px dashed var(--border2);
-    background: transparent;
+    background: var(--surface);
     color: var(--text);
-    outline: none;
     width: 100%;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
+    box-sizing: border-box;
+    outline: none;
 }
 
 .task-new-input::placeholder {
-    color: var(--text3);
+    color: var(--text4);
 }
 
 .task-new-input:focus {
-    border-color: var(--event);
+    background-color: #ffefce;
 }
+
 
 .create-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     padding-top: 8px;
-    border-top: 0.5px solid var(--border);
     margin-top: 4px;
     flex-wrap: wrap;
 }
 
+/* 새 박스 이름 입력창 */
 .box-name-input {
     flex: 1;
-    min-width: 3px;
-    font-size: 13px;
-    padding: 5px 8px;
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border2);
-    background: var(--surface2);
+    min-width: 0;
+    font-size: 14px;
+    padding: 3px 8px;
+    border: none;
+    border-bottom: 1.5px dashed var(--border3);
+    background: transparent;
     color: var(--text);
     outline: none;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
+}
+
+.box-name-input::placeholder {
+    color: var(--text4);
 }
 
 .box-name-input:focus {
-    border-color: var(--routine);
-    background: var(--surface);
+    border-bottom-color: var(--routine);
 }
 
+/* 새 박스 생성 버튼 */
 .create-box-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    padding: 5px 10px;
+    gap: 6px;
+    font-size: 14px;
+    padding: 3px 10px;
+    border: 1.5px solid var(--border2);
     border-radius: var(--radius);
-    border: 0.5px solid var(--routine);
-    background: var(--routine-bg);
-    color: var(--routine);
+    background: transparent;
+    color: var(--text3);
     cursor: pointer;
     font-weight: 500;
-    transition: all .15s;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
     white-space: nowrap;
+    transition: all 0.2s ease-in-out;
 }
 
 .create-box-btn:hover {
-    background: var(--routine);
-    color: #fff;
+    background-color: var(--progress-b);
+    border-color: var(--text2);
+    color: #3A3830;
 }
 
-.create-box-btn:disabled {
-    opacity: .5;
-    cursor: not-allowed;
-}
-
-/* ── Box option side panel ────────────────────────────────────────── */
+/* ── Box option side panel ───────────────────────────────────────── */
 .side-panel-overlay {
     position: fixed;
     inset: 0;
@@ -715,9 +913,9 @@ html, body, #root {
     right: 0;
     top: 0;
     bottom: 0;
-    width: 280px;
+    width: 300px;
     background: var(--surface);
-    border-left: 0.5px solid var(--border);
+    border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     animation: slideIn .2s ease;
@@ -742,21 +940,22 @@ html, body, #root {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 0.5px solid var(--border);
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
 }
 
 .option-title {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 700;
     color: var(--text);
 }
 
 .option-body {
-    padding: 16px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
 .option-row {
@@ -767,7 +966,7 @@ html, body, #root {
 }
 
 .option-label {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text2);
     display: flex;
     align-items: center;
@@ -794,7 +993,7 @@ html, body, #root {
     font-weight: 500;
     padding: 4px 12px;
     border-radius: 20px;
-    border: 0.5px solid var(--border2);
+    border: 1px solid var(--border2);
     background: var(--surface2);
     color: var(--text2);
     cursor: pointer;
@@ -809,28 +1008,28 @@ html, body, #root {
 }
 
 .select-chip {
-    font-size: 10px;
-    padding: 3px 8px;
+    font-size: 11px;
+    padding: 3px 10px;
     border-radius: 20px;
-    border: 0.5px solid var(--border2);
+    border: 1px solid var(--border2);
     background: var(--surface2);
     color: var(--text2);
     cursor: pointer;
     transition: all .12s;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
 }
 
 .select-chip.selected {
-    border-color: var(--event);
+    border-color: var(--event-b);
     background: var(--event-bg);
     color: var(--event);
 }
 
 .time-input {
-    font-size: 12px;
+    font-size: 13px;
     padding: 5px 8px;
     border-radius: var(--radius);
-    border: 0.5px solid var(--border2);
+    border: 1px solid var(--border2);
     background: var(--surface2);
     color: var(--text);
     outline: none;
@@ -838,21 +1037,21 @@ html, body, #root {
 }
 
 .time-input:focus {
-    border-color: var(--event);
+    border-color: var(--event-b);
 }
 
 .save-btn {
     margin-top: auto;
-    padding: 10px;
+    padding: 11px;
     border-radius: var(--radius);
-    border: 0.5px solid var(--routine);
+    border: 1px solid var(--routine);
     background: var(--routine);
     color: #fff;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 700;
     cursor: pointer;
     transition: opacity .15s;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
 }
 
 .save-btn:hover {
@@ -879,8 +1078,8 @@ html, body, #root {
     width: 90%;
     background: var(--surface);
     border-radius: var(--radius-lg);
-    border: 0.5px solid var(--border);
-    overflow: hidden;
+    border: 1px solid var(--border);
+    overflow: hidden; /* ← 추가 */
     animation: popIn .2s ease;
 }
 
@@ -899,21 +1098,22 @@ html, body, #root {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 0.5px solid var(--border);
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
 }
 
 .modal-title {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .modal-body {
-    padding: 16px;
+    padding: 18px;
 }
 
 .modal-empty {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text3);
     text-align: center;
     padding: 20px 0;
@@ -926,7 +1126,6 @@ html, body, #root {
     gap: 4px;
 }
 
-/* ✅ 보드 목록 행: 불러오기 + 삭제 */
 .board-list-row {
     display: flex;
     align-items: center;
@@ -938,15 +1137,15 @@ html, body, #root {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 12px;
+    padding: 11px 14px;
     border-radius: var(--radius);
-    border: 0.5px solid var(--border);
+    border: 1px solid var(--border);
     background: var(--surface2);
     color: var(--text);
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
     transition: all .15s;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
 }
 
 .board-list-item:hover {
@@ -956,24 +1155,23 @@ html, body, #root {
 
 .board-list-count {
     margin-left: auto;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text3);
 }
 
-/* ✅ 보드 삭제 버튼 */
 .board-delete-btn {
-    width: 30px;
-    height: 36px;
+    width: 34px;
+    height: 38px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 0.5px solid var(--border);
+    border: 1.5px dashed var(--border2);
     border-radius: var(--radius);
-    background: var(--surface2);
+    background: transparent;
     color: var(--text3);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     transition: all .15s;
 }
 
@@ -981,6 +1179,7 @@ html, body, #root {
     border-color: var(--danger);
     color: var(--danger);
     background: var(--danger-bg);
+    border-style: solid;
 }
 
 .board-delete-btn:disabled {
@@ -1001,14 +1200,14 @@ html, body, #root {
 
 .confirm-btn {
     flex: 1;
-    padding: 9px;
+    padding: 10px;
     border-radius: var(--radius);
-    border: 0.5px solid;
-    font-size: 12px;
-    font-weight: 500;
+    border: 1px solid;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
     transition: all .15s;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'GowunBatang', serif;
 }
 
 .confirm-btn.secondary {
@@ -1025,55 +1224,4 @@ html, body, #root {
 
 .confirm-btn:hover {
     opacity: .85;
-}
-
-/* ── ClockOwl ────────────────────────────────────────────────────── */
-.clock-owl {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.clock-owl-emoji {
-    font-size: 18px;
-    line-height: 1;
-}
-
-.clock-owl-img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-}
-
-.clock-owl-label {
-    font-size: 10px;
-    color: var(--text3);
-}
-
-.col-tab-group {
-    display: flex;
-    gap: 2px;
-    background: var(--surface2);
-    border-radius: 6px;
-    padding: 2px;
-    margin-left: 6px;
-}
-
-.col-tab {
-    font-size: 13px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 4px;
-    border: none;
-    background: transparent;
-    color: var(--text3);
-    cursor: pointer;
-    transition: all .15s;
-    font-family: 'Noto Sans KR', sans-serif;
-}
-
-.col-tab.active {
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
 }

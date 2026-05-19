@@ -12,7 +12,7 @@ export function useBoard() {
     const initialized = useRef(false);
 
     const initBoard = useCallback(async () => {
-        if (initialized.current) return;  // ← 두 번째 호출 차단
+        if (initialized.current) return;
         initialized.current = true;
 
         setLoading(true);
@@ -129,32 +129,10 @@ export function useBoard() {
         });
     }, []);
 
-    const dragItemIndex = useRef<number | null>(null);
-    const dragOverItemIndex = useRef<number | null>(null);
-
-    const handleDragStart = useCallback((index: number) => {
-        dragItemIndex.current = index;
-    }, []);
-
-    const handleDragEnter = useCallback((index: number) => {
-        dragOverItemIndex.current = index;
-    }, []);
-
-    const handleDragEnd = useCallback((boardType: BoardType) => {
-        if (dragItemIndex.current === null || dragOverItemIndex.current === null) return;
-        if (!board) return;
-        const boxId = board.boxes.filter(b => b.boxType === boardType)[dragItemIndex.current!].boxId;
-        const targetIndex = dragOverItemIndex.current;
-        reorderBox(boxId, targetIndex, boardType);
-        dragItemIndex.current = null;
-        dragOverItemIndex.current = null;
-    }, [board, reorderBox]);
-
     return {
         board, loading, error,
         initBoard, loadBoard, createNewBoard, resetBoard,
         patchBoxState, removeBox, reorderBox,
         updateBoxLocal, addBox,
-        dragItemIndex, handleDragStart, handleDragEnter, handleDragEnd,
     };
 }

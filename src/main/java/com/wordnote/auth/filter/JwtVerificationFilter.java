@@ -1,6 +1,9 @@
 package com.wordnote.auth.filter;
 
 import com.wordnote.auth.utils.JwtTokenizer;
+import com.wordnote.auth.utils.PrincipalDetails;
+import com.wordnote.domain.member.entity.Member;
+import com.wordnote.domain.member.entity.MemberRole;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +43,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 요청당 �
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");  //헤더의 Authorization: Bearer {token} 확인
         return authorization == null || !authorization.startsWith("Bearer");
-        //헤더에 Authorization자체가 없거나, 값이 Bearer로 시작하지 않으면 걸러짐
     }
 
     private Map<String, Object> verifyJws(HttpServletRequest request) {
@@ -49,13 +51,28 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 요청당 �
     }
 
     private void setAuthenticationToContext(Map<String, Object> claims) {
-        // 토큰의 userId 추출 ->  Principal로 사용
-        String memberId = String.valueOf(claims.get("memberId"));
+
+        Long memberId = Long.parseLong(String.valueOf(claims.get("memberId")));
+        String email = String.valueOf(claims.get("email"));
         String memberRole = String.valueOf(claims.get("memberRole"));
+
+        Member member = Member.builder()
+                .memberId(memberId)
+                .email(email)
+                .role(MemberRole.BASIC)
+                .build();
+
+        //SecurityUtil 연계용 클래스
+        PrincipalDetails principalDetails = new PrincipalDetails(member);
 
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + memberRole));
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(memberId, null, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                principalDetails,
+                null,
+                authorities
+        );
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

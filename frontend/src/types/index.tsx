@@ -90,6 +90,10 @@ export interface LoginResponse {
     nickname: string;
 }
 
+export interface RefreshResponse {
+    accessToken: string;
+}
+
 // ─── UI State ─────────────────────────────────────────────────────────────────
 // ✅ 'ALL' 추가 — 할일 + 완료 전체 표시
 export type TabType = 'ALL' | 'ACTIVE' | 'DONE';

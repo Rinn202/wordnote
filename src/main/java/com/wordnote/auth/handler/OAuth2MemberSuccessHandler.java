@@ -1,10 +1,12 @@
 package com.wordnote.auth.handler;
 
 import com.wordnote.auth.utils.JwtTokenizer;
+import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -27,28 +29,39 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        //인증유저 정보 호출
+        //인증 유저 정보
         var oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = (String) oAuth2User.getAttributes().get("email");
 
-        //토큰 생성
         String accessToken = delegateAccessToken(email);
         String refreshToken = delegateRefreshToken(email);
 
-        //RefreshToken DB save
+        //RefreshToken DB 저장
         memberService.updateRefreshToken(email, refreshToken);
 
-        //리다이렉트 URI 로직
-        String uri = createURI(accessToken, refreshToken).toString();
+        //응답 헤더에 쿠키주기
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(false) // 로컬 환경용
+                .sameSite("Lax")
+                .path("/")
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        //AccessToken 파라미터 리다이렉트
+        String uri = createURI(accessToken).toString();
+
+        //브라우저 이동
         getRedirectStrategy().sendRedirect(request, response, uri);
-        System.out.println(uri);
     }
 
     private String delegateAccessToken(String email) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("username", email);
-        claims.put("roles", List.of("BASIC"));
+        Member member = memberService.findByEmail(email);
 
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", email);
+        claims.put("memberId", member.getMemberId());
+        claims.put("memberRole", List.of("BASIC"));
         return jwtTokenizer.generateAccessToken(claims, email);
     }
 
@@ -56,11 +69,10 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         return jwtTokenizer.generateRefreshToken(email);
     }
 
-    private URI createURI(String accessToken, String refreshToken) {
+    private URI createURI(String accessToken) {
         return UriComponentsBuilder
-                .fromUriString("http://localhost:5173/login-success")
+                .fromUriString("http://localhost:5173/oauth2/redirect") // 리다이렉트 전용 경로 추천
                 .queryParam("access_token", accessToken)
-                .queryParam("refresh_token", refreshToken)
                 .build()
                 .toUri();
     }

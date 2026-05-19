@@ -12,4 +12,6 @@ public class TaskResponseDto {
     private Long memberId;
 
     private String name;
+
+    private String category;
 }

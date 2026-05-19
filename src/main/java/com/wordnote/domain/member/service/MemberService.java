@@ -98,12 +98,12 @@ public class MemberService {
     }
 
     //구글 회원가입
-    public void processOAuth2User(String email, String name, String profile) {
+    public Member processOAuth2User(String email, String name, String profile) {
         String tempPassword = UUID.randomUUID().toString();
         Member member = memberRepository.findByEmail(email)
                 .orElse(new Member(email, name, tempPassword, profile)); //name = nickname
 
-        memberRepository.save(member);
+        return memberRepository.save(member);
     }
 
     @Transactional
@@ -121,5 +121,10 @@ public class MemberService {
 
         String encryptedPassword = passwordEncoder.encode(dto.getPassword());
         member.setPassword(encryptedPassword); // 암호화
+    }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 }

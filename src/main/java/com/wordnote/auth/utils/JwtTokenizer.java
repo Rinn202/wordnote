@@ -36,6 +36,7 @@ public class JwtTokenizer {
     // AccessToken 생성 (Handler는 claims와 subject만 넘기면 됨)
     public String generateAccessToken(Map<String, Object> claims, String subject) {
         Date expiration = getTokenExpiration(accessTokenExpirationMinutes);
+        claims.put("type", "access");
 
         return Jwts.builder()
                 .claims(claims)
@@ -54,6 +55,7 @@ public class JwtTokenizer {
                 .subject(subject)
                 .issuedAt(new Date())
                 .expiration(expiration)
+                .claim("type", "refresh")
                 .signWith(getSigningKey())
                 .compact();
     }

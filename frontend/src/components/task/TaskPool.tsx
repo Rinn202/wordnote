@@ -63,7 +63,7 @@ export default function TaskPool({boardId, onBoxCreated}: Props) {
                             className={`toggle-btn ${boxType === t ? 'active' : ''}`}
                             onClick={() => setBoxType(t)}
                         >
-                            {t === 'ROUTINE' ? '루틴' : '이벤트'}
+                            {t === 'ROUTINE' ? 'ROUTINE' : 'EVENT'}
                         </button>
                     ))}
                 </div>
@@ -99,7 +99,7 @@ export default function TaskPool({boardId, onBoxCreated}: Props) {
                         className="box-name-input"
                         placeholder={
                             selected.length === 1
-                                ? '박스 이름 (비워두면 태스크명 사용)'
+                                ? tasks.find(t => t.taskId === selected[0])?.name ?? '박스 이름 입력'
                                 : '박스 이름 입력'
                         }
                         value={boxName}
@@ -111,7 +111,7 @@ export default function TaskPool({boardId, onBoxCreated}: Props) {
                         disabled={loading}
                     >
                         <i className="ti ti-plus" aria-hidden="true"/>
-                        박스 생성
+                        add box
                     </button>
                 </div>
             )}

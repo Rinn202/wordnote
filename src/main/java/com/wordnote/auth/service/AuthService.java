@@ -1,13 +1,18 @@
 package com.wordnote.auth.service;
 
 import com.wordnote.auth.dto.LoginResponseDto;
+import com.wordnote.auth.dto.TokenResponseDto;
 import com.wordnote.auth.utils.JwtTokenizer;
 import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.repository.MemberRepository;
 import com.wordnote.exception.ExceptionCode;
 import com.wordnote.exception.LogicException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +28,7 @@ public class AuthService {
     private final JwtTokenizer jwtTokenizer;
     private final PasswordEncoder passwordEncoder;
 
-    public LoginResponseDto login(String email, String password) {
+    public LoginResponseDto login(String email, String password, HttpServletResponse response) {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new LogicException(ExceptionCode.INVALID_LOGIN_ATTEMPT)); //유저검색
@@ -40,8 +45,62 @@ public class AuthService {
 
         String subject = member.getEmail(); //토큰 생성
         String accessToken = jwtTokenizer.generateAccessToken(claims, subject);
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject);
+        String newRefreshToken =
+                jwtTokenizer.generateRefreshToken(subject);
 
-        return new LoginResponseDto(accessToken, refreshToken, member.getNickname());
+        ResponseCookie cookie = ResponseCookie.from(
+                        "refreshToken",
+                        newRefreshToken
+                )
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(60 * 60 * 24 * 14)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+
+
+        return new LoginResponseDto(accessToken, member.getNickname());
+    }
+
+    public TokenResponseDto refresh(String refreshToken,
+                                    HttpServletResponse response) {
+
+        Claims claims;
+        //토큰 유효성 확인
+        try {
+            claims = jwtTokenizer.getClaims(refreshToken).getPayload();
+        } catch (JwtException e) {
+            throw new LogicException(ExceptionCode.TOKEN_ERROR);
+        }
+
+        //토큰 타입 확인
+        String type = claims.get("type", String.class);
+        if (!"refresh".equals(type)) {
+            throw new LogicException(ExceptionCode.TOKEN_ERROR);
+        }
+
+        String newAccessToken =
+                jwtTokenizer.generateAccessToken(claims, claims.getSubject());
+
+        String newRefreshToken =
+                jwtTokenizer.generateRefreshToken(claims.getSubject());
+
+        ResponseCookie cookie = ResponseCookie.from(
+                        "refreshToken",
+                        newRefreshToken
+                )
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(60 * 60 * 24 * 14)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        return new TokenResponseDto(newAccessToken);
     }
 }
