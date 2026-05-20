@@ -1,6 +1,6 @@
 package com.wordnote.domain.member.dto.response;
 
-import com.wordnote.domain.member.entity.MemberRole;
+import com.wordnote.domain.member.entity.Role;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ public class MemberResponseDto {
 
     private String email;
 
-    private MemberRole role;
+    private Role role;
 
     private List<Long> boardIds;
 

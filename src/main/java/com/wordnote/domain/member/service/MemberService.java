@@ -5,7 +5,7 @@ import com.wordnote.domain.member.dto.request.MemberUpdateDto;
 import com.wordnote.domain.member.dto.request.PasswordRequest;
 import com.wordnote.domain.member.dto.response.MemberResponseDto;
 import com.wordnote.domain.member.entity.Member;
-import com.wordnote.domain.member.entity.MemberRole;
+import com.wordnote.domain.member.entity.Role;
 import com.wordnote.domain.member.mapper.MemberMapper;
 import com.wordnote.domain.member.repository.MemberRepository;
 import com.wordnote.exception.ExceptionCode;
@@ -90,10 +90,10 @@ public class MemberService {
     }
 
     private static void adminMaker(MemberCreateDto dto, Member member) {
-        if (dto.getEmail().equals("admin@gmail.com")) {
-            member.setRole(MemberRole.ADMIN);
+        if (dto.getEmail().equals("dioneo54@gmail.com")) {
+            member.setRole(Role.ADMIN);
         } else {
-            member.setRole(MemberRole.BASIC);
+            member.setRole(Role.BASIC);
         }
     }
 

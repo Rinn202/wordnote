@@ -61,7 +61,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", email);
         claims.put("memberId", member.getMemberId());
-        claims.put("memberRole", List.of("BASIC"));
+        claims.put("role", List.of("BASIC"));
         return jwtTokenizer.generateAccessToken(claims, email);
     }
 

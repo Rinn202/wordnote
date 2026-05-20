@@ -8,7 +8,7 @@ import BoxOptionPanel from '../components/box/BoxOptionPanel';
 import BoardModals from '../components/common/BoardModals';
 import LeftSidebar from '../components/layout/LeftSidebar';
 import type {Box} from '../types';
-import {getTimeTheme} from '../styles/getTimeTheme';
+import {getTimeTheme} from '../components/layout/getTimeTheme';
 
 export default function BoardApp({onLogout}: { onLogout: () => void }) {
 

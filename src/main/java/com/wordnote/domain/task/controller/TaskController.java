@@ -44,13 +44,12 @@ public class TaskController {
 
     //수정
     @PatchMapping("/{taskId}")
-    public ResponseEntity<TaskResponseDto> patchTask(@RequestBody TaskUpdateDto taskUpdateDto,
-                                                     @PathVariable long taskId) {
+    public ResponseEntity<TaskResponseDto> patchTask(@RequestBody TaskUpdateDto taskUpdateDto, @PathVariable long taskId) {
         long memberId = SecurityUtil.getMemberId();
 
         TaskResponseDto response = taskService.updateTask(taskId, taskUpdateDto, memberId);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //삭제

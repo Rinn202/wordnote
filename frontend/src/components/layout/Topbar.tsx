@@ -1,6 +1,6 @@
 import {useNavigate} from 'react-router-dom';
 import {useRef} from 'react';
-import {useTopbarTheme} from '../../styles/useTopbarTheme';
+import {useTopbarTheme} from './useTopbarTheme';
 
 interface Props {
     clockStr: string;

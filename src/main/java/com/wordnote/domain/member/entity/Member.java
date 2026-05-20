@@ -26,7 +26,7 @@ public class Member {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column
-    MemberRole role = MemberRole.BASIC;
+    Role role = Role.BASIC;
 
     @Column(nullable = false, updatable = false)
     private String name;
@@ -57,7 +57,7 @@ public class Member {
         this.name = name;
         this.nickname = name;
         this.password = password;
-        this.role = MemberRole.BASIC;
+        this.role = Role.BASIC;
         this.profileImageUrl = profileImageUrl;
     }
 
@@ -71,9 +71,9 @@ public class Member {
             this.password = encryptedPassword;
     }
 
-    public void setRole(MemberRole memberRole) {
-        if (memberRole != null)
-            this.role = memberRole;
+    public void setRole(Role role) {
+        if (role != null)
+            this.role = role;
     }
 
     public void setRefreshToken(String refreshToken) {

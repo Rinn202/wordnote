@@ -107,14 +107,15 @@ export default function Login({onSuccess, onGoSignUp}: LoginProps) {
         if (!validate()) return;
         setLoading(true);
         try {
-            const res = await api.post<{ accessToken: string; nickname: string }>(
+            const res = await api.post<{ accessToken: string; nickname: string; role: string}>(
                 '/auth/login',
                 {email: form.email.trim(), password: form.password}
             );
-            const {accessToken, nickname} = res.data;
+            const {accessToken, nickname, role} = res.data;
 
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('nickname', nickname);
+            localStorage.setItem('role', role)
             showToast(`👋 어서오세요, ${nickname}님!`, true);
             setTimeout(() => onSuccess?.(), 800);
         } catch (err: unknown) {

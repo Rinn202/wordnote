@@ -3,7 +3,7 @@ package com.wordnote.auth.filter;
 import com.wordnote.auth.utils.JwtTokenizer;
 import com.wordnote.auth.utils.PrincipalDetails;
 import com.wordnote.domain.member.entity.Member;
-import com.wordnote.domain.member.entity.MemberRole;
+import com.wordnote.domain.member.entity.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,18 +54,18 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 요청당 �
 
         Long memberId = Long.parseLong(String.valueOf(claims.get("memberId")));
         String email = String.valueOf(claims.get("email"));
-        String memberRole = String.valueOf(claims.get("memberRole"));
+        String role = String.valueOf(claims.get("role"));
 
         Member member = Member.builder()
                 .memberId(memberId)
                 .email(email)
-                .role(MemberRole.BASIC)
+                .role(Role.BASIC)
                 .build();
 
         //SecurityUtil 연계용 클래스
         PrincipalDetails principalDetails = new PrincipalDetails(member);
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + memberRole));
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 principalDetails,

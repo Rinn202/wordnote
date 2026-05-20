@@ -4,6 +4,7 @@ import com.wordnote.auth.dto.LoginResponseDto;
 import com.wordnote.auth.dto.TokenResponseDto;
 import com.wordnote.auth.utils.JwtTokenizer;
 import com.wordnote.domain.member.entity.Member;
+import com.wordnote.domain.member.entity.Role;
 import com.wordnote.domain.member.repository.MemberRepository;
 import com.wordnote.exception.ExceptionCode;
 import com.wordnote.exception.LogicException;
@@ -39,7 +40,7 @@ public class AuthService {
         }
 
         Map<String, Object> claims = new HashMap<>();//토큰정보 생성
-        claims.put("memberRole", member.getRole());
+        claims.put("role", member.getRole());
         claims.put("memberId", member.getMemberId());
         claims.put("email", member.getEmail());
 
@@ -62,7 +63,7 @@ public class AuthService {
         response.addHeader("Set-Cookie", cookie.toString());
 
 
-        return new LoginResponseDto(accessToken, member.getNickname());
+        return new LoginResponseDto(accessToken, member.getNickname(), String.valueOf(member.getRole()));
     }
 
     public TokenResponseDto refresh(String refreshToken,

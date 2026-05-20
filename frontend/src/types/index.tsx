@@ -136,3 +136,12 @@ export function getTimeOfDay(hour: number): TimeOfDay {
     if (hour >= 14 && hour < 21) return 'evening';
     return 'night';
 }
+
+// ─── notice ────────────────────────────────────────────────────
+export interface Notice {
+    noticeId: number;
+    title: string;
+    content: string;
+    createdAt: string;
+    modifiedAt: string;
+}
