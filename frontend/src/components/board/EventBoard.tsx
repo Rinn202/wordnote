@@ -10,10 +10,15 @@ interface Props {
     onUpdate: (box: Box) => void;
     onOpenOption: (box: Box) => void;
     onReorder: (boxId: number, targetIndex: number, boardType: 'EVENT') => Promise<void>;
+    onReorderTask: (boxId: number, boxTaskId: number, targetIndex: number) => Promise<void>;
+    isTaskDragging: boolean;
+    taskDraggingBoxId: number | null;
+    onTaskDragChange: (v: boolean, boxId: number) => void;
 }
 
 export default function EventBoard({
-                                       boxes, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
+                                       boxes, onReorderTask, onStateChange, onDelete, onUpdate, onOpenOption, onReorder,
+                                       isTaskDragging, taskDraggingBoxId, onTaskDragChange,
                                    }: Props) {
     const [tab, setTab] = useState<TabType>('ACTIVE');
     const {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave} =
@@ -28,16 +33,16 @@ export default function EventBoard({
         <div className="board-col event-col">
             <div className="col-header">
                 <div className="col-header-top">
-    <span style={{
-        fontFamily: 'PyeongchangPeace, sans-serif',
-        fontWeight: 700,
-        fontSize: 28,
-        color: 'rgba(0,0,0,0.07)',
-        letterSpacing: '.04em',
-        lineHeight: 1,
-        marginLeft: 'auto',
-        userSelect: 'none',
-    }}>EVENT</span>
+                    <span style={{
+                        fontFamily: 'PyeongchangPeace, sans-serif',
+                        fontWeight: 700,
+                        fontSize: 28,
+                        color: 'rgba(0,0,0,0.07)',
+                        letterSpacing: '.04em',
+                        lineHeight: 1,
+                        marginLeft: 'auto',
+                        userSelect: 'none',
+                    }}>EVENT</span>
                 </div>
                 <div className="col-tabs">
                     {(['ALL', 'ACTIVE', 'DONE', 'BOOKMARK'] as TabType[]).map(t => (
@@ -57,7 +62,7 @@ export default function EventBoard({
             <div className="boxes-list" onDrop={onDrop} onDragLeave={onDragLeave}>
                 {filtered.map((box, index) => (
                     <React.Fragment key={box.boxId}>
-                        {overIndex === index && draggingId !== box.boxId && (
+                        {!isTaskDragging && overIndex === index && draggingId !== box.boxId && (
                             <div
                                 className="drop-zone"
                                 onDragOver={e => {
@@ -69,25 +74,24 @@ export default function EventBoard({
                             </div>
                         )}
                         {draggingId !== box.boxId && (
-                            <div
-                                draggable
+                            <BoxCard
+                                box={box}
+                                onStateChange={onStateChange}
+                                onDelete={onDelete}
+                                onUpdate={onUpdate}
+                                onOpenOption={onOpenOption}
+                                onReorderTask={onReorderTask}
+                                taskDraggingBoxId={taskDraggingBoxId}
+                                isDragging={draggingId === box.boxId}
                                 onDragStart={() => onDragStart(box.boxId, index)}
                                 onDragOver={e => onDragOver(e, index)}
                                 onDragEnd={onDragEnd}
-                            >
-                                <BoxCard
-                                    box={box}
-                                    onStateChange={onStateChange}
-                                    onDelete={onDelete}
-                                    onUpdate={onUpdate}
-                                    onOpenOption={onOpenOption}
-                                    isDragging={false}
-                                />
-                            </div>
+                                onTaskDragChange={onTaskDragChange}
+                            />
                         )}
                     </React.Fragment>
                 ))}
-                {overIndex === filtered.length && draggingId !== null && (
+                {!isTaskDragging && overIndex === filtered.length && draggingId !== null && (
                     <div
                         className="drop-zone"
                         onDragOver={e => {

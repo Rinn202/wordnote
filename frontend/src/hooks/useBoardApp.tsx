@@ -6,7 +6,6 @@ import {useAlarm} from './useAlarm';
 import {useClock} from './useClock';
 import type {Box} from '../types';
 
-
 export function useBoardApp() {
     const {board: currentBoard, ...boardActions} = useBoard();
     const {clockStr, dateStr} = useClock();
@@ -14,9 +13,10 @@ export function useBoardApp() {
     const [optionBox, setOptionBox] = useState<Box | null>(null);
     const [newBoardConfirmOpen, setNewBoardConfirmOpen] = useState(false);
     const [alarmToasts, setAlarmToasts] = useState<AlarmToast[]>([]);
+    const [isTaskDragging, setIsTaskDragging] = useState(false);
+    const [taskDraggingBoxId, setTaskDraggingBoxId] = useState<number | null>(null);
 
     const allBoxes = useMemo(() => currentBoard?.boxes ?? [], [currentBoard?.boxes]);
-
     const boards = useBoards(currentBoard?.boardId, boardActions.createNewBoard);
 
     const handleAlarm = useCallback((toast: AlarmToast) => {
@@ -33,13 +33,19 @@ export function useBoardApp() {
         });
     }, [stopAudio]);
 
+    // boxId를 함께 받아 어느 박스에서 task 드래그가 일어나는지 추적
+    const handleTaskDragChange = useCallback((v: boolean, boxId?: number) => {
+        setIsTaskDragging(v);
+        setTaskDraggingBoxId(v && boxId != null ? boxId : null);
+    }, []);
+
     useEffect(() => {
         boardActions.initBoard();
     }, []);
 
     const handleNewBoardClick = () => {
         const isEmpty = (currentBoard?.boxes.length ?? 0) === 0;
-        if (currentBoard && isEmpty) return; // 빈 보드면 아무것도 안 함
+        if (currentBoard && isEmpty) return;
         if ((currentBoard?.boxes.length ?? 0) > 0) setNewBoardConfirmOpen(true);
         else boardActions.createNewBoard();
     };
@@ -48,6 +54,7 @@ export function useBoardApp() {
         () => allBoxes.flatMap((b: Box) => b.tasks.map(t => t.taskId)),
         [allBoxes]
     );
+
     useEffect(() => {
         if (currentBoard?.boardId) {
             boards.loadAllBoards(currentBoard.boardId);
@@ -76,5 +83,8 @@ export function useBoardApp() {
         handleCloseToast,
         handleNewBoardClick,
         usedTaskIds,
+        isTaskDragging,
+        taskDraggingBoxId,
+        handleTaskDragChange,
     };
 }

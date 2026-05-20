@@ -22,7 +22,6 @@ public class BoxTaskService {
 
     @Transactional
     public void changeIndex(long boxTaskId, MoveTaskRequest dto, long memberId) {
-
         BoxTask boxTask = boxTaskRepository.findById(boxTaskId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.TASK_NOT_FOUND));
         Box box = boxRepository.findByBoxIdAndBoard_Member_MemberId(
@@ -31,14 +30,18 @@ public class BoxTaskService {
 
         List<BoxTask> boxTasks = box.getBoxTasks();
 
-        if (dto.getTargetIndex() < 0 || dto.getTargetIndex() >= boxTasks.size()) {
-            throw new LogicException(ExceptionCode.INVALID_INDEX);
-        }
-
+        int currentIndex = boxTasks.indexOf(boxTask);
         boxTasks.remove(boxTask);
-        boxTasks.add(dto.getTargetIndex(), boxTask);
 
-        //index 재정렬
+        // remove 후 targetIndex 보정
+        int targetIndex = dto.getTargetIndex();
+        if (targetIndex > currentIndex) targetIndex--;
+
+        if (targetIndex < 0) targetIndex = 0;
+        if (targetIndex >= boxTasks.size()) targetIndex = boxTasks.size() - 1;
+
+        boxTasks.add(targetIndex, boxTask);
+
         for (int i = 0; i < boxTasks.size(); i++) {
             boxTasks.get(i).setSortIndex(i);
         }

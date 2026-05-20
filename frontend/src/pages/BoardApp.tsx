@@ -22,6 +22,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
             removeBox,
             reorderBox,
             updateBoxLocal,
+            reorderTask,
             addBox
         },
         boards: {allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard},
@@ -30,7 +31,11 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
         newBoardConfirmOpen, setNewBoardConfirmOpen,
         alarmToasts, allBoxes, allBoxesStats,
         handleCloseToast, handleNewBoardClick,
+        isTaskDragging,
+        taskDraggingBoxId,
+        handleTaskDragChange,
     } = useBoardApp();
+
 
     const routineBoxes = currentBoard?.boxes.filter((b: Box) => b.boxType === 'ROUTINE') ?? [];
     const eventBoxes = currentBoard?.boxes.filter((b: Box) => b.boxType === 'EVENT') ?? [];
@@ -79,12 +84,30 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                             display: 'grid',
                             gridTemplateColumns: '1fr 1fr'
                         }}>
-                            <RoutineBoard boxes={routineBoxes} onStateChange={patchBoxState} onDelete={removeBox}
-                                          onUpdate={updateBoxLocal} onOpenOption={setOptionBox}
-                                          onReorder={(id, idx) => reorderBox(id, idx, 'ROUTINE')}/>
-                            <EventBoard boxes={eventBoxes} onStateChange={patchBoxState} onDelete={removeBox}
-                                        onUpdate={updateBoxLocal} onOpenOption={setOptionBox}
-                                        onReorder={(id, idx) => reorderBox(id, idx, 'EVENT')}/>
+                            <RoutineBoard
+                                boxes={routineBoxes}
+                                onStateChange={patchBoxState}
+                                onDelete={removeBox}
+                                onUpdate={updateBoxLocal}
+                                onOpenOption={setOptionBox}
+                                onReorder={(id, idx) => reorderBox(id, idx, 'ROUTINE')}
+                                onReorderTask={reorderTask}
+                                isTaskDragging={isTaskDragging}
+                                taskDraggingBoxId={taskDraggingBoxId}
+                                onTaskDragChange={handleTaskDragChange}
+                            />
+                            <EventBoard
+                                boxes={eventBoxes}
+                                onStateChange={patchBoxState}
+                                onDelete={removeBox}
+                                onUpdate={updateBoxLocal}
+                                onOpenOption={setOptionBox}
+                                onReorder={(id, idx) => reorderBox(id, idx, 'EVENT')}
+                                onReorderTask={reorderTask}
+                                isTaskDragging={isTaskDragging}
+                                taskDraggingBoxId={taskDraggingBoxId}
+                                onTaskDragChange={handleTaskDragChange}
+                            />
                         </div>
                         <Footer boardId={currentBoard.boardId} total={allBoxes.length} {...allBoxesStats} />
                     </div>

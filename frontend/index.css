@@ -718,6 +718,17 @@ html, body, #root {
     }
 }
 
+/* 태스크 드롭존 — 박스 drop-zone보다 작게 */
+.task-drop-zone {
+    height: 32px; /* 22px → 32px */
+    animation: splitIn .15s ease;
+}
+
+/* 드래그 중인 태스크 */
+.task-row.task-dragging {
+    opacity: 0.35;
+}
+
 /* ── Loading ─────────────────────────────────────────────────────── */
 .loading-state {
     grid-column: 1 / -1;

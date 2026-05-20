@@ -1,6 +1,6 @@
 import {useCallback, useState} from 'react';
 import type {Board, BoardType, Box, BoxState} from '../types';
-import {boardApi, boxApi} from '../api';
+import {boardApi, boxApi, taskApi} from '../api';
 
 const LAST_BOARD_KEY = 'lastBoardId';
 
@@ -129,10 +129,37 @@ export function useBoard() {
         });
     }, []);
 
+    const reorderTask = useCallback(async (
+        boxId: number,
+        boxTaskId: number,
+        targetIndex: number,
+    ) => {
+        if (!board) return;
+
+        // 낙관적 업데이트
+        setBoard(prev => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                boxes: prev.boxes.map(b => {
+                    if (b.boxId !== boxId) return b;
+                    const tasks = [...b.tasks];
+                    const from = tasks.findIndex(t => t.boxTaskId === boxTaskId);
+                    if (from === -1) return b;
+                    const [item] = tasks.splice(from, 1);
+                    tasks.splice(targetIndex, 0, item);
+                    return {...b, tasks};
+                }),
+            };
+        });
+
+        await taskApi.move(boxTaskId, {boxId, targetIndex});
+    }, [board]);
+
     return {
         board, loading,
         initBoard, loadBoard, createNewBoard, resetBoard,
         patchBoxState, removeBox, reorderBox,
-        updateBoxLocal, addBox,
+        updateBoxLocal, addBox, reorderTask,
     };
 }
