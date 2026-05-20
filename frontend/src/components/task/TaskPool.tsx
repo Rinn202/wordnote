@@ -19,6 +19,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
     const [editName, setEditName] = useState('');
     const [deleteWarning, setDeleteWarning] = useState(false);
 
+
     useEffect(() => {
         taskApi.getAll().then(setTasks).catch(console.error);
     }, []);

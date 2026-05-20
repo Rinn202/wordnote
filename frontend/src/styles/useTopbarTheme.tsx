@@ -50,29 +50,26 @@ const THEMES: TopbarTheme[] = [
         btnBd: 'rgba(80,110,150,.55)', btnCl: '#5A7A9A', btnBg: 'rgba(20,35,60,.5)',
     },
     /* ── 아침 6–9시 ── */
+    /* ── 아침 6–9시 ── */
     {
         hours: [6, 7, 8, 9],
-        base: '#EEF8FF',
+        base: '#3A7FC1',
         blobs: [
-            {cx: 80, cy: 18, rx: 150, ry: 52, fill: '#B8DCFF', op: .50},
-            {cx: 360, cy: 54, rx: 200, ry: 42, fill: '#C8E8FF', op: .42},
-            {cx: 580, cy: 10, rx: 130, ry: 48, fill: '#A0CCFF', op: .38},
-            {cx: 220, cy: 4, rx: 90, ry: 34, fill: '#D8EEFF', op: .45},
-            {cx: 470, cy: 62, rx: 110, ry: 36, fill: '#90C4F8', op: .34},
+            {cx: 340, cy: -20, rx: 500, ry: 80, fill: '#1E3F7A', op: .60},
+            {cx: 100, cy: 0, rx: 200, ry: 70, fill: '#2A5FA8', op: .50},
+            {cx: 500, cy: 10, rx: 220, ry: 60, fill: '#2855A0', op: .45},
+            {cx: 340, cy: 80, rx: 480, ry: 55, fill: '#78C8E8', op: .70},
+            {cx: 200, cy: 70, rx: 250, ry: 40, fill: '#90D8E8', op: .55},
         ],
         extra: `
-            <ellipse cx="620" cy="28" rx="52" ry="52" fill="#FFF5C0" opacity=".32" filter="url(#tbf2)"/>
-            <ellipse cx="620" cy="28" rx="30" ry="30" fill="#FFE880" opacity=".28" filter="url(#tbf2)"/>
-            <ellipse cx="620" cy="28" rx="14" ry="14" fill="#FFD840" opacity=".30"/>
-            <ellipse cx="80"  cy="10" rx="70" ry="22" fill="#FFFFFF" opacity=".60" filter="url(#tbf2)"/>
-            <ellipse cx="300" cy="8"  rx="55" ry="18" fill="#FFFFFF" opacity=".50" filter="url(#tbf2)"/>
-            <ellipse cx="480" cy="12" rx="50" ry="16" fill="#FFFFFF" opacity=".45" filter="url(#tbf2)"/>
-        `,
-        logoCl: '#1A4878', divBg: '#7AB0D8',
-        clkCl: '#102848', dateCl: '#4878A8',
-        noticeBg: 'rgba(230,245,255,.75)', noticeBd: 'rgba(100,160,220,.45)',
-        noticeIcon: '#6AAAD8', noticeTxt: '#4080B0',
-        btnBd: 'rgba(100,160,220,.55)', btnCl: '#3878B0', btnBg: 'rgba(230,245,255,.6)',
+        <ellipse cx="500" cy="75" rx="230" ry="38" fill="#A8E4DC" opacity=".50" filter="url(#tbf2)"/>
+        <ellipse cx="340" cy="90" rx="400" ry="40" fill="#C0EEE0" opacity=".45" filter="url(#tbf1)"/>
+    `,
+        logoCl: '#1A3A6A', divBg: '#4A80B8',
+        clkCl: '#0E2448', dateCl: '#3060A0',
+        noticeBg: 'rgba(220,238,255,.75)', noticeBd: 'rgba(80,130,200,.45)',
+        noticeIcon: '#4A80C0', noticeTxt: '#2858A0',
+        btnBd: 'rgba(80,130,200,.55)', btnCl: '#2858A0', btnBg: 'rgba(220,238,255,.6)',
     },
     /* ── 점심 10–16시 ── */
     {

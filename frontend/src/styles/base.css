@@ -1,0 +1,108 @@
+@font-face {
+    font-family: 'GowunBatang';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunBatang-Regular.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'GowunBatang';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunBatang-Bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'OngleipParkDahyeon';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'JoseonBoldMyongjo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunKm.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PyeongchangPeace';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PyeongchangPeace';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface2: #FAF8F4;
+    --surface3: #F5F1E8;
+    --border: #EAE5DC;
+    --border2: #D2CCC3;
+    --border3: #DEDAD4;
+
+    --text: #3A3830;
+    --text2: #7A7770;
+    --text3: #ADA9A3;
+    --text4: #6b6762;
+
+    --routine: #C03428;
+    --routine-bg: #FFF0EE;
+    --routine-b: #F5B8B2;
+    --routine-tab-bg: #FFD9D5;
+
+    --event: #C26A00;
+    --event-bg: #FFF4E6;
+    --event-b: #ffd392;
+    --event-tab-bg: #ffefce;
+
+    --progress-c: #C07B10;
+    --progress-bg: #FFF2D6;
+    --progress-b: #FFCC70;
+
+    --done-c: #3D7210;
+    --done-bg: #E8F8D8;
+    --done-b: #BADE90;
+
+    --danger: #A83030;
+    --danger-bg: #FFF0F0;
+    --bookmark: #C07B10;
+
+    --brand: #ffdc43;
+    --brand-b: #f9c74f;
+    --brand-bg: #fffbea;
+    --brand-c: #b07d00;
+
+    --radius: 8px;
+    --radius-lg: 12px;
+}
+
+html, body, #root {
+    height: 100%;
+    font-family: 'GowunBatang', serif;
+    color: var(--text);
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

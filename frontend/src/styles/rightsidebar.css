@@ -1,0 +1,203 @@
+.task-sidebar {
+    padding: 12px 14px;
+    width: 20%;
+    border-right: 1px solid var(--border2);
+
+    background-repeat: no-repeat, no-repeat;
+    background-position: center, left 10px bottom 0;
+}
+
+/* 아침 */
+.task-sidebar.morning {
+    background-image: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, .85)),
+    url('/참새.png');
+
+    background-size: cover, 400px;
+}
+
+/* 점심 */
+.task-sidebar.afternoon {
+    background-image: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, .85)),
+    url('/까치.png');
+
+    background-size: cover, 400px;
+}
+
+/* 저녁 */
+.task-sidebar.night {
+    background-image: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, .85)),
+    url('/부엉이.png');
+
+    background-size: cover, 500px;
+}
+
+/* ── TaskPool ────────────────────────────────────────────────────── */
+.task-pool {
+    padding: 12px 14px;
+}
+
+.task-pool-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.pool-label {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .08em;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.type-toggle {
+    display: flex;
+    gap: 3px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 2px;
+    margin: 5px 0;
+}
+
+.toggle-btn {
+    font-size: 13px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    font-weight: 700;
+    transition: all .12s;
+    font-family: 'GowunBatang', serif;
+}
+
+.toggle-btn.active {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.task-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+.task-item {
+    font-size: 13px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .12s;
+    font-family: 'GowunBatang', serif;
+}
+
+.task-item:hover {
+    border-color: var(--routine);
+    color: var(--routine);
+    background: var(--routine-bg);
+}
+
+.task-item.event-type:hover {
+    border-color: var(--event);
+    color: var(--event);
+    background: var(--event-bg);
+}
+
+.task-item.selected {
+    border-color: var(--routine);
+    color: var(--routine);
+    background: var(--routine-bg);
+}
+
+.task-item.selected.event-type {
+    border-color: var(--event);
+    color: var(--event);
+    background: var(--event-bg);
+}
+
+.task-new-input {
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: 1px dashed var(--border2);
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--text);
+    width: 100%;
+    font-family: 'GowunBatang', serif;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.task-new-input::placeholder {
+    color: var(--text4);
+}
+
+.task-new-input:focus {
+    background-color: #ffefce;
+}
+
+.create-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 8px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.box-name-input {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    padding: 3px 8px;
+    border: none;
+    border-bottom: 1.5px dashed var(--border3);
+    background: transparent;
+    color: var(--text);
+    outline: none;
+    font-family: 'GowunBatang', serif;
+}
+
+.box-name-input::placeholder {
+    color: var(--text4);
+}
+
+.box-name-input:focus {
+    border-bottom-color: var(--routine);
+}
+
+.create-box-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    padding: 3px 10px;
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    font-weight: 500;
+    font-family: 'GowunBatang', serif;
+    white-space: nowrap;
+    transition: all 0.2s ease-in-out;
+}
+
+.create-box-btn:hover {
+    background-color: var(--progress-b);
+    border-color: var(--text2);
+    color: #3A3830;
+}
+
+.select-chip.disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    pointer-events: none;
+}

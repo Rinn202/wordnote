@@ -1,0 +1,167 @@
+.sidebar-container {
+    width: 16%;
+    min-width: 200px;
+    background: #fdf6ed;
+    border-right: 1px solid #e8d5bc;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    padding: 20px;
+    gap: 4px;
+    flex-shrink: 0;
+
+}
+
+.sidebar-title {
+    font-size: 14px;
+    color: #b8865a;
+    letter-spacing: .1em;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 4px;
+}
+
+/* 통계 (Stats) 섹션 */
+.stats-container {
+    background: #fff7ee;
+    border: 0.5px solid #edd5b0;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 4px;
+}
+
+.stats-summary {
+    font-size: 12px;
+    color: #c4956a;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.stats-grid {
+    display: flex;
+    gap: 5px;
+}
+
+.stats-card {
+    flex: 1;
+    background: #fff;
+    border: 0.5px solid #edd5b0;
+    border-radius: 6px;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+}
+
+.stats-value {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* 상태별 텍스트 색상 */
+.stats-card-todo {
+    color: #d4724a;
+}
+
+.stats-card-prog {
+    color: #e8a030;
+}
+
+.stats-card-done {
+    color: #5aaa7a;
+}
+
+.stats-label {
+    font-size: 12px;
+    color: #c4956a;
+    letter-spacing: .06em;
+}
+
+/* 보드 리스트 아이템 */
+.board-item-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.board-load-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 4px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'GowunBatang', serif;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 1px solid #e8d5bc;
+    background: transparent;
+    color: #c4956a;
+}
+
+
+.board-load-button.active {
+    border: 1px solid #d4905a;
+    background: #fff7ee;
+    color: #b86a30;
+}
+
+.board-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.board-delete-button {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: 1.5px dashed #e8d5bc;
+    border-radius: 5px;
+    background: transparent;
+    color: #c4956a;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 경고 메시지 */
+.warning-message {
+    font-size: 11px;
+    color: var(--danger);
+    background: var(--danger-bg);
+    border: 1px solid #e8d5bc;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-top: 4px;
+    font-family: 'GowunBatang', serif;
+    line-height: 1.5;
+}
+
+/* 새 보드 추가 버튼 */
+.board-create-button {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1.5px dashed #d4b090;
+    background: transparent;
+    color: #c4956a;
+    cursor: pointer;
+    font-family: 'GowunBatang', serif;
+}
+
+.btn-icon {
+    font-size: 13px;
+}

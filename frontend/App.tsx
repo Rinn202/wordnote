@@ -2,7 +2,7 @@ import {Route, Routes} from 'react-router-dom';
 import AuthGate from './src/pages/AuthGate';
 import OAuthRedirect from './src/pages/OAuthRedirect';
 import MyPage from './src/pages/MyPage';
-import './index.css';
+import './src/styles/index.css';
 
 export default function App() {
     return (

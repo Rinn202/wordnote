@@ -1,0 +1,265 @@
+/* ── Box card ────────────────────────────────────────────────────── */
+.box-card {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    position: relative;
+    border-left: 3px solid transparent;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    transition: background .12s;
+}
+
+.box-card:hover {
+    background: #FDFAF5;
+}
+
+.box-card.dragging {
+    opacity: .4;
+}
+
+.box-card.in-progress {
+    border-left-color: var(--progress-b);
+}
+
+.box-card.done-state {
+    border-left-color: var(--done-b);
+    opacity: .7;
+}
+
+.box-card.expired {
+    border-left-color: #D32F2F;
+    background: #FFF8F8;
+    animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        background: #FFF8F8;
+    }
+    50% {
+        background: #FFE8E8;
+    }
+}
+
+.box-card.removing {
+    animation: removeBox .3s ease forwards;
+}
+
+@keyframes removeBox {
+    to {
+        opacity: 0;
+        max-height: 0;
+        border-width: 0;
+    }
+}
+
+.box-card.completing {
+    animation: completeBox .3s ease forwards;
+}
+
+@keyframes completeBox {
+    0% {
+        background: var(--surface);
+    }
+    40% {
+        background: var(--done-bg);
+    }
+    100% {
+        opacity: 0;
+        max-height: 0;
+        border-width: 0;
+    }
+}
+
+.box-name-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px 4px;
+    min-height: 24px;
+    overflow: hidden;
+}
+
+.box-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.box-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.act-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    border: 1.5px dashed var(--border2);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--text4);
+    cursor: pointer;
+    transition: all .12s;
+}
+
+.act-btn:hover {
+    border-color: var(--text3);
+    color: var(--text2);
+    border-style: solid;
+}
+
+.act-btn.bookmarked {
+    border-style: solid;
+    border-color: var(--progress-b);
+    color: var(--bookmark);
+}
+
+.act-btn.alarmed {
+    border-style: solid;
+    border-color: var(--event-b);
+    color: var(--event);
+}
+
+.act-btn.danger:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.box-sep {
+    height: 5px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.box-grip {
+    display: none;
+}
+
+/* ── Task row ────────────────────────────────────────────────────── */
+.task-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 11px 0 24px;
+    height: 30px;
+    border-bottom: 1px solid #F0EDE8;
+    cursor: pointer;
+}
+
+.task-row:last-child {
+    border-bottom: none;
+}
+
+.task-row:hover .task-txt {
+    color: var(--routine);
+}
+
+.task-row.task-dragging {
+    opacity: 0.35;
+}
+
+.task-txt {
+    font-size: 15px;
+    color: var(--text);
+    flex: 1;
+    font-family: 'GowunBatang', serif;
+}
+
+.task-txt.done {
+    color: var(--text4);
+    text-decoration: line-through;
+}
+
+.task-check {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    border: 1px solid var(--border2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+}
+
+.task-check.done {
+    background: var(--done-bg);
+    border-color: var(--done-b);
+    color: var(--done-c);
+}
+
+.task-check.prog {
+    background: var(--progress-bg);
+    border-color: var(--progress-b);
+    color: var(--progress-c);
+}
+
+.task-check-inline {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
+.box-single-task {
+    font-size: 15px;
+    color: var(--text);
+    flex: 5;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'GowunBatang', serif;
+    cursor: pointer;
+}
+
+.box-single-task.done {
+    color: var(--text4);
+    text-decoration: line-through;
+}
+
+.box-single-task:hover {
+    color: var(--routine);
+}
+
+/* ── Drop zone ───────────────────────────────────────────────────── */
+.drop-zone {
+    height: 32px;
+    border: 1.5px dashed var(--border2);
+    background: rgba(255, 255, 255, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--text3);
+    animation: splitIn .15s ease;
+}
+
+.task-drop-zone {
+    height: 32px;
+    animation: splitIn .15s ease;
+}
+
+@keyframes splitIn {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+    to {
+        height: 32px;
+        opacity: 1;
+    }
+}

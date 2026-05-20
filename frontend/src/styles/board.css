@@ -1,0 +1,160 @@
+/* ── Board col ───────────────────────────────────────────────────── */
+.board-col {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+    position: relative;
+}
+
+.board-col:last-child {
+    border-right: none;
+}
+
+/* ── Col header & 탭 ─────────────────────────────────────────────── */
+.col-header {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+    position: relative;
+    z-index: 2;
+}
+
+.col-header-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 14px 7px;
+}
+
+.col-label.routine {
+    background: var(--routine-b);
+    color: #464646;
+}
+
+.col-label.event {
+    background: var(--event-b);
+    color: #464646;
+}
+
+.col-count {
+    font-size: 13px;
+    color: var(--text4);
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    padding-top: 6px;
+}
+
+.col-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 10px;
+    overflow: visible;
+    margin-bottom: -1px;
+}
+
+.col-tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 3px 10px 4px;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border3);
+    border-bottom: none;
+    background: #fff8f8;
+    color: var(--text3);
+    cursor: pointer;
+    font-family: 'GowunBatang', serif;
+    position: relative;
+    z-index: 1;
+    transition: all .12s;
+    margin-right: 3px;
+}
+
+.col-tab:hover {
+    background: #E0DCD5;
+}
+
+.col-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    font-weight: 700;
+    border-color: var(--border2);
+    border-bottom: 2px solid var(--surface2);
+    margin-bottom: -2px;
+    z-index: 3;
+}
+
+.col-tab.active::after {
+    display: none;
+}
+
+.board-col .col-tab {
+    background: var(--routine-tab-bg);
+    color: var(--routine);
+    border-color: var(--routine-b);
+}
+
+.board-col .col-tab:hover {
+    background: #ffa8a8;
+}
+
+.board-col .col-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--routine-b);
+    border-bottom: 2px solid var(--surface2);
+}
+
+.board-col.event-col .col-tab {
+    background: var(--event-tab-bg);
+    color: var(--event);
+    border-color: var(--event-b);
+}
+
+.board-col.event-col .col-tab:hover {
+    background: #ffc935;
+}
+
+.board-col.event-col .col-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--event-b);
+    border-bottom: 2px solid var(--surface2);
+}
+
+/* ── boxes-list ─────────────────────────────────────────────────── */
+.boxes-list {
+    margin-top: 10px;
+    flex: 1;
+    min-width: 200px;
+    overflow-y: auto;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+}
+
+.boxes-list::-webkit-scrollbar {
+    width: 3px;
+}
+
+.boxes-list::-webkit-scrollbar-thumb {
+    background: var(--border2);
+    border-radius: 2px;
+}
+
+.empty-board {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text3);
+    font-size: 15px;
+}
+
+.empty-board i {
+    font-size: 26px;
+}

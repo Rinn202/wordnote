@@ -1,0 +1,540 @@
+/* ── Side panel ──────────────────────────────────────────────────── */
+.side-panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, .15);
+}
+
+.side-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 300px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    animation: slideIn .2s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.option-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.option-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+}
+
+.option-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.option-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.option-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.option-label {
+    font-size: 13px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding-top: 4px;
+    white-space: nowrap;
+}
+
+.option-alarm-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.option-select-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.toggle-pill.on {
+    background: var(--done-bg);
+    border-color: var(--done-b);
+    color: var(--done-c);
+}
+
+.select-chip {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .12s;
+    font-family: 'GowunBatang', serif;
+}
+
+.select-chip.selected {
+    border-color: var(--event-b);
+    background: var(--event-bg);
+    color: var(--event);
+}
+
+.time-input {
+    font-size: 13px;
+    padding: 5px 8px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    outline: none;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.time-input:focus {
+    border-color: var(--event-b);
+}
+
+.save-btn {
+    margin-top: auto;
+    padding: 11px;
+    border-radius: var(--radius);
+    border: 1px solid var(--done-b);
+    background: var(--done-bg);
+    color: var(--done-c);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s;
+    font-family: 'GowunBatang', serif;
+}
+
+.save-btn:hover {
+    opacity: .9;
+}
+
+.save-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ── Modal ───────────────────────────────────────────────────────── */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, .3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-box {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: popIn .2s ease;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+}
+
+.modal-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.modal-body {
+    padding: 18px;
+}
+
+.modal-empty {
+    font-size: 13px;
+    color: var(--text3);
+    text-align: center;
+    padding: 20px 0;
+}
+
+.board-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.board-list-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.board-list-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'GowunBatang', serif;
+}
+
+.board-list-item:hover {
+    border-color: var(--border2);
+    background: var(--surface);
+}
+
+.board-list-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text3);
+}
+
+.board-delete-btn {
+    width: 34px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px dashed var(--border2);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 15px;
+    transition: all .15s;
+}
+
+.board-delete-btn:hover:not(:disabled) {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: var(--danger-bg);
+    border-style: solid;
+}
+
+.board-delete-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.confirm-msg {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 16px;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.confirm-btn {
+    flex: 1;
+    padding: 9px;
+    border-radius: var(--radius);
+    border: 1px solid;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'GowunBatang', serif;
+}
+
+.confirm-btn.secondary {
+    border-color: var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+}
+
+.confirm-btn.primary {
+    border-color: var(--border2);
+    background: var(--progress-b);
+    color: var(--text);
+}
+
+.confirm-btn:hover {
+    opacity: .85;
+}
+
+/* ── No board overlay ────────────────────────────────────────────── */
+.no-board-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(40, 36, 30, 0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.no-board-card {
+    background: var(--surface2);
+    border: 1.5px dashed var(--border2);
+    border-radius: 44px;
+    padding: 44px 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    animation: popIn .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.no-board-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #fffbea;
+    border: 1.8px solid #f9c74f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #f9c74f;
+}
+
+.no-board-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: .01em;
+    line-height: 1.5;
+}
+
+.no-board-desc {
+    font-family: 'GowunBatang', serif;
+    font-size: 13px;
+    color: var(--text3);
+    line-height: 1.7;
+}
+
+.no-board-btn {
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'PyeongchangPeace', serif;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 13px 32px;
+    border-radius: 999px;
+    border: 2px solid #f9c74f;
+    background: #ffdc43;
+    color: #b07d00;
+    cursor: pointer;
+    letter-spacing: .04em;
+    transition: transform .15s;
+}
+
+.no-board-btn:hover {
+    transform: scale(1.03);
+}
+
+/* ── Modal ───────────────────────────────────────────────────────── */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, .3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-box {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: popIn .2s ease;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+}
+
+.modal-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+.modal-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-empty {
+    font-size: 13px;
+    color: var(--text3);
+    text-align: center;
+    padding: 20px 0;
+}
+
+.board-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+}
+
+.board-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: var(--radius, 10px);
+    border: 1px solid var(--border, #e2e8f0);
+    background: var(--surface2, #f8fafc);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'GowunBatang', serif;
+}
+
+.board-list-item:hover {
+    border-color: var(--border2, #94a3b8);
+    background: var(--surface, #ffffff);
+}
+
+.board-list-count {
+    font-size: 11px;
+    color: var(--text3, #94a3b8);
+}
+
+/* ── Modal 구역 하단에 추가 ──────────────────────────────────────── */
+
+.confirm-msg {
+    font-size: 14px;
+    color: var(--text2, #334155);
+    margin: 0 0 20px;
+    line-height: 1.6;
+}
+
+/* 오른쪽 정렬을 유지하기 위한 버튼 컨테이너 */
+.confirm-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.confirm-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'GowunBatang', serif;
+}
+
+/* 취소 버튼 스타일 */
+.confirm-btn.secondary {
+    border: 1.5px solid var(--border2, #e2e8f0);
+    background: var(--surface2, #f8fafc);
+    color: var(--text2, #334155);
+}
+
+/* 확인 버튼 스타일 */
+.confirm-btn.primary {
+    border: none;
+    background: var(--progress-b, #0f172a);
+    color: #fff;
+    font-weight: 700;
+}
+
+.confirm-btn:hover {
+    opacity: .85;
+}
