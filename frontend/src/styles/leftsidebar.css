@@ -165,3 +165,139 @@
 .btn-icon {
     font-size: 13px;
 }
+
+/* ── 알람 패널 ── */
+.alarm-panel {
+    margin: 4px 0;
+    border: 0.5px solid #edd5b0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff7ee;
+}
+
+.alarm-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    background: #fff7ee;
+    border-bottom: 0.5px solid #edd5b0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #b8865a;
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+}
+
+.alarm-panel-title {
+    flex: 1;
+    font-family: 'GowunBatang';
+    font-size: 13px;
+}
+
+.alarm-badge {
+    font-size: 12px;
+    font-weight: 400;
+    font-family: 'GowunBatang';
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.alarm-list {
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+
+.alarm-list::-webkit-scrollbar {
+    width: 3px;
+}
+
+.alarm-list::-webkit-scrollbar-thumb {
+    background: #edd5b0;
+    border-radius: 2px;
+}
+
+.alarm-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 0;
+    color: #c4956a;
+    font-size: 11px;
+    font-family: 'GowunBatang', serif;
+    opacity: 0.6;
+}
+
+.alarm-empty i {
+    font-size: 18px;
+    opacity: 0.5;
+}
+
+.alarm-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-bottom: 0.5px solid #f0dfc4;
+    animation: alarm-slide-in 0.2s ease;
+}
+
+.alarm-item:last-child {
+    border-bottom: none;
+}
+
+@keyframes alarm-slide-in {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.alarm-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    
+}
+
+.alarm-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #7a4f2e;
+    font-family: 'GowunBatang', serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.alarm-item-time {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+    font-family: 'GowunBatang', serif;
+}
+
+.alarm-dismiss-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #c4956a;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: color 0.15s, background 0.15s;
+}
+
+.alarm-dismiss-button:hover {
+    color: #d4724a;
+    background: rgba(212, 114, 74, 0.1);
+}
+
+.alarm-item-fired {
+    background: rgba(212, 114, 74, 0.08);
+    border-left: 2px solid #d4724a;
+}

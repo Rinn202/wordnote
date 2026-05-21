@@ -1,4 +1,4 @@
-import {useBoardApp} from '../hooks/useBoardApp';
+import { useBoardApp } from '../hooks/useBoardApp';
 import AlarmToastList from '../components/common/AlarmToast';
 import Topbar from '../components/layout/Topbar';
 import RoutineBoard from '../components/board/RoutineBoard';
@@ -7,10 +7,10 @@ import TaskPool from '../components/task/TaskPool';
 import BoxOptionPanel from '../components/box/BoxOptionPanel';
 import BoardModals from '../components/common/BoardModals';
 import LeftSidebar from '../components/layout/LeftSidebar';
-import type {Box} from '../types';
-import {getTimeTheme} from '../components/layout/getTimeTheme';
+import type { Box } from '../types';
+import { getTimeTheme } from '../components/layout/getTimeTheme';
 
-export default function BoardApp({onLogout}: { onLogout: () => void }) {
+export default function BoardApp({ onLogout }: { onLogout: () => void }) {
 
     const {
         currentBoard,
@@ -19,7 +19,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
             patchBoxState, removeBox, reorderBox,
             updateBoxLocal, reorderTask, addBox,
         },
-        boards: {allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard},
+        boards: { allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard },
         clockStr, dateStr,
         optionBox, setOptionBox,
         newBoardConfirmOpen, setNewBoardConfirmOpen,
@@ -34,7 +34,10 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
     const theme = getTimeTheme();
 
     return (
-        <div className="app">
+            <div className="app" onClick={() => {
+                const audio = new Audio();
+                audio.play().catch(() => { });
+            }}>
             <Topbar
                 clockStr={clockStr}
                 dateStr={dateStr}
@@ -44,10 +47,9 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                 onResetBoard={resetBoard}
                 onLogout={onLogout}
             />
-
             {loading ? (
                 <div className="loading-state">
-                    <i className="ti ti-loader-2 spin" aria-hidden="true"/>
+                    <i className="ti ti-loader-2 spin" aria-hidden="true" />
                     <span>보드를 불러오는 중...</span>
                 </div>
             ) : currentBoard ? (
@@ -62,6 +64,9 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                         boardId={currentBoard.boardId}
                         total={allBoxes.length}
                         {...allBoxesStats}
+                        alarms={alarmToasts}
+                        onDismissAlarm={handleCloseToast}
+                        allBoxes={allBoxes}
                     />
                     <div className="board-inner">
                         <div className="board-grid">
@@ -105,11 +110,11 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                 <div className="no-board-overlay">
                     <div className="no-board-card">
                         <div className="no-board-icon">
-                            <i className="ti ti-note" aria-hidden="true"/>
+                            <i className="ti ti-note" aria-hidden="true" />
                         </div>
                         <div className="no-board-title">첫 보드를 만들어 보세요</div>
                         <div className="no-board-desc">
-                            새 보드를 만들어 오늘의 할 일을<br/>정리해보세요.
+                            새 보드를 만들어 오늘의 할 일을<br />정리해보세요.
                         </div>
                         <button className="no-board-btn" onClick={createNewBoard}>
                             START
@@ -152,7 +157,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                 }}
             />
 
-            <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast}/>
+            <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast} />
         </div>
     );
 }

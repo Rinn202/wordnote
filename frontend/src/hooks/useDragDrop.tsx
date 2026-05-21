@@ -4,6 +4,7 @@ import type {BoardType} from '../types';
 export function useDragDrop(
     onReorder: (boxId: number, targetIndex: number, boardType: BoardType) => Promise<void>,
     boardType: BoardType,
+    onDragActiveChange?: (active: boolean) => void, 
 ) {
     const [draggingId, setDraggingId] = useState<number | null>(null);
     const [overIndex, setOverIndex] = useState<number | null>(null);
@@ -11,11 +12,11 @@ export function useDragDrop(
 
     const onDragStart = useCallback((boxId: number, index: number) => {
         dragIndex.current = index;
-        // 한 프레임 뒤에 숨김 → 브라우저가 고스트 이미지 먼저 캡처하게
         requestAnimationFrame(() => {
             setDraggingId(boxId);
+            onDragActiveChange?.(true);  // 추가
         });
-    }, []);
+    }, [onDragActiveChange]);;
 
     const onDragOver = useCallback((e: React.DragEvent<HTMLElement>, index: number) => {
         e.preventDefault();
@@ -49,6 +50,7 @@ export function useDragDrop(
         setDraggingId(null);
         setOverIndex(null);
         dragIndex.current = -1;
+         onDragActiveChange?.(false);
 
         if (currentDraggingId === null || currentOverIndex === null) return;
         if (currentOverIndex !== dragIndex.current) {
@@ -68,6 +70,7 @@ export function useDragDrop(
             setDraggingId(null);
             setOverIndex(null);
             dragIndex.current = -1;
+            onDragActiveChange?.(false);
         }
     }, []);
 

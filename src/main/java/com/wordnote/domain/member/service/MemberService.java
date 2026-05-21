@@ -50,7 +50,7 @@ public class MemberService {
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);// 암호화된 비번으로 교체
 
-        adminMaker(dto, member);
+        adminMaker(dto.getEmail(), member);
         memberRepository.save(member);
 
         return memberMapper.toResponseDto(member);
@@ -89,8 +89,8 @@ public class MemberService {
                 .orElseThrow(() -> new LogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
-    private static void adminMaker(MemberCreateDto dto, Member member) {
-        if (dto.getEmail().equals("dioneo54@gmail.com")) {
+    private static void adminMaker(String email, Member member) {
+        if (email.equals("dioneo54@gmail.com")) {
             member.setRole(Role.ADMIN);
         } else {
             member.setRole(Role.BASIC);
@@ -103,6 +103,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElse(new Member(email, name, tempPassword, profile)); //name = nickname
 
+        adminMaker(email, member);
         return memberRepository.save(member);
     }
 

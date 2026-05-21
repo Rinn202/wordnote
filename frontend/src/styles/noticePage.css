@@ -1,0 +1,315 @@
+/* ===========================
+   NoticePage
+   =========================== */
+
+.notice-page {
+    display: flex;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+}
+
+/* 좌측 목록 패널 */
+.notice-list-panel {
+    width: 280px;
+    min-width: 220px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.notice-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.notice-list-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.notice-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.notice-empty {
+    padding: 24px 16px;
+    font-size: 13px;
+    color: var(--text2, #999);
+    font-family: 'GowunBatang', serif;
+    text-align: center;
+}
+
+.notice-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border2, #eee);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.12s;
+}
+
+.notice-item:hover {
+    background: var(--hover, rgba(0,0,0,0.04));
+}
+
+.notice-item.active {
+    background: var(--active, rgba(58, 56, 48, 0.07));
+}
+
+.notice-item-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+}
+
+.notice-item-date {
+    font-size: 11px;
+    color: var(--text2, #aaa);
+}
+
+/* 우측 상세 패널 */
+.notice-detail-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 빈 상태 */
+.notice-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text2, #bbb);
+    font-family: 'GowunBatang', serif;
+    font-size: 14px;
+}
+
+.notice-placeholder i {
+    font-size: 32px;
+    opacity: 0.4;
+}
+
+/* 상세 보기 */
+.notice-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 640px;
+}
+
+.notice-detail-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.notice-detail-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+    margin: 0;
+}
+
+.notice-detail-date {
+    font-size: 12px;
+    color: var(--text2, #aaa);
+    flex-shrink: 0;
+}
+
+.notice-detail-body {
+    font-family: 'GowunBatang', serif;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+.notice-detail-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* 기존 .notice-detail-actions .act-btn 을 아래로 교체 */
+.notice-detail-actions .notice-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'GowunBatang', serif;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.notice-detail-actions .notice-btn:hover {
+    background: var(--hover, rgba(0,0,0,0.04));
+}
+.notice-detail-actions .notice-btn.danger {
+    color: var(--danger, #c0392b);
+    border-color: var(--danger, #c0392b);
+}
+.notice-detail-actions .notice-btn.danger:hover {
+    background: rgba(192, 57, 43, 0.06);
+}
+
+/* 작성/수정 폼 */
+.notice-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 640px;
+}
+
+.notice-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'GowunBatang', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.notice-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'GowunBatang', serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.notice-input:focus {
+    border-color: var(--text);
+}
+
+.notice-textarea {
+    width: 100%;
+    min-height: 160px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'GowunBatang', serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    resize: vertical;
+    line-height: 1.7;
+    box-sizing: border-box;
+}
+
+.notice-textarea:focus {
+    border-color: var(--text);
+}
+
+.notice-form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.notice-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'GowunBatang', serif;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.notice-btn:hover {
+    background: var(--hover, rgba(0,0,0,0.04));
+    width: auto;
+    height: auto;
+}
+
+.notice-btn.danger {
+    color: var(--danger, #c0392b);
+    border-color: var(--danger, #c0392b);
+}
+
+.notice-btn.danger:hover {
+    background: rgba(192, 57, 43, 0.06);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-card {
+    background: var(--bg, #faf8f3);
+    border: 1px solid var(--border);
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 280px;
+}
+
+.modal-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.modal-desc {
+    font-family: 'GowunBatang', serif;
+    font-size: 13px;
+    color: var(--text2, #999);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}

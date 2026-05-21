@@ -29,16 +29,6 @@
     padding: 12px 14px 7px;
 }
 
-.col-label.routine {
-    background: var(--routine-b);
-    color: #464646;
-}
-
-.col-label.event {
-    background: var(--event-b);
-    color: #464646;
-}
-
 .col-count {
     font-size: 13px;
     color: var(--text4);

@@ -256,11 +256,10 @@ export default function BoxOptionPanel({box, onClose, onUpdate}: Props) {
                         </div>
                     </div>
 
-                    {/* 알람 — 만료시간 ON일 때만 표시 */}
                     {hasTime && (
                         <div className="option-row">
                             <label className="option-label">
-                                <i className="ti ti-bell" aria-hidden="true"/> 알람
+                                <i className="ti ti-bell" aria-hidden="true"/> 알람 목록
                             </label>
                             <div className="option-alarm-group">
                                 {ALARM_OPTIONS.map(opt => (

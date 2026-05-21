@@ -37,9 +37,6 @@ export default function BoardModals({
                                             onCloseLoadModal();
                                         }}
                                     >
-                                        <i className="ti ti-layout-board" aria-hidden="true"/>
-                                        보드 #{b.boardId}
-                                        <span className="board-list-count">{b.boxes.length}개 박스</span>
                                     </button>
                                     <button
                                         className="board-delete-btn"

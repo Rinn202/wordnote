@@ -529,9 +529,8 @@
 
 /* 확인 버튼 스타일 */
 .confirm-btn.primary {
-    border: none;
     background: var(--progress-b, #0f172a);
-    color: #fff;
+    color: var(--text);
     font-weight: 700;
 }
 

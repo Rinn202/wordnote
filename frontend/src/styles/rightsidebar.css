@@ -4,15 +4,15 @@
     border-right: 1px solid var(--border2);
 
     background-repeat: no-repeat, no-repeat;
-    background-position: center, left 10px bottom 0;
+    background-position: center, left -10px bottom -70px;
 }
 
 /* 아침 */
 .task-sidebar.morning {
     background-image: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, .85)),
     url('/참새.png');
-
-    background-size: cover, 400px;
+    background-position: center, right 30px bottom -30px;
+    background-size: cover, 300px;
 }
 
 /* 점심 */
@@ -75,7 +75,6 @@
 
 .toggle-btn.active {
     background: var(--surface);
-    color: var(--text);
 }
 
 .task-grid {
