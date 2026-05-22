@@ -277,7 +277,7 @@ export default function AdminPage() {
                                             }}
                                     >
                                         <span className="notice-col-title">{t.name}</span>
-                                        <span className="notice-col-date">{t.category ?? '기타'}</span>
+                                        <span className="notice-col-date">{t.category ?? 'custom'}</span>
                                     </button>
                                 ))
                             }
@@ -310,7 +310,7 @@ export default function AdminPage() {
                             <div className="notice-detail">
                                 <div className="notice-detail-header">
                                     <h2 className="notice-detail-title">{selectedTask.name}</h2>
-                                    <span className="notice-detail-date">{selectedTask.category ?? '기타'}</span>
+                                    <span className="notice-detail-date">{selectedTask.category ?? 'custom'}</span>
                                 </div>
                                 <div className="notice-detail-actions">
                                     <button className="icon-btn" title="수정"

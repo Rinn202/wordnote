@@ -23,27 +23,38 @@ const ALARM_LABEL: Record<string, string> = {
 
 export function useAlarm(boxes: Box[], onAlarm: (toast: AlarmToast) => void) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
-
-    if (audioRef.current === null) {
-        audioRef.current = new Audio(localStorage.getItem('alarmFile') ?? '/alarm.mp3');
-        audioRef.current.loop = true;
-    }
     const firedRef = useRef<Set<string>>(new Set());
+    const onAlarmRef = useRef(onAlarm);
 
+    // onAlarm 최신 참조 유지 (의존성 배열에서 제거하기 위해)
     useEffect(() => {
-        if (audioRef.current) audioRef.current.loop = true;
+        onAlarmRef.current = onAlarm;
+    }, [onAlarm]);
+
+    // Audio 초기화 - 렌더 바디가 아닌 최초 1회만
+    useEffect(() => {
+        if (audioRef.current === null) {
+            const src = localStorage.getItem('alarmFile') ?? '/alarm.mp3';
+            audioRef.current = new Audio(src);
+            audioRef.current.loop = true;
+        }
     }, []);
 
     const stopAudio = () => {
-        audioRef.current?.pause();
-        audioRef.current && (audioRef.current.currentTime = 0);
+        const audio = audioRef.current;
+        if (!audio) return;
+        audio.pause();
+        audio.currentTime = 0;
     };
 
     useEffect(() => {
         const check = () => {
             const now = new Date();
             const nowMinutes = now.getHours() * 60 + now.getMinutes();
-            const isMidnight = now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0;
+            const isMidnight =
+                now.getHours() === 0 &&
+                now.getMinutes() === 0 &&
+                now.getSeconds() === 0;
 
             if (isMidnight) firedRef.current.clear();
 
@@ -54,11 +65,14 @@ export function useAlarm(boxes: Box[], onAlarm: (toast: AlarmToast) => void) {
                 const triggerMinutes = eh * 60 + em + (ALARM_OFFSET[box.alarmType] ?? 0);
                 const key = `${box.boxId}-${box.alarmType}`;
 
-                if (nowMinutes === triggerMinutes && now.getSeconds() < 10 && !firedRef.current.has(key)) {
+                if (
+                    nowMinutes === triggerMinutes &&
+                    now.getSeconds() < 10 &&
+                    !firedRef.current.has(key)
+                ) {
                     firedRef.current.add(key);
-                    audioRef.current.play().catch(() => {
-                    });
-                    onAlarm({
+                    audioRef.current?.play().catch(() => {});
+                    onAlarmRef.current({
                         boxId: box.boxId,
                         name: box.name,
                         timeLabel: `${box.expireTime.slice(0, 5)} ${ALARM_LABEL[box.alarmType] ?? ''}`,
@@ -69,7 +83,7 @@ export function useAlarm(boxes: Box[], onAlarm: (toast: AlarmToast) => void) {
 
         const interval = setInterval(check, 1000);
         return () => clearInterval(interval);
-    }, [boxes, onAlarm]);
+    }, [boxes]); // onAlarm 제거 - ref로 최신값 참조
 
     return {stopAudio};
 }

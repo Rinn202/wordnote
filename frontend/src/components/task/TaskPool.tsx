@@ -1,4 +1,4 @@
-import {type KeyboardEvent, useEffect, useState} from 'react';
+import {type KeyboardEvent, useEffect, useRef, useState} from 'react';
 import type {BoardType, Box, Task} from '../../types';
 import {boxApi, taskApi} from '../../api';
 
@@ -18,6 +18,9 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [editName, setEditName] = useState('');
     const [deleteWarning, setDeleteWarning] = useState(false);
+    const [openCats, setOpenCats] = useState<Set<string>>(new Set());
+
+    const infoRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         taskApi.getAll().then(setTasks).catch(console.error);
@@ -34,7 +37,6 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
         ['task-item', boxType === 'EVENT' ? 'event-type' : '', selected.includes(t.taskId) ? 'selected' : '']
             .filter(Boolean).join(' ');
 
-
     const handleDelete = async () => {
         if (!selectedTask) return;
         if (isUsed) {
@@ -43,11 +45,9 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
         }
         setDeleteWarning(false);
 
-        // 백업
         const previousTasks = [...tasks];
         const previousSelected = [...selected];
 
-        // 낙관적 업데이트
         setTasks(prev => prev.filter(t => t.taskId !== selectedTask.taskId));
         setSelected([]);
 
@@ -55,7 +55,6 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
             await taskApi.delete(selectedTask.taskId);
         } catch (error) {
             console.error(error);
-            // 롤백
             setTasks(previousTasks);
             setSelected(previousSelected);
             alert('태스크 삭제에 실패했습니다.');
@@ -69,7 +68,6 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
         const nextName = editName.trim();
         const previousTasks = [...tasks];
 
-        // 낙관적 업데이트
         setTasks(prev => prev.map(t => t.taskId === targetId ? {...t, name: nextName} : t));
         setEditingTask(null);
         setEditName('');
@@ -78,7 +76,6 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
             await taskApi.update(targetId, nextName);
         } catch (error) {
             console.error(error);
-            // 롤백
             setTasks(previousTasks);
             alert('태스크 수정에 실패했습니다.');
         }
@@ -100,28 +97,8 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
         }
     };
 
-
-    const [openCats, setOpenCats] = useState<Set<string>>(new Set());
-
-    const toggleCat = (cat: string) =>
-        setOpenCats(prev => {
-            if (prev.has(cat)) return new Set();
-            return new Set([cat]);
-        });
-
-    const normalizeCategory = (cat: string) => cat.replace(/_상세$/, '');
-
-    const grouped = tasks.reduce<Record<string, { main: Task[], sub: Task[] }>>((acc, t) => {
-        const raw = t.category ?? '기타';
-        const parent = normalizeCategory(raw);
-        const isSub = raw.endsWith('_상세');
-        acc[parent] ??= {main: [], sub: []};
-        (isSub ? acc[parent].sub : acc[parent].main).push(t);
-        return acc;
-    }, {});
-
-    const handleAddTask = async (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key !== 'Enter' || !newTaskForm.name.trim()) return;
+    const handleAddTask = async () => {
+        if (!newTaskForm.name.trim()) return;
 
         try {
             const task = await taskApi.create(
@@ -137,14 +114,40 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
 
             setTasks(prev => [...prev, safeTask]);
             setNewTaskForm({name: '', info: ''});
-
-            setOpenCats(prev => new Set([...prev, '기타']));
+            setOpenCats(prev => new Set([...prev, 'custom']));
 
         } catch (error) {
             console.error('태스크 생성 중 에러 발생:', error);
             alert('태스크 생성에 실패했습니다.');
         }
     };
+
+    const handleNameKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key !== 'Enter' || !newTaskForm.name.trim()) return;
+        infoRef.current?.focus();
+    };
+
+    const handleInfoKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key !== 'Enter') return;
+        handleAddTask();
+    };
+
+    const toggleCat = (cat: string) =>
+        setOpenCats(prev => {
+            if (prev.has(cat)) return new Set();
+            return new Set([cat]);
+        });
+
+    const normalizeCategory = (cat: string) => cat.replace(/_상세$/, '');
+
+    const grouped = tasks.reduce<Record<string, { main: Task[], sub: Task[] }>>((acc, t) => {
+        const raw = t.category ?? 'custom';
+        const parent = normalizeCategory(raw);
+        const isSub = raw.endsWith('_상세');
+        acc[parent] ??= {main: [], sub: []};
+        (isSub ? acc[parent].sub : acc[parent].main).push(t);
+        return acc;
+    }, {});
 
     return (
         <div className="task-pool">
@@ -176,16 +179,18 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
             <div className="task-new-form">
                 <input
                     className="task-new-input"
-                    placeholder="+ 태스크 이름 (Enter로 추가)"
+                    placeholder="+ 태스크 이름 (Enter로 다음 단계)"
                     value={newTaskForm.name}
                     onChange={e => setNewTaskForm(p => ({...p, name: e.target.value}))}
-                    onKeyDown={handleAddTask}
+                    onKeyDown={handleNameKeyDown}
                 />
                 <input
+                    ref={infoRef}
                     className="task-new-input"
-                    placeholder="상세설명을 입력할 수 있습니다(선택)"
+                    placeholder="상세설명 입력 후 Enter로 추가 (선택)"
                     value={newTaskForm.info}
                     onChange={e => setNewTaskForm(p => ({...p, info: e.target.value}))}
+                    onKeyDown={handleInfoKeyDown}
                 />
             </div>
 
@@ -225,10 +230,12 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
                         onKeyDown={e => e.key === 'Enter' && handleEditConfirm()}
                         autoFocus
                     />
-                    <button className="act-btn" onClick={handleEditConfirm}><i className="ti ti-check"
-                                                                               aria-hidden="true"/></button>
-                    <button className="act-btn" onClick={() => setEditingTask(null)}><i className="ti ti-x"
-                                                                                        aria-hidden="true"/></button>
+                    <button className="act-btn" onClick={handleEditConfirm}>
+                        <i className="ti ti-check" aria-hidden="true"/>
+                    </button>
+                    <button className="act-btn" onClick={() => setEditingTask(null)}>
+                        <i className="ti ti-x" aria-hidden="true"/>
+                    </button>
                 </div>
             )}
 
@@ -243,7 +250,8 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
                         {openCats.has(cat) && (
                             <div className="task-grid">
                                 {items.main.map(t => (
-                                    <button key={t.taskId} className={taskClass(t)} onClick={() => toggleTask(t.taskId)}
+                                    <button key={t.taskId} className={taskClass(t)}
+                                            onClick={() => toggleTask(t.taskId)}
                                             title={t.info ?? undefined}>
                                         {t.name}
                                     </button>

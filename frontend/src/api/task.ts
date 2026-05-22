@@ -5,7 +5,7 @@ import type {MoveBoxTaskRequest, Task} from '../types';
 export const taskApi = {
     getAll: () => req<Task[]>('GET', '/task'),
     create: (name: string, category?: string, info?: string | undefined) =>
-        req<Task>('POST', '/task', {name, category: category ?? '기타'}),
+        req<Task>('POST', '/task', {name, category: category ?? 'custom', info}),
     update: (id: number, name: string, category?: string) =>
         req<Task>('PATCH', `/task/${id}`, {name, category}),
     delete: (id: number) => req<void>('DELETE', `/task/${id}`),
