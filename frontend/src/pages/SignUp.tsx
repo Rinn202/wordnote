@@ -1,14 +1,21 @@
-import { useRef, useState, type ChangeEvent } from 'react';
+import {type ChangeEvent, useRef, useState} from 'react';
 import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-const api = axios.create({ baseURL: API_BASE });
+const api = axios.create({baseURL: API_BASE});
 
 interface SignUpForm {
-    name: string; nickname: string; email: string;
-    password: string; passwordConfirm: string;
+    name: string;
+    nickname: string;
+    email: string;
+    password: string;
+    passwordConfirm: string;
 }
-interface SignUpProps { onSuccess?: () => void; onGoLogin?: () => void; }
+
+interface SignUpProps {
+    onSuccess?: () => void;
+    onGoLogin?: () => void;
+}
 
 const validate = (form: SignUpForm): Partial<SignUpForm> => {
     const e: Partial<SignUpForm> = {};
@@ -21,15 +28,27 @@ const validate = (form: SignUpForm): Partial<SignUpForm> => {
 };
 
 interface FieldProps {
-    label: string; emoji: string; type: string; placeholder: string;
-    value: string; onChange: (e: ChangeEvent<HTMLInputElement>) => void; error?: string;
+    label: string;
+    emoji: string;
+    type: string;
+    placeholder: string;
+    value: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    error?: string;
 }
 
-function Field({ label, emoji, type, placeholder, value, onChange, error }: FieldProps) {
+function Field({label, emoji, type, placeholder, value, onChange, error}: FieldProps) {
     const [focused, setFocused] = useState(false);
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <label style={{ fontSize: 12, fontWeight: 700, color: '#475569', display: 'flex', alignItems: 'center', gap: 5 }}>
+        <div style={{display: 'flex', flexDirection: 'column', gap: 5}}>
+            <label style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: '#475569',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5
+            }}>
                 <span>{emoji}</span>{label}
             </label>
             <input
@@ -46,12 +65,12 @@ function Field({ label, emoji, type, placeholder, value, onChange, error }: Fiel
                     width: '100%', boxSizing: 'border-box' as const,
                 }}
             />
-            {error && <span style={{ fontSize: 11, color: '#ef4444' }}>⚠ {error}</span>}
+            {error && <span style={{fontSize: 11, color: '#ef4444'}}>⚠ {error}</span>}
         </div>
     );
 }
 
-export default function SignUp({ onSuccess, onGoLogin }: SignUpProps) {
+export default function SignUp({onSuccess, onGoLogin}: SignUpProps) {
     const [form, setForm] = useState<SignUpForm>({
         name: '', nickname: '', email: '', password: '', passwordConfirm: '',
     });
@@ -62,18 +81,21 @@ export default function SignUp({ onSuccess, onGoLogin }: SignUpProps) {
 
     const showToast = (msg: string, ok = true) => {
         if (toastTimer.current) clearTimeout(toastTimer.current);
-        setToast({ msg, ok });
+        setToast({msg, ok});
         toastTimer.current = setTimeout(() => setToast(null), 2500);
     };
 
     const set = (k: keyof SignUpForm) => (e: ChangeEvent<HTMLInputElement>) => {
-        setForm(f => ({ ...f, [k]: e.target.value }));
-        if (errors[k]) setErrors(er => ({ ...er, [k]: undefined }));
+        setForm(f => ({...f, [k]: e.target.value}));
+        if (errors[k]) setErrors(er => ({...er, [k]: undefined}));
     };
 
     const handleSubmit = async () => {
         const e = validate(form);
-        if (Object.keys(e).length) { setErrors(e); return; }
+        if (Object.keys(e).length) {
+            setErrors(e);
+            return;
+        }
         setLoading(true);
         try {
             await api.post('/member/signup', {
@@ -96,7 +118,7 @@ export default function SignUp({ onSuccess, onGoLogin }: SignUpProps) {
         window.location.href = `${API_BASE}/oauth2/authorization/google`;
     };
 
-    
+
     // ── 렌더 ─────────────────────────────────────────────────────────────────
     return (
         <>

@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import type { Board, Box } from '../../types';
+import {useState} from 'react';
+import type {Board, Box} from '../../types';
 import '../../styles/left-sidebar.css';
-import type { AlarmToast } from '../../hooks/useAlarm';
+import type {AlarmToast} from '../../hooks/useAlarm';
 
 interface Props {
     currentBoardId: number | undefined;
@@ -28,17 +28,25 @@ const getAlarmTime = (expireTime: string, alarmType: string): string => {
 };
 
 export default function LeftSidebar({
-    currentBoardId, allBoards, deletingBoardId,
-    onLoadBoard, onDeleteBoard, onNewBoard,
-    todo, prog, done, alarms, allBoxes, onDismissAlarm,
-}: Props) {
+                                        currentBoardId, allBoards, deletingBoardId,
+                                        onLoadBoard, onDeleteBoard, onNewBoard,
+                                        todo, prog, done, alarms, allBoxes, onDismissAlarm,
+                                    }: Props) {
     const [showWarning, setShowWarning] = useState(false);
     const [showEmptyWarning, setShowEmptyWarning] = useState(false);
 
     const handleNewBoard = () => {
         const isEmptyBoard = allBoards.find(b => b.boardId === currentBoardId)?.boxes.length === 0;
-        if (isEmptyBoard) { setShowEmptyWarning(true); setShowWarning(false); return; }
-        if (allBoards.length >= 11) { setShowWarning(true); setShowEmptyWarning(false); return; }
+        if (isEmptyBoard) {
+            setShowEmptyWarning(true);
+            setShowWarning(false);
+            return;
+        }
+        if (allBoards.length >= 11) {
+            setShowWarning(true);
+            setShowEmptyWarning(false);
+            return;
+        }
         setShowWarning(false);
         setShowEmptyWarning(false);
         onNewBoard();
@@ -72,7 +80,7 @@ export default function LeftSidebar({
 
             <div className="alarm-panel">
                 <div className="alarm-panel-header">
-                    <i className="ti ti-bell" aria-hidden="true" />
+                    <i className="ti ti-bell" aria-hidden="true"/>
                     <span className="alarm-panel-title">알람</span>
                     {scheduledAlarms.length > 0 && (
                         <span className="alarm-badge">({scheduledAlarms.length})</span>
@@ -81,18 +89,20 @@ export default function LeftSidebar({
                 <div className="alarm-list">
                     {scheduledAlarms.length === 0 ? (
                         <div className="alarm-empty">
-                            <i className="ti ti-bell-off" aria-hidden="true" />
+                            <i className="ti ti-bell-off" aria-hidden="true"/>
                             <span>알람 없음</span>
                         </div>
                     ) : (
                         scheduledAlarms.map(box => (
-                            <div key={box.boxId} className={`alarm-item ${firedIds.has(box.boxId) ? 'alarm-item-fired' : ''}`}>
+                            <div key={box.boxId}
+                                 className={`alarm-item ${firedIds.has(box.boxId) ? 'alarm-item-fired' : ''}`}>
                                 <span className="alarm-item-name">
                                     [{getAlarmTime(box.expireTime!, box.alarmType)}] {box.name}
                                 </span>
                                 {firedIds.has(box.boxId) && (
-                                    <button className="alarm-dismiss-button" onClick={() => onDismissAlarm(box.boxId)} aria-label="알람 닫기">
-                                        <i className="ti ti-x" aria-hidden="true" />
+                                    <button className="alarm-dismiss-button" onClick={() => onDismissAlarm(box.boxId)}
+                                            aria-label="알람 닫기">
+                                        <i className="ti ti-x" aria-hidden="true"/>
                                     </button>
                                 )}
                             </div>
@@ -104,16 +114,20 @@ export default function LeftSidebar({
             {allBoards.map(b => (
                 <div key={b.boardId} className="board-item-row">
                     <button
-                        onClick={() => { setShowWarning(false); setShowEmptyWarning(false); onLoadBoard(b.boardId); }}
+                        onClick={() => {
+                            setShowWarning(false);
+                            setShowEmptyWarning(false);
+                            onLoadBoard(b.boardId);
+                        }}
                         className={`board-load-button ${b.boardId === currentBoardId ? 'active' : ''}`}
                     >
-                        <i className="ti ti-layout-board board-icon" aria-hidden="true" />
+                        <i className="ti ti-layout-board board-icon" aria-hidden="true"/>
                         {b.boardId === currentBoardId ? '현재 보드' : `보드 #${b.boardId}`}
                     </button>
                     {b.boardId !== currentBoardId && (
                         <button onClick={e => onDeleteBoard(b.boardId, e)} disabled={deletingBoardId === b.boardId}
-                            className="board-delete-button" aria-label="보드 삭제">
-                            <i className="ti ti-trash" aria-hidden="true" />
+                                className="board-delete-button" aria-label="보드 삭제">
+                            <i className="ti ti-trash" aria-hidden="true"/>
                         </button>
                     )}
                 </div>
@@ -123,7 +137,7 @@ export default function LeftSidebar({
             {showEmptyWarning && <div className="warning-message">빈 보드는 저장하거나 새로 만들 수 없습니다. 내용을 추가해 주세요.</div>}
 
             <button onClick={handleNewBoard} className="board-create-button">
-                <i className="ti ti-plus btn-icon" aria-hidden="true" />
+                <i className="ti ti-plus btn-icon" aria-hidden="true"/>
                 새 보드
             </button>
         </aside>

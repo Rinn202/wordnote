@@ -14,6 +14,7 @@ public interface BoxTaskRepository extends JpaRepository<BoxTask, Long> {
 
     // changeDone용 - 전체 다 로딩 대신 COUNT만
     long countByBox(Box box);
+
     long countByBoxAndIsDone(Box box, boolean isDone);
 
     // changeIndex용 - 벌크 UPDATE

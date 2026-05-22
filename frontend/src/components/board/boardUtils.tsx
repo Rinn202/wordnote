@@ -1,4 +1,4 @@
-import type { Box, TabType } from '../../types';
+import type {Box, TabType} from '../../types';
 
 export const filterBoxes = (boxes: Box[], tab: TabType) => ({
     ALL: boxes,
@@ -8,7 +8,10 @@ export const filterBoxes = (boxes: Box[], tab: TabType) => ({
 }[tab]);
 
 export const DropZone = () => (
-    <div className="drop-zone" onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}>
-        <i className="ti ti-arrow-down" aria-hidden="true" />
+    <div className="drop-zone" onDragOver={e => {
+        e.preventDefault();
+        e.stopPropagation();
+    }}>
+        <i className="ti ti-arrow-down" aria-hidden="true"/>
     </div>
 );

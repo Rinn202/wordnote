@@ -13,10 +13,8 @@ import com.wordnote.domain.boxtask.entity.BoxTask;
 import com.wordnote.domain.boxtask.repository.BoxTaskRepository;
 import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.service.MemberService;
-import com.wordnote.domain.task.repository.TaskRepository;
 import com.wordnote.exception.ExceptionCode;
 import com.wordnote.exception.LogicException;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,81 +36,39 @@ public class BoardService {
 
     @Transactional
     public BoardResponseDto copySampleBoard(long boardId, long memberId) {
-        //새보드
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOARD_NOT_FOUND));
-        //샘플보드
         Board template = boardRepository.findByMemberIsNull()
                 .orElseThrow(() -> new LogicException(ExceptionCode.SAMPLE_BOARD_NOT_FOUND));
 
-        //박스복제
-        template.getBoxes().forEach(box -> {
-            Box newBox = Box.builder()
-                    .board(board)
-                    .name(box.getName())
-                    .boxType(box.getBoxType())
-                    .sortIndex(box.getSortIndex())
-                    .build();
-            boxRepository.save(newBox);
+        List<Box> newBoxes = template.getBoxes().stream()
+                .map(box -> {
+                    Box newBox = Box.builder()
+                            .board(board)
+                            .name(box.getName())
+                            .boxType(box.getBoxType())
+                            .sortIndex(box.getSortIndex())
+                            .build();
 
-            //테스크 복제
-            List<BoxTask> boxTasks = box.getBoxTasks() == null ? new ArrayList<>() :
-                    box.getBoxTasks().stream()
-                    .map(bt -> BoxTask.builder()
-                               .box(newBox)
-                               .task(bt.getTask())
-                               .sortIndex(bt.getSortIndex())
-                               .isDone(false)
-                               .build())
-                    .collect(Collectors.toCollection(ArrayList::new));
+                    List<BoxTask> boxTasks = box.getBoxTasks() == null ? new ArrayList<>() :
+                            box.getBoxTasks().stream()
+                            .map(bt -> BoxTask.builder()
+                                       .box(newBox)
+                                       .task(bt.getTask())
+                                       .sortIndex(bt.getSortIndex())
+                                       .isDone(false)
+                                       .build())
+                            .collect(Collectors.toList());
 
-            newBox.setBoxTasks(boxTasks);
-            boxRepository.save(newBox);
-        });
+                    newBox.setBoxTasks(boxTasks);
+                    return newBox;
+                })
+                .collect(Collectors.toList());
 
-        return boardMapper.toResponseDto(
-                boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId).orElseThrow()
-        );
-    }
+        // saveAll로 한 번에 처리
+        boxRepository.saveAll(newBoxes);
 
-
-    @Transactional
-    public BoardResponseDto copySampleBoard(long boardId, long memberId) {
-        //새보드
-        Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
-                .orElseThrow(() -> new LogicException(ExceptionCode.BOARD_NOT_FOUND));
-        //샘플보드
-        Board template = boardRepository.findByMemberIsNull()
-                .orElseThrow(() -> new LogicException(ExceptionCode.SAMPLE_BOARD_NOT_FOUND));
-
-        //박스복제
-        template.getBoxes().forEach(box -> {
-            Box newBox = Box.builder()
-                    .board(board)
-                    .name(box.getName())
-                    .boxType(box.getBoxType())
-                    .sortIndex(box.getSortIndex())
-                    .build();
-            boxRepository.save(newBox);
-
-            //테스크 복제
-            List<BoxTask> boxTasks = box.getBoxTasks() == null ? new ArrayList<>() :
-                    box.getBoxTasks().stream()
-                    .map(bt -> BoxTask.builder()
-                               .box(newBox)
-                               .task(bt.getTask())
-                               .sortIndex(bt.getSortIndex())
-                               .isDone(false)
-                               .build())
-                    .collect(Collectors.toCollection(ArrayList::new));
-
-            newBox.setBoxTasks(boxTasks);
-            boxRepository.save(newBox);
-        });
-
-        return boardMapper.toResponseDto(
-                boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId).orElseThrow()
-        );
+        return boardMapper.toResponseDto(board);
     }
 
     //생성

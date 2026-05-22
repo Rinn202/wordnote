@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useBoard } from './useBoard';
-import { useBoards } from './useBoards';
-import type { AlarmToast } from './useAlarm';
-import { useAlarm } from './useAlarm';
-import { useClock } from './useClock';
-import type { Box } from '../types';
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useBoard} from './useBoard';
+import {useBoards} from './useBoards';
+import type {AlarmToast} from './useAlarm';
+import {useAlarm} from './useAlarm';
+import {useClock} from './useClock';
+import type {Box} from '../types';
 
 // useBoardApp.ts
 export function useBoardApp() {
-    const { board: currentBoard, ...boardActions } = useBoard();
-    const { clockStr, dateStr } = useClock();
+    const {board: currentBoard, ...boardActions} = useBoard();
+    const {clockStr, dateStr} = useClock();
 
     const [optionBox, setOptionBox] = useState<Box | null>(null);
     const [newBoardConfirmOpen, setNewBoardConfirmOpen] = useState(false);
@@ -25,7 +25,7 @@ export function useBoardApp() {
         setAlarmToasts(prev => [...prev, toast]);
     }, []);
 
-    const { stopAudio } = useAlarm(allBoxes, handleAlarm);
+    const {stopAudio} = useAlarm(allBoxes, handleAlarm);
 
     const handleCloseToast = useCallback((boxId: number) => {
         setAlarmToasts(prev => {

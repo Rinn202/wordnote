@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import type { Box, BoxState, TabType } from '../../types';
+import React, {useState} from 'react';
+import type {Box, BoxState, TabType} from '../../types';
 import BoardType from '../box/BoxCard';
-import { useDragDrop } from '../../hooks/useDragDrop';
-import { filterBoxes, DropZone } from './boardUtils';
+import {useDragDrop} from '../../hooks/useDragDrop';
+import {DropZone, filterBoxes} from './boardUtils';
 
 type BoardType = 'EVENT' | 'ROUTINE';
 
@@ -21,11 +21,11 @@ interface Props {
 }
 
 export default function BoardColumn({
-    boardType, boxes, onReorderTask, onStateChange, onDelete, onUpdate,
-    onOpenOption, onReorder, isTaskDragging, taskDraggingBoxId, onTaskDragChange,
-}: Props) {
+                                        boardType, boxes, onReorderTask, onStateChange, onDelete, onUpdate,
+                                        onOpenOption, onReorder, isTaskDragging, taskDraggingBoxId, onTaskDragChange,
+                                    }: Props) {
     const [tab, setTab] = useState<TabType>('ACTIVE');
-    const { draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave } =
+    const {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave} =
         useDragDrop(onReorder as any, boardType);
 
     const filtered = filterBoxes(boxes, tab);
@@ -46,7 +46,7 @@ export default function BoardColumn({
                     {(['ALL', 'ACTIVE', 'DONE', 'BOOKMARK'] as TabType[]).map(t => (
                         <button key={t} className={`col-tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
                             {t === 'ALL' ? '전체' : t === 'ACTIVE' ? '할 일' : t === 'DONE' ? '완료'
-                                : <i className="ti ti-bookmark" aria-hidden="true" />}
+                                : <i className="ti ti-bookmark" aria-hidden="true"/>}
                         </button>
                     ))}
                     <span className="col-count">{filtered.length}개</span>
@@ -56,7 +56,7 @@ export default function BoardColumn({
             <div className="boxes-list" onDrop={onDrop} onDragLeave={onDragLeave}>
                 {filtered.map((box, index) => (
                     <React.Fragment key={box.boxId}>
-                        {!isTaskDragging && overIndex === index && draggingId !== box.boxId && <DropZone />}
+                        {!isTaskDragging && overIndex === index && draggingId !== box.boxId && <DropZone/>}
                         {draggingId !== box.boxId && (
                             <BoardType
                                 box={box}
@@ -75,10 +75,11 @@ export default function BoardColumn({
                         )}
                     </React.Fragment>
                 ))}
-                {!isTaskDragging && overIndex === filtered.length && draggingId !== null && <DropZone />}
+                {!isTaskDragging && overIndex === filtered.length && draggingId !== null && <DropZone/>}
                 {filtered.length === 0 && (
                     <div className="empty-board">
-                        <i className={`ti ${boardType === 'EVENT' ? 'ti-calendar-event' : 'ti-layout-list'}`} aria-hidden="true" />
+                        <i className={`ti ${boardType === 'EVENT' ? 'ti-calendar-event' : 'ti-layout-list'}`}
+                           aria-hidden="true"/>
                         <p>{boardType === 'EVENT' ? '이벤트' : '루틴'} 박스가 없습니다</p>
                     </div>
                 )}

@@ -1,6 +1,6 @@
-import { useCallback, useState, type MouseEvent } from 'react';
-import type { Board } from '../types';
-import { boardApi } from '../api';
+import {type MouseEvent, useCallback, useState} from 'react';
+import type {Board} from '../types';
+import {boardApi} from '../api';
 
 export function useBoards(
     currentBoardId: number | undefined,

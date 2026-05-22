@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import type { Box } from '../types';
+import {useEffect, useRef} from 'react';
+import type {Box} from '../types';
 
 export type AlarmToast = {
     boxId: number;
@@ -22,15 +22,17 @@ const ALARM_LABEL: Record<string, string> = {
 };
 
 export function useAlarm(boxes: Box[], onAlarm: (toast: AlarmToast) => void) {
-   const audioRef = useRef<HTMLAudioElement | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
-if (audioRef.current === null) {
-    audioRef.current = new Audio(localStorage.getItem('alarmFile') ?? '/alarm.mp3');
-    audioRef.current.loop = true;
-}
+    if (audioRef.current === null) {
+        audioRef.current = new Audio(localStorage.getItem('alarmFile') ?? '/alarm.mp3');
+        audioRef.current.loop = true;
+    }
     const firedRef = useRef<Set<string>>(new Set());
 
-    useEffect(() => { if (audioRef.current) audioRef.current.loop = true; }, []);
+    useEffect(() => {
+        if (audioRef.current) audioRef.current.loop = true;
+    }, []);
 
     const stopAudio = () => {
         audioRef.current?.pause();
@@ -54,7 +56,8 @@ if (audioRef.current === null) {
 
                 if (nowMinutes === triggerMinutes && now.getSeconds() < 10 && !firedRef.current.has(key)) {
                     firedRef.current.add(key);
-                    audioRef.current.play().catch(() => {});
+                    audioRef.current.play().catch(() => {
+                    });
                     onAlarm({
                         boxId: box.boxId,
                         name: box.name,
@@ -68,5 +71,5 @@ if (audioRef.current === null) {
         return () => clearInterval(interval);
     }, [boxes, onAlarm]);
 
-    return { stopAudio };
+    return {stopAudio};
 }

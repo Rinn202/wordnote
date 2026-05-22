@@ -1,6 +1,5 @@
 package com.wordnote.domain.board.dto.request;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

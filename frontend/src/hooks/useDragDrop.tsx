@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState, type DragEvent } from 'react';
-import type { BoardType } from '../types';
+import {type DragEvent, useCallback, useRef, useState} from 'react';
+import type {BoardType} from '../types';
 
 export function useDragDrop(
     onReorder: (boxId: number, targetIndex: number, boardType: BoardType) => Promise<void>,
@@ -65,5 +65,5 @@ export function useDragDrop(
         }
     }, [onDragActiveChange]);
 
-    return { draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave };
+    return {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave};
 }

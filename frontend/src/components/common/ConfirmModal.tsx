@@ -7,7 +7,7 @@ interface ConfirmModalProps {
     onCancel: () => void;
 }
 
-export default function ConfirmModal({ open, message, onConfirm, onCancel }: ConfirmModalProps) {
+export default function ConfirmModal({open, message, onConfirm, onCancel}: ConfirmModalProps) {
     return (
         <Modal open={open} onClose={onCancel} title="⚠️ 확인">
             <div className="modal-body">

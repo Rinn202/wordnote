@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import {useEffect} from 'react';
+import {jwtDecode} from 'jwt-decode';
 
 interface JwtPayload {
     email: string;
@@ -14,7 +14,7 @@ export default function OAuthRedirect() {
 
         if (accessToken) {
             const decoded = jwtDecode<JwtPayload>(accessToken);
-            
+
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('role', decoded.role);
             window.location.replace('/');

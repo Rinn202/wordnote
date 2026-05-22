@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import type { AlarmType, Box } from '../../types';
-import { boxApi } from '../../api';
+import {useEffect, useRef, useState} from 'react';
+import type {AlarmType, Box} from '../../types';
+import {boxApi} from '../../api';
 import Modal from '../common/Modal';
 
 interface Props {
@@ -10,17 +10,17 @@ interface Props {
 }
 
 const ALARM_OPTIONS: { value: AlarmType; label: string }[] = [
-    { value: 'AT_TIME', label: '정시' },
-    { value: 'TEN_MINUTES_BEFORE', label: '10분 전' },
-    { value: 'THIRTY_MINUTES_BEFORE', label: '30분 전' },
+    {value: 'AT_TIME', label: '정시'},
+    {value: 'TEN_MINUTES_BEFORE', label: '10분 전'},
+    {value: 'THIRTY_MINUTES_BEFORE', label: '30분 전'},
 ];
 
-const HOURS = Array.from({ length: 12 }, (_, i) => i + 1);
+const HOURS = Array.from({length: 12}, (_, i) => i + 1);
 const MINUTES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
 const parse24h = (hhmm: string) => {
     const [h, m] = hhmm.split(':').map(Number);
-    return { hour: h % 12 || 12, minute: m, isPm: h >= 12 };
+    return {hour: h % 12 || 12, minute: m, isPm: h >= 12};
 };
 
 const toExpireTime = (hour: number, minute: number, isPm: boolean): string => {
@@ -28,7 +28,7 @@ const toExpireTime = (hour: number, minute: number, isPm: boolean): string => {
     return `${String(h24).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 };
 
-function TimeDropdown({ options, value, onChange, format }: {
+function TimeDropdown({options, value, onChange, format}: {
     options: number[];
     value: number;
     onChange: (v: number) => void;
@@ -57,11 +57,11 @@ function TimeDropdown({ options, value, onChange, format }: {
     useEffect(() => {
         if (!open || !listRef.current) return;
         (listRef.current.querySelector('[data-selected="true"]') as HTMLElement)
-            ?.scrollIntoView({ block: 'nearest' });
+            ?.scrollIntoView({block: 'nearest'});
     }, [open]);
 
     return (
-        <div ref={ref} style={{ position: 'relative' }}>
+        <div ref={ref} style={{position: 'relative'}}>
             <button
                 onClick={e => {
                     e.stopPropagation();
@@ -80,12 +80,12 @@ function TimeDropdown({ options, value, onChange, format }: {
                 }}
             >
                 {fmt(value)}
-                <i className="ti ti-chevron-down" style={{ fontSize: 11, color: 'var(--text2)' }} />
+                <i className="ti ti-chevron-down" style={{fontSize: 11, color: 'var(--text2)'}}/>
             </button>
 
             {open && (
                 <>
-                    <div style={{ position: 'fixed', inset: 0, zIndex: 9998 }} onClick={() => setOpen(false)} />
+                    <div style={{position: 'fixed', inset: 0, zIndex: 9998}} onClick={() => setOpen(false)}/>
                     <div ref={listRef} style={{
                         position: 'fixed',
                         top: rect ? rect.bottom + 4 : 0,
@@ -101,7 +101,10 @@ function TimeDropdown({ options, value, onChange, format }: {
                             <button
                                 key={opt}
                                 data-selected={opt === value}
-                                onClick={() => { onChange(opt); setOpen(false); }}
+                                onClick={() => {
+                                    onChange(opt);
+                                    setOpen(false);
+                                }}
                                 style={{
                                     display: 'block', width: '100%', padding: '6px 12px',
                                     background: opt === value ? 'var(--routine)' : 'transparent',
@@ -109,8 +112,12 @@ function TimeDropdown({ options, value, onChange, format }: {
                                     border: 'none', textAlign: 'left', fontSize: 13,
                                     fontFamily: 'IBM Plex Mono, monospace', cursor: 'pointer',
                                 }}
-                                onMouseEnter={e => { if (opt !== value) (e.currentTarget as HTMLElement).style.background = 'var(--surface2)'; }}
-                                onMouseLeave={e => { if (opt !== value) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                                onMouseEnter={e => {
+                                    if (opt !== value) (e.currentTarget as HTMLElement).style.background = 'var(--surface2)';
+                                }}
+                                onMouseLeave={e => {
+                                    if (opt !== value) (e.currentTarget as HTMLElement).style.background = 'transparent';
+                                }}
                             >
                                 {fmt(opt)}
                             </button>
@@ -122,7 +129,7 @@ function TimeDropdown({ options, value, onChange, format }: {
     );
 }
 
-export default function BoxOptionPanel({ box, onClose, onUpdate }: Props) {
+export default function BoxOptionPanel({box, onClose, onUpdate}: Props) {
     const hasInitialTime = !!box.expireTime && box.expireTime !== '00:00:00';
     const initial = hasInitialTime ? parse24h(box.expireTime!.slice(0, 5)) : null;
 
@@ -154,12 +161,12 @@ export default function BoxOptionPanel({ box, onClose, onUpdate }: Props) {
 
     return (
         <Modal open={true} title={`⚙️ ${box.name} 설정`} onClose={onClose} width={420}>
-            <div className="option-panel" style={{ border: 'none', padding: 0 }}>
-                <div className="option-body" style={{ paddingTop: 0 }}>
+            <div className="option-panel" style={{border: 'none', padding: 0}}>
+                <div className="option-body" style={{paddingTop: 0}}>
 
                     <div className="option-row">
                         <label className="option-label">
-                            <i className="ti ti-star" aria-hidden="true" /> 즐겨찾기
+                            <i className="ti ti-star" aria-hidden="true"/> 즐겨찾기
                         </label>
                         <button className={`toggle-pill ${bookmark ? 'on' : ''}`} onClick={() => setBookmark(b => !b)}>
                             {bookmark ? 'ON' : 'OFF'}
@@ -168,18 +175,21 @@ export default function BoxOptionPanel({ box, onClose, onUpdate }: Props) {
 
                     <div className="option-row">
                         <label className="option-label">
-                            <i className="ti ti-clock" aria-hidden="true" /> 만료 시간
+                            <i className="ti ti-clock" aria-hidden="true"/> 만료 시간
                         </label>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: 6}}>
                             <button
                                 className={`toggle-pill ${hasTime ? 'on' : ''}`}
-                                onClick={() => setHasTime(v => { if (v) setAlarmType(null); return !v; })}
-                                style={{ marginRight: 4 }}
+                                onClick={() => setHasTime(v => {
+                                    if (v) setAlarmType(null);
+                                    return !v;
+                                })}
+                                style={{marginRight: 4}}
                             >
                                 {hasTime ? 'ON' : 'OFF'}
                             </button>
                             {hasTime && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                <div style={{display: 'flex', alignItems: 'center', gap: 4}}>
                                     <button
                                         onClick={() => setIsPm(p => !p)}
                                         style={{
@@ -191,9 +201,10 @@ export default function BoxOptionPanel({ box, onClose, onUpdate }: Props) {
                                     >
                                         {isPm ? '오후' : '오전'}
                                     </button>
-                                    <TimeDropdown options={HOURS} value={hour} onChange={setHour} />
-                                    <span style={{ color: 'var(--text2)', fontSize: 13 }}>:</span>
-                                    <TimeDropdown options={MINUTES} value={minute} onChange={setMinute} format={v => String(v).padStart(2, '0')} />
+                                    <TimeDropdown options={HOURS} value={hour} onChange={setHour}/>
+                                    <span style={{color: 'var(--text2)', fontSize: 13}}>:</span>
+                                    <TimeDropdown options={MINUTES} value={minute} onChange={setMinute}
+                                                  format={v => String(v).padStart(2, '0')}/>
                                 </div>
                             )}
                         </div>
@@ -202,7 +213,7 @@ export default function BoxOptionPanel({ box, onClose, onUpdate }: Props) {
                     {hasTime && (
                         <div className="option-row">
                             <label className="option-label">
-                                <i className="ti ti-bell" aria-hidden="true" /> 알람 목록
+                                <i className="ti ti-bell" aria-hidden="true"/> 알람 목록
                             </label>
                             <div className="option-alarm-group">
                                 {ALARM_OPTIONS.map(opt => (
@@ -219,7 +230,7 @@ export default function BoxOptionPanel({ box, onClose, onUpdate }: Props) {
                     )}
 
                     <button className="save-btn" onClick={handleSave} disabled={saving}
-                        style={{ width: '100%', marginTop: 16 }}>
+                            style={{width: '100%', marginTop: 16}}>
                         {saving ? '저장 중...' : '저장'}
                     </button>
                 </div>

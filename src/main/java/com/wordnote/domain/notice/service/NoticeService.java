@@ -22,7 +22,7 @@ public class NoticeService {
 
     public Notice findById(long noticeId) {
         return noticeRepository.findById(noticeId)
-                .orElseThrow(() ->new LogicException(ExceptionCode.NOTICE_NOT_FOUND));
+                .orElseThrow(() -> new LogicException(ExceptionCode.NOTICE_NOT_FOUND));
     }
 
     //생성
@@ -33,10 +33,13 @@ public class NoticeService {
 
     //수정
     @Transactional
-    public Notice updateNotice(long noticeId, Notice notice) {
+    public Notice updateNotice(long noticeId, Notice requestNotice) {
 
-        return noticeRepository.findById(noticeId)
+        Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.TASK_NOT_FOUND));
+        notice.update(requestNotice);
+
+        return notice;
     }
 
     //삭제

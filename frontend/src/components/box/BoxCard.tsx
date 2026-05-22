@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Box, BoxState } from '../../types';
-import { boxApi, taskApi } from '../../api';
+import React, {useState} from 'react';
+import {Box, BoxState} from '../../types';
+import {boxApi, taskApi} from '../../api';
 
 interface Props {
     box: Box;
@@ -31,7 +31,7 @@ const cx = (...classes: (string | false | null | undefined)[]) =>
     classes.filter(Boolean).join(' ');
 
 // task 1개일 때 단일 행 표시
-function SingleTask({ box, state, onToggle }: {
+function SingleTask({box, state, onToggle}: {
     box: Box;
     state: BoxState;
     onToggle: (e: React.MouseEvent, id: number) => void;
@@ -40,7 +40,7 @@ function SingleTask({ box, state, onToggle }: {
     return (
         <div className="task-check-inline" onClick={e => onToggle(e, t.boxTaskId)}>
             <div className={`task-check ${t.isDone ? 'done' : getTaskStateClass(state)}`}>
-                {t.isDone && <i className="ti ti-check" aria-hidden="true" />}
+                {t.isDone && <i className="ti ti-check" aria-hidden="true"/>}
             </div>
             <span className={`box-single-task ${t.isDone ? 'done' : ''}`}>{t.taskName}</span>
         </div>
@@ -48,10 +48,10 @@ function SingleTask({ box, state, onToggle }: {
 }
 
 export default function BoxCard({
-    box, onStateChange, onDelete, onUpdate, onOpenOption,
-    onReorderTask, onDragStart, onDragOver, onDragEnd, onTaskDragChange,
-    taskDraggingBoxId, isDragging,
-}: Props) {
+                                    box, onStateChange, onDelete, onUpdate, onOpenOption,
+                                    onReorderTask, onDragStart, onDragOver, onDragEnd, onTaskDragChange,
+                                    taskDraggingBoxId, isDragging,
+                                }: Props) {
     const [removing, setRemoving] = useState(false);
     const [draggingTaskId, setDraggingTaskId] = useState<number | null>(null);
     const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -59,23 +59,69 @@ export default function BoxCard({
     const expired = isExpired(box.expireTime) && box.state !== 'DONE';
     const isThisBoxTaskDragging = taskDraggingBoxId === box.boxId;
 
-    const handleTaskToggle = async (e: React.MouseEvent, boxTaskId: number) => {
+    // 체크박스 낙관적 업데이트
+    const handleTaskToggle = (e: React.MouseEvent, boxTaskId: number) => {
         e.stopPropagation();
         if (draggingTaskId !== null) return;
-        await taskApi.done(boxTaskId);
-        const updated = await boxApi.getById(box.boxId);
-        const allDone = updated.tasks.every(t => t.isDone);
-        allDone ? await onStateChange(box.boxId, 'DONE') : onUpdate(updated);
+
+        const updatedTasks = box.tasks.map(t =>
+            t.boxTaskId === boxTaskId ? {...t, isDone: !t.isDone} : t
+        );
+        const allDone = updatedTasks.every(t => t.isDone);
+
+        const optimisticBox: Box = {
+            ...box,
+            tasks: updatedTasks,
+            state: allDone ? 'DONE' : box.state
+        };
+
+        //API 비동기 처리
+        onUpdate(optimisticBox);
+        if (allDone && box.state !== 'DONE') {
+            onStateChange(box.boxId, 'DONE');
+        }
+
+        // 전역 카운터 증가
+        window.activeRequestsCount = (window.activeRequestsCount || 0) + 1;
+
+        (async () => {
+            const previousBox = box;
+            try {
+                await taskApi.done(boxTaskId);
+                const serverUpdated = await boxApi.getById(box.boxId);
+
+                onUpdate(serverUpdated);
+                const serverAllDone = serverUpdated.tasks.every(t => t.isDone);
+                if (serverAllDone && serverUpdated.state !== 'DONE') {
+                    onStateChange(box.boxId, 'DONE');
+                }
+            } catch (error) {
+                console.error("실패", error);
+                onUpdate(previousBox);
+            } finally {
+                // 전역 카운터 감소
+                window.activeRequestsCount = Math.max(0, (window.activeRequestsCount || 0) - 1);
+            }
+        })();
     };
 
     const handleBookmark = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        await boxApi.patchOption(box.boxId, {
-            bookmark: !box.bookmark,
-            alarmType: box.alarmType,
-            expireTime: box.expireTime,
-        });
-        onUpdate(await boxApi.getById(box.boxId));
+
+        // 즐겨찾기
+        const optimisticBox = {...box, bookmark: !box.bookmark};
+        onUpdate(optimisticBox);
+
+        try {
+            await boxApi.patchOption(box.boxId, {
+                bookmark: !box.bookmark,
+                alarmType: box.alarmType,
+                expireTime: box.expireTime,
+            });
+            onUpdate(await boxApi.getById(box.boxId));
+        } catch (error) {
+            onUpdate(box); // 롤백
+        }
     };
 
     const handleDelete = (e: React.MouseEvent) => {
@@ -128,9 +174,9 @@ export default function BoxCard({
             <React.Fragment key={t.boxTaskId}>
                 {isDropTarget && (
                     <div className="drop-zone task-drop-zone"
-                        onDragOver={e => handleTaskDragOver(e, idx)}
-                        onDrop={e => handleTaskDrop(e, idx)}>
-                        <i className="ti ti-arrow-down" aria-hidden="true" />
+                         onDragOver={e => handleTaskDragOver(e, idx)}
+                         onDrop={e => handleTaskDrop(e, idx)}>
+                        <i className="ti ti-arrow-down" aria-hidden="true"/>
                     </div>
                 )}
                 <div
@@ -142,7 +188,7 @@ export default function BoxCard({
                     onClick={e => handleTaskToggle(e, t.boxTaskId)}
                 >
                     <div className={`task-check ${t.isDone ? 'done' : getTaskStateClass(box.state)}`}>
-                        {t.isDone && <i className="ti ti-check" aria-hidden="true" />}
+                        {t.isDone && <i className="ti ti-check" aria-hidden="true"/>}
                     </div>
                     <span className={`task-txt ${t.isDone ? 'done' : ''}`}>{t.taskName}</span>
                 </div>
@@ -163,21 +209,27 @@ export default function BoxCard({
             )}
             onClick={() => onOpenOption(box)}
         >
-            <div className="box-name-row" draggable onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
+            <div className="box-name-row" draggable onDragStart={onDragStart} onDragOver={onDragOver}
+                 onDragEnd={onDragEnd}>
                 {box.tasks.length > 1
                     ? <span className="box-name">[ {box.name} ]</span>
-                    : <SingleTask box={box} state={box.state} onToggle={handleTaskToggle} />
+                    : <SingleTask box={box} state={box.state} onToggle={handleTaskToggle}/>
                 }
                 <div className="box-actions" onClick={e => e.stopPropagation()}>
                     <button className={cx('act-btn', box.alarmType !== 'NONE' && 'alarmed')} title="알람 설정"
-                        onClick={e => { e.stopPropagation(); onOpenOption(box); }}>
-                        <i className={`ti ${box.alarmType !== 'NONE' ? 'ti-bell-filled' : 'ti-bell'}`} aria-hidden="true" />
+                            onClick={e => {
+                                e.stopPropagation();
+                                onOpenOption(box);
+                            }}>
+                        <i className={`ti ${box.alarmType !== 'NONE' ? 'ti-bell-filled' : 'ti-bell'}`}
+                           aria-hidden="true"/>
                     </button>
-                    <button className={cx('act-btn', box.bookmark && 'bookmarked')} title="즐겨찾기" onClick={handleBookmark}>
-                        <i className={`ti ${box.bookmark ? 'ti-star-filled' : 'ti-star'}`} aria-hidden="true" />
+                    <button className={cx('act-btn', box.bookmark && 'bookmarked')} title="즐겨찾기"
+                            onClick={handleBookmark}>
+                        <i className={`ti ${box.bookmark ? 'ti-star-filled' : 'ti-star'}`} aria-hidden="true"/>
                     </button>
                     <button className="act-btn danger" title="삭제" onClick={handleDelete}>
-                        <i className="ti ti-trash" aria-hidden="true" />
+                        <i className="ti ti-trash" aria-hidden="true"/>
                     </button>
                 </div>
             </div>
@@ -187,9 +239,12 @@ export default function BoxCard({
                     {box.tasks.map((t, idx) => renderTaskRow(t, idx))}
                     {isThisBoxTaskDragging && dragOverIndex === box.tasks.length && draggingTaskId !== null && (
                         <div className="drop-zone task-drop-zone"
-                            onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
-                            onDrop={e => handleTaskDrop(e, box.tasks.length)}>
-                            <i className="ti ti-arrow-down" aria-hidden="true" />
+                             onDragOver={e => {
+                                 e.preventDefault();
+                                 e.stopPropagation();
+                             }}
+                             onDrop={e => handleTaskDrop(e, box.tasks.length)}>
+                            <i className="ti ti-arrow-down" aria-hidden="true"/>
                         </div>
                     )}
                 </>

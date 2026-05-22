@@ -1,4 +1,4 @@
-import { useBoardApp } from '../hooks/useBoardApp';
+import {useBoardApp} from '../hooks/useBoardApp';
 import AlarmToastList from '../components/common/AlarmToast';
 import Topbar from '../components/layout/Topbar';
 import BoardColumn from '../components/board/BoardColumn';
@@ -7,10 +7,10 @@ import BoxOptionPanel from '../components/box/BoxOptionPanel';
 import BoardModals from '../components/common/BoardModals';
 import LeftSidebar from '../components/layout/LeftSidebar';
 import Modal from '../components/common/Modal';
-import { getTimeTheme } from '../components/layout/getTimeTheme';
-import { useState } from 'react';
+import {getTimeTheme} from '../components/layout/getTimeTheme';
+import {useState} from 'react';
 
-export default function BoardApp({ onLogout }: { onLogout: () => void }) {
+export default function BoardApp({onLogout}: { onLogout: () => void }) {
     const {
         currentBoard,
         boardActions: {
@@ -19,7 +19,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
             updateBoxLocal, reorderTask, addBox,
             applySample,
         },
-        boards: { allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard },
+        boards: {allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard},
         clockStr, dateStr,
         optionBox, setOptionBox,
         newBoardConfirmOpen, setNewBoardConfirmOpen,
@@ -51,7 +51,8 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
     const [sampleLoading, setSampleLoading] = useState(false);
 
     return (
-        <div className="app" onClick={() => new Audio().play().catch(() => { })}>
+        <div className="app" onClick={() => new Audio().play().catch(() => {
+        })}>
             <Topbar
                 clockStr={clockStr}
                 dateStr={dateStr}
@@ -63,7 +64,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
 
             {loading ? (
                 <div className="loading-state">
-                    <i className="ti ti-loader-2 spin" aria-hidden="true" />
+                    <i className="ti ti-loader-2 spin" aria-hidden="true"/>
                     <span>보드를 불러오는 중...</span>
                 </div>
             ) : currentBoard ? (
@@ -98,11 +99,11 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                 <div className="no-board-overlay">
                     <div className="no-board-card">
                         <div className="no-board-icon">
-                            <i className="ti ti-note" aria-hidden="true" />
+                            <i className="ti ti-note" aria-hidden="true"/>
                         </div>
                         <div className="no-board-title">첫 보드를 만들어 보세요</div>
                         <div className="no-board-desc">
-                            새 보드를 만들어 오늘의 할 일을<br />정리해보세요.
+                            새 보드를 만들어 오늘의 할 일을<br/>정리해보세요.
                         </div>
                         <button className="no-board-btn" onClick={handleStart}>START</button>
                     </div>
@@ -115,7 +116,10 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                         <BoxOptionPanel
                             box={optionBox}
                             onClose={() => setOptionBox(null)}
-                            onUpdate={box => { updateBoxLocal(box); setOptionBox(null); }}
+                            onUpdate={box => {
+                                updateBoxLocal(box);
+                                setOptionBox(null);
+                            }}
                         />
                     </div>
                 </div>
@@ -130,45 +134,53 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                 onDeleteBoard={handleDeleteBoard}
                 newBoardConfirmOpen={newBoardConfirmOpen}
                 onCloseNewBoardConfirm={() => setNewBoardConfirmOpen(false)}
-                onDiscardAndNew={() => { createNewBoard(); setNewBoardConfirmOpen(false); }}
-                onSaveAndNew={async () => { await createNewBoard(); setNewBoardConfirmOpen(false); }}
+                onDiscardAndNew={() => {
+                    createNewBoard();
+                    setNewBoardConfirmOpen(false);
+                }}
+                onSaveAndNew={async () => {
+                    await createNewBoard();
+                    setNewBoardConfirmOpen(false);
+                }}
             />
 
             {/* 샘플 보드 적용 팝업 */}
-<Modal
-    open={sampleConfirmOpen}
-    title="샘플로 시작할까요?"
-    onClose={() => { if (!sampleLoading) setSampleConfirmOpen(false); }}
-    width={320}
->
-    {sampleLoading ? (
-        <div className="sample-loading">
-            <i className="ti ti-loader-2 spin" />
-            <span>샘플 보드를 만드는 중이에요...</span>
-        </div>
-    ) : (
-        <>
-            <p className="confirm-msg">나이트 근무용 샘플 사용해 보실래요?</p>
-            <div className="confirm-actions">
-                <button className="confirm-btn secondary"
-                    onClick={() => setSampleConfirmOpen(false)}>
-                    아니오
-                </button>
-                <button className="confirm-btn primary"
-                    onClick={async () => {
-                        setSampleLoading(true);
-                        await applySample();
-                        setSampleLoading(false);
-                        setSampleConfirmOpen(false);
-                    }}>
-                    예
-                </button>
-            </div>
-        </>
-    )}
-</Modal>
+            <Modal
+                open={sampleConfirmOpen}
+                title="샘플로 시작할까요?"
+                onClose={() => {
+                    if (!sampleLoading) setSampleConfirmOpen(false);
+                }}
+                width={320}
+            >
+                {sampleLoading ? (
+                    <div className="sample-loading">
+                        <i className="ti ti-loader-2 spin"/>
+                        <span>샘플 보드를 만드는 중이에요...</span>
+                    </div>
+                ) : (
+                    <>
+                        <p className="confirm-msg">나이트 근무용 샘플 사용해 보실래요?</p>
+                        <div className="confirm-actions">
+                            <button className="confirm-btn secondary"
+                                    onClick={() => setSampleConfirmOpen(false)}>
+                                아니오
+                            </button>
+                            <button className="confirm-btn primary"
+                                    onClick={async () => {
+                                        setSampleLoading(true);
+                                        await applySample();
+                                        setSampleLoading(false);
+                                        setSampleConfirmOpen(false);
+                                    }}>
+                                예
+                            </button>
+                        </div>
+                    </>
+                )}
+            </Modal>
 
-            <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast} />
+            <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast}/>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance } from 'axios';
+import axios, {type AxiosInstance} from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
@@ -28,4 +28,4 @@ api.interceptors.response.use(
 );
 
 export const req = <T>(method: string, path: string, body?: unknown): Promise<T> =>
-    api.request<T>({ method, url: path, data: body }).then(r => r.data);
+    api.request<T>({method, url: path, data: body}).then(r => r.data);

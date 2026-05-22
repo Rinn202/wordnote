@@ -4,7 +4,6 @@ import com.wordnote.auth.dto.LoginResponseDto;
 import com.wordnote.auth.dto.TokenResponseDto;
 import com.wordnote.auth.utils.JwtTokenizer;
 import com.wordnote.domain.member.entity.Member;
-import com.wordnote.domain.member.entity.Role;
 import com.wordnote.domain.member.repository.MemberRepository;
 import com.wordnote.exception.ExceptionCode;
 import com.wordnote.exception.LogicException;
