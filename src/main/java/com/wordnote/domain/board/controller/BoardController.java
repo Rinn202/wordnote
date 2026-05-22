@@ -55,16 +55,6 @@ class BoardController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    //    //생성 보드 디티오받음
-//    @PostMapping
-//    public ResponseEntity<BoardResponseDto> postBoard(@RequestBody BoardCreateDto dto) {
-//
-//        long memberId = SecurityUtil.getMemberId();
-//
-//        BoardResponseDto response = boardService.createBoard(memberId, dto);
-//        return new ResponseEntity<>(response, HttpStatus.CREATED);
-//    }
-
     //조회
     @GetMapping
     public ResponseEntity<List<BoardResponseDto>> getAllBoards(

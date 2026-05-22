@@ -22,28 +22,25 @@ public class BoxTaskService {
 
     @Transactional
     public void changeIndex(long boxTaskId, MoveTaskRequest dto, long memberId) {
-        BoxTask boxTask = boxTaskRepository.findById(boxTaskId)
-                .orElseThrow(() -> new LogicException(ExceptionCode.TASK_NOT_FOUND));
-        Box box = boxRepository.findByBoxIdAndBoard_Member_MemberId(
-                        dto.getBoxId(), memberId)
+        Box box = boxRepository.findByBoxIdAndBoard_Member_MemberId(dto.getBoxId(), memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOX_TASK_NOT_FOUND));
 
-        List<BoxTask> boxTasks = box.getBoxTasks();
+        // ID 리스트만 조회
+        List<Long> ids = boxTaskRepository.findIdsByBoxOrderBySortIndex(box);
 
-        int currentIndex = boxTasks.indexOf(boxTask);
-        boxTasks.remove(boxTask);
+        int currentIndex = ids.indexOf(boxTaskId);
+        ids.remove(currentIndex);
 
-        // remove 후 targetIndex 보정
         int targetIndex = dto.getTargetIndex();
         if (targetIndex > currentIndex) targetIndex--;
-
         if (targetIndex < 0) targetIndex = 0;
-        if (targetIndex >= boxTasks.size()) targetIndex = boxTasks.size() - 1;
+        if (targetIndex >= ids.size()) targetIndex = ids.size() - 1;
 
-        boxTasks.add(targetIndex, boxTask);
+        ids.add(targetIndex, boxTaskId);
 
-        for (int i = 0; i < boxTasks.size(); i++) {
-            boxTasks.get(i).setSortIndex(i);
+        // 벌크 UPDATE - 엔티티 객체 없이 ID만으로 처리
+        for (int i = 0; i < ids.size(); i++) {
+            boxTaskRepository.updateSortIndex(ids.get(i), i);
         }
     }
 
@@ -55,20 +52,19 @@ public class BoxTaskService {
 
         Box box = boxTask.getBox();
 
-        List<BoxTask> boxTasks = box.getBoxTasks();
+        long total = boxTaskRepository.countByBox(box);
+        long doneCount = boxTaskRepository.countByBoxAndIsDone(box, true);
 
-        boolean allDone = boxTasks.stream().allMatch(BoxTask::getIsDone);
-
-        boolean anyDone = boxTasks.stream().anyMatch(BoxTask::getIsDone);
-
-        if (boxTasks.isEmpty()) {
+        if (total == 0) {
             box.changeState(State.READY);
-        } else if (allDone) {
+        } else if (doneCount == total) {
             box.changeState(State.DONE);
-        } else if (anyDone) {
+            boxTaskRepository.updateAllDoneByBox(box, true);  // 벌크 UPDATE
+        } else if (doneCount > 0) {
             box.changeState(State.IN_PROGRESS);
         } else {
             box.changeState(State.READY);
+            boxTaskRepository.updateAllDoneByBox(box, false); // 벌크 UPDATE
         }
     }
 }

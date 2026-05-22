@@ -72,22 +72,6 @@ public class Box {
 
     public void changeState(State next) {
         this.state = next;
-
-        if (next == State.READY) {
-            this.boxTasks.forEach(task -> task.setIsDone(false));
-        }
-
-        if (next == State.DONE) {
-            this.boxTasks.forEach(task -> task.setIsDone(true));
-        }
-    }
-
-    public void resetState() {
-        this.state = State.READY;
-    }
-
-    public void changeIndex(Integer sortIndex) {
-        if (sortIndex != null) this.sortIndex = sortIndex;
     }
 
     public void update(Boolean bookmark,

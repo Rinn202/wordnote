@@ -10,6 +10,7 @@ import com.wordnote.domain.box.entity.Box;
 import com.wordnote.domain.box.entity.BoxType;
 import com.wordnote.domain.box.repository.BoxRepository;
 import com.wordnote.domain.boxtask.entity.BoxTask;
+import com.wordnote.domain.boxtask.repository.BoxTaskRepository;
 import com.wordnote.domain.member.entity.Member;
 import com.wordnote.domain.member.service.MemberService;
 import com.wordnote.domain.task.repository.TaskRepository;
@@ -32,6 +33,47 @@ public class BoardService {
     private final MemberService memberService;
     private final BoardMapper boardMapper;
     private final BoxRepository boxRepository;
+    private final BoxTaskRepository boxTaskRepository;
+
+
+    @Transactional
+    public BoardResponseDto copySampleBoard(long boardId, long memberId) {
+        //새보드
+        Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
+                .orElseThrow(() -> new LogicException(ExceptionCode.BOARD_NOT_FOUND));
+        //샘플보드
+        Board template = boardRepository.findByMemberIsNull()
+                .orElseThrow(() -> new LogicException(ExceptionCode.SAMPLE_BOARD_NOT_FOUND));
+
+        //박스복제
+        template.getBoxes().forEach(box -> {
+            Box newBox = Box.builder()
+                    .board(board)
+                    .name(box.getName())
+                    .boxType(box.getBoxType())
+                    .sortIndex(box.getSortIndex())
+                    .build();
+            boxRepository.save(newBox);
+
+            //테스크 복제
+            List<BoxTask> boxTasks = box.getBoxTasks() == null ? new ArrayList<>() :
+                    box.getBoxTasks().stream()
+                    .map(bt -> BoxTask.builder()
+                               .box(newBox)
+                               .task(bt.getTask())
+                               .sortIndex(bt.getSortIndex())
+                               .isDone(false)
+                               .build())
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            newBox.setBoxTasks(boxTasks);
+            boxRepository.save(newBox);
+        });
+
+        return boardMapper.toResponseDto(
+                boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId).orElseThrow()
+        );
+    }
 
 
     @Transactional
@@ -92,18 +134,6 @@ public class BoardService {
         return boardMapper.toResponseDto(board);
     }
 
-//    @Transactional    //dto를 받는 보드생성
-//    public BoardResponseDto createBoard(long memberId, BoardCreateDto dto) {
-//        Member member = memberService.findById(memberId);
-//
-//        Board board = boardMapper.toBoard(dto);
-//        board.assignMember(member);
-//
-//        boardRepository.save(board);
-//
-//        return boardMapper.toResponseDto(board);
-//    }
-
     //전체 검색
     public List<BoardResponseDto> findAll(long memberId, Long currentBoardId) {
         List<Board> boards = boardRepository.findBoardsByMemberExceptCurrent(memberId, currentBoardId);
@@ -150,36 +180,37 @@ public class BoardService {
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("보드 없음"));
 
-        board.getBoxes().forEach(box -> {
-            box.resetState();                              // 박스 리셋
-            box.getBoxTasks().forEach(BoxTask::resetDone); // 태스크 리셋
-        });
+        // BoxTask 전체 isDone 리셋 - 벌크 UPDATE 1번
+        boxTaskRepository.resetAllDoneByBoard(board);
 
-        board.getBoxes().removeIf(box -> box.getBoxType() == BoxType.EVENT);
+        // Box state 리셋 - 벌크 UPDATE 1번
+        boxRepository.resetStateByBoard(board);
+
+        // EVENT 타입 Box 삭제 - 벌크 DELETE 1번
+        boxRepository.deleteByBoardAndBoxType(board, BoxType.EVENT);
     }
 
     //박스 순서변경
     @Transactional
     public void changeIndex(long boardId, MoveBoxRequest dto, long memberId) {
-
         Board board = boardRepository.findByBoardIdAndMember_MemberId(boardId, memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.BOARD_NOT_FOUND));
 
-        Box box = boxRepository.findByIdAndBoardId_IndexAsc(dto.getBoxId(), boardId)
-                .orElseThrow(() -> new LogicException(ExceptionCode.BOX_NOT_FOUND));
+        // ID 리스트 조회
+        List<Long> ids = boxRepository.findIdsByBoardOrderBySortIndex(board);
 
-        List<Box> boxes = board.getBoxes();
+        int currentIndex = ids.indexOf(dto.getBoxId());
+        if (currentIndex == -1) throw new LogicException(ExceptionCode.BOX_NOT_FOUND);
 
-        if (dto.getTargetIndex() < 0 || dto.getTargetIndex() >= boxes.size()) {
+        if (dto.getTargetIndex() < 0 || dto.getTargetIndex() >= ids.size()) {
             throw new LogicException(ExceptionCode.INVALID_INDEX);
         }
 
-        boxes.remove(box);
-        boxes.add(dto.getTargetIndex(), box);
+        ids.remove(currentIndex);
+        ids.add(dto.getTargetIndex(), dto.getBoxId());
 
-        //index 재정렬
-        for (int i = 0; i < boxes.size(); i++) {
-            boxes.get(i).changeIndex(i);
+        for (int i = 0; i < ids.size(); i++) {
+            boxRepository.updateSortIndex(ids.get(i), i);
         }
     }
 }
