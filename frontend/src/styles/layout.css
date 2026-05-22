@@ -56,8 +56,6 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    color: var(--surface2);
-    text-shadow: -1px 0px 7px rgba(0,0,0,1);
 }
 
 .topbar-notice i {

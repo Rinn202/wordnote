@@ -10,4 +10,5 @@ export const boardApi = {
     delete: (id: number) => req<void>('DELETE', `/board/${id}`),
     reorderBox: (boardId: number, body: ReorderBoxRequest) =>
         req<void>('PUT', `/board/${boardId}/boxesOrder`, body),
+    createSample: (boardId: number) => req<Board>('POST', `/board/${boardId}/sample`),
 };

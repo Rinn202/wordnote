@@ -1,6 +1,7 @@
-import {api, req} from './client';
-import type {LoginRequest, LoginResponse, Member, RefreshResponse} from '../types';
+import { api, req } from './client';
+import type { LoginRequest, LoginResponse, Member, RefreshResponse } from '../types';
 
+// 인증 및 회원 관련 API
 export const memberApi = {
     login: async (body: LoginRequest): Promise<LoginResponse> => {
         const res = await api.post<LoginResponse>('/auth/login', body);
@@ -17,10 +18,10 @@ export const memberApi = {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('nickname');
     },
-    signup: (body: unknown) => req<Member>('POST', '/member/signup', body),
-    mypage: () => req<Member>('GET', '/member/mypage'),
-    getAll: () => req<Member[]>('GET', '/member'),
-    update: (body: unknown) => req<Member>('PATCH', '/member', body),
-    updatePassword: (password: string) => req<void>('PATCH', '/member/password', {password}),
-    withdraw: () => req<void>('DELETE', '/member'),
+    signup: (body: unknown) => req<Member>('POST', '/member/signup', body),       // 회원가입
+    mypage: () => req<Member>('GET', '/member/mypage'),                           // 마이페이지 조회
+    getAll: () => req<Member[]>('GET', '/member'),                                // 전체 회원 조회
+    update: (body: unknown) => req<Member>('PATCH', '/member', body),             // 회원 정보 수정
+    updatePassword: (password: string) => req<void>('PATCH', '/member/password', { password }), // 비밀번호 변경
+    withdraw: () => req<void>('DELETE', '/member'),                               // 회원 탈퇴
 };

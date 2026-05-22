@@ -1,14 +1,22 @@
-import {useEffect} from 'react';
+import { useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+
+interface JwtPayload {
+    email: string;
+    memberId: number;
+    role: string;
+}
 
 export default function OAuthRedirect() {
-
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const accessToken = params.get('access_token');
 
         if (accessToken) {
+            const decoded = jwtDecode<JwtPayload>(accessToken);
+            
             localStorage.setItem('accessToken', accessToken);
-            // navigate 대신 하드 이동 → useState 초기값 새로 실행됨
+            localStorage.setItem('role', decoded.role);
             window.location.replace('/');
         } else {
             window.location.replace('/login');

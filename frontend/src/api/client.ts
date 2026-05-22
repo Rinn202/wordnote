@@ -1,4 +1,4 @@
-import axios, {type AxiosInstance} from 'axios';
+import axios, { type AxiosInstance } from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
@@ -7,16 +7,14 @@ export const api: AxiosInstance = axios.create({
     withCredentials: true,
 });
 
+// 요청 시 accessToken 헤더 자동 첨부
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('accessToken');
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 });
 
-export const req = <T>(method: string, path: string, body?: unknown): Promise<T> =>
-    api.request<T>({method, url: path, data: body}).then(r => r.data);
-
-// 401, 403 에러가 발생하면 토큰을 제거하고 로그인 페이지로 리다이렉트
+// 401/403 시 토큰 제거 후 로그인 페이지로 이동
 api.interceptors.response.use(
     response => response,
     error => {
@@ -28,3 +26,6 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+export const req = <T>(method: string, path: string, body?: unknown): Promise<T> =>
+    api.request<T>({ method, url: path, data: body }).then(r => r.data);

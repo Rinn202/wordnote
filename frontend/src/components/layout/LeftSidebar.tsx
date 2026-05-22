@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import type { Board } from '../../types';
-import '../../styles/LeftSidebar.css';
+import type { Board, Box } from '../../types';
+import '../../styles/left-sidebar.css';
 import type { AlarmToast } from '../../hooks/useAlarm';
-import type { Box } from '../../types';
-
 
 interface Props {
     currentBoardId: number | undefined;
@@ -12,62 +10,49 @@ interface Props {
     onLoadBoard: (boardId: number) => void;
     onDeleteBoard: (boardId: number, e: React.MouseEvent) => void;
     onNewBoard: () => void;
-    boardId: number | undefined;
-    total: number;
     todo: number;
     prog: number;
     done: number;
     alarms: AlarmToast[];
     onDismissAlarm: (boxId: number) => void;
     allBoxes: Box[];
-
 }
 
-export default function LeftSidebar({
-    currentBoardId,
-    allBoards,
-    deletingBoardId,
-    onLoadBoard,
-    onDeleteBoard,
-    onNewBoard,
-    todo,
-    prog,
-    done,
-    alarms,
-    allBoxes,
-    onDismissAlarm,
-}: Props) {
+const getAlarmTime = (expireTime: string, alarmType: string): string => {
+    const [h, m] = expireTime.split(':').map(Number);
+    let total = h * 60 + m;
+    if (alarmType === 'TEN_MINUTES_BEFORE') total -= 10;
+    else if (alarmType === 'THIRTY_MINUTES_BEFORE') total -= 30;
+    else if (alarmType === 'ONE_HOUR_BEFORE') total -= 60;
+    return `${Math.floor(total / 60).toString().padStart(2, '0')}:${(total % 60).toString().padStart(2, '0')}`;
+};
 
-    const isFull = allBoards.length >= 11;
+export default function LeftSidebar({
+    currentBoardId, allBoards, deletingBoardId,
+    onLoadBoard, onDeleteBoard, onNewBoard,
+    todo, prog, done, alarms, allBoxes, onDismissAlarm,
+}: Props) {
     const [showWarning, setShowWarning] = useState(false);
     const [showEmptyWarning, setShowEmptyWarning] = useState(false);
 
     const handleNewBoard = () => {
-        const currentBoard = allBoards.find(b => b.boardId === currentBoardId);
-        const isEmptyBoard = currentBoard ? currentBoard.boxes.length === 0 : false;
-
-        if (isEmptyBoard) {
-            setShowEmptyWarning(true);
-            setShowWarning(false);
-            return;
-        }
-
-        if (isFull) {
-            setShowWarning(true);
-            setShowEmptyWarning(false);
-            return;
-        }
-
+        const isEmptyBoard = allBoards.find(b => b.boardId === currentBoardId)?.boxes.length === 0;
+        if (isEmptyBoard) { setShowEmptyWarning(true); setShowWarning(false); return; }
+        if (allBoards.length >= 11) { setShowWarning(true); setShowEmptyWarning(false); return; }
         setShowWarning(false);
         setShowEmptyWarning(false);
         onNewBoard();
     };
 
+    const scheduledAlarms = allBoxes.filter(
+        b => b.alarmType && b.alarmType !== 'NONE' && b.state !== 'DONE' && b.expireTime
+    );
+    const firedIds = new Set(alarms.map(a => a.boxId));
+
     return (
         <aside className="sidebar-container">
             <span className="sidebar-title">BOARDS</span>
 
-            {/* 통계 */}
             <div className="stats-container">
                 <div className="stats-grid">
                     <div className="stats-card">
@@ -85,119 +70,58 @@ export default function LeftSidebar({
                 </div>
             </div>
 
-            {/* 알람 목록 */}
-            {/* 알람 목록 */}
-            {(() => {
-                const scheduledAlarms = allBoxes.filter(
-                    b => b.alarmType && b.alarmType !== 'NONE' && b.state !== 'DONE' && b.expireTime
-                );
-                const firedIds = new Set(alarms.map(a => a.boxId));
-
-                return (
-                    <div className="alarm-panel">
-                        <div className="alarm-panel-header">
-                            <i className="ti ti-bell" aria-hidden="true" />
-                            <span className="alarm-panel-title">알람</span>
-                            {scheduledAlarms.length > 0 && (
-                                <span className="alarm-badge">({scheduledAlarms.length})</span>
-                            )}
+            <div className="alarm-panel">
+                <div className="alarm-panel-header">
+                    <i className="ti ti-bell" aria-hidden="true" />
+                    <span className="alarm-panel-title">알람</span>
+                    {scheduledAlarms.length > 0 && (
+                        <span className="alarm-badge">({scheduledAlarms.length})</span>
+                    )}
+                </div>
+                <div className="alarm-list">
+                    {scheduledAlarms.length === 0 ? (
+                        <div className="alarm-empty">
+                            <i className="ti ti-bell-off" aria-hidden="true" />
+                            <span>알람 없음</span>
                         </div>
-                        <div className="alarm-list">
-                            {scheduledAlarms.length === 0 ? (
-                                <div className="alarm-empty">
-                                    <i className="ti ti-bell-off" aria-hidden="true" />
-                                    <span>알람 없음</span>
-                                </div>
-                            ) : (
-                                scheduledAlarms.map(box => {
-                                    const isFired = firedIds.has(box.boxId);
-                                    //알람 계산
-                                    const getAlarmTime = (expireTime: string, alarmType: string) => {
-                                        const [h, m] = expireTime.split(':').map(Number);
-                                        let totalMinutes = h * 60 + m;
+                    ) : (
+                        scheduledAlarms.map(box => (
+                            <div key={box.boxId} className={`alarm-item ${firedIds.has(box.boxId) ? 'alarm-item-fired' : ''}`}>
+                                <span className="alarm-item-name">
+                                    [{getAlarmTime(box.expireTime!, box.alarmType)}] {box.name}
+                                </span>
+                                {firedIds.has(box.boxId) && (
+                                    <button className="alarm-dismiss-button" onClick={() => onDismissAlarm(box.boxId)} aria-label="알람 닫기">
+                                        <i className="ti ti-x" aria-hidden="true" />
+                                    </button>
+                                )}
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
 
-                                        if (alarmType === 'TEN_MINUTES_BEFORE') totalMinutes -= 10;
-                                        else if (alarmType === 'THIRTY_MINUTES_BEFORE') totalMinutes -= 30;
-                                        else if (alarmType === 'ONE_HOUR_BEFORE') totalMinutes -= 60;
-
-                                        const hh = Math.floor(totalMinutes / 60).toString().padStart(2, '0');
-                                        const mm = (totalMinutes % 60).toString().padStart(2, '0');
-                                        return `${hh}:${mm}`;
-                                    };
-
-                                    const timeLabel = getAlarmTime(box.expireTime!, box.alarmType);
-                                    return (
-                                        <div
-                                            key={box.boxId}
-                                            className={`alarm-item ${isFired ? 'alarm-item-fired' : ''}`}
-                                        >
-                                            <div className="alarm-item-info">
-                                                <span className="alarm-item-name">[{timeLabel}] {box.name}</span>
-                                            </div>
-                                            {isFired && (
-                                                <button
-                                                    className="alarm-dismiss-button"
-                                                    onClick={() => onDismissAlarm(box.boxId)}
-                                                    aria-label="알람 닫기"
-                                                >
-                                                    <i className="ti ti-x" aria-hidden="true" />
-                                                </button>
-                                            )}
-                                        </div>
-                                    );
-                                })
-                            )}
-                        </div>
-                    </div>
-                );
-            })()}
-
-            {/* 보드 리스트 */}
-            {allBoards.map(b => {
-                const isActive = b.boardId === currentBoardId;
-                return (
-                    <div key={b.boardId} className="board-item-row">
-                        <button
-                            onClick={() => {
-                                setShowWarning(false);
-                                setShowEmptyWarning(false);
-                                onLoadBoard(b.boardId);
-                            }}
-                            /* 활성화 상태일 때 active 클래스 동적 추가 */
-                            className={`board-load-button ${isActive ? 'active' : ''}`}
-                        >
-                            <i className="ti ti-layout-board board-icon" aria-hidden="true" />
-                            {isActive ? '현재 보드' : `보드 #${b.boardId}`}
+            {allBoards.map(b => (
+                <div key={b.boardId} className="board-item-row">
+                    <button
+                        onClick={() => { setShowWarning(false); setShowEmptyWarning(false); onLoadBoard(b.boardId); }}
+                        className={`board-load-button ${b.boardId === currentBoardId ? 'active' : ''}`}
+                    >
+                        <i className="ti ti-layout-board board-icon" aria-hidden="true" />
+                        {b.boardId === currentBoardId ? '현재 보드' : `보드 #${b.boardId}`}
+                    </button>
+                    {b.boardId !== currentBoardId && (
+                        <button onClick={e => onDeleteBoard(b.boardId, e)} disabled={deletingBoardId === b.boardId}
+                            className="board-delete-button" aria-label="보드 삭제">
+                            <i className="ti ti-trash" aria-hidden="true" />
                         </button>
-
-                        {!isActive && (
-                            <button
-                                onClick={(e) => onDeleteBoard(b.boardId, e)}
-                                disabled={deletingBoardId === b.boardId}
-                                className="board-delete-button"
-                                aria-label="보드 삭제"
-                            >
-                                <i className="ti ti-trash" aria-hidden="true" />
-                            </button>
-                        )}
-                    </div>
-                );
-            })}
-
-            {/* 경고 메시지 */}
-            {showWarning && (
-                <div className="warning-message">
-                    보드는 최대 10개까지만 생성할 수 있습니다.
+                    )}
                 </div>
-            )}
+            ))}
 
-            {showEmptyWarning && (
-                <div className="warning-message">
-                    빈 보드는 저장하거나 새로 만들 수 없습니다. 내용을 추가해 주세요.
-                </div>
-            )}
+            {showWarning && <div className="warning-message">보드는 최대 10개까지만 생성할 수 있습니다.</div>}
+            {showEmptyWarning && <div className="warning-message">빈 보드는 저장하거나 새로 만들 수 없습니다. 내용을 추가해 주세요.</div>}
 
-            {/* 새 보드 버튼 */}
             <button onClick={handleNewBoard} className="board-create-button">
                 <i className="ti ti-plus btn-icon" aria-hidden="true" />
                 새 보드

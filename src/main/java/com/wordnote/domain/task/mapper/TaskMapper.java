@@ -18,6 +18,7 @@ public class TaskMapper {
                 .name(task.getName())
                 .memberId(task.getMemberId())
                 .category(task.getCategory())
+                .info(task.getInfo())
                 .build();
     }
 

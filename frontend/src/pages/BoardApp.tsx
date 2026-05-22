@@ -1,52 +1,66 @@
 import { useBoardApp } from '../hooks/useBoardApp';
 import AlarmToastList from '../components/common/AlarmToast';
 import Topbar from '../components/layout/Topbar';
-import RoutineBoard from '../components/board/RoutineBoard';
-import EventBoard from '../components/board/EventBoard';
+import BoardColumn from '../components/board/BoardColumn';
 import TaskPool from '../components/task/TaskPool';
 import BoxOptionPanel from '../components/box/BoxOptionPanel';
 import BoardModals from '../components/common/BoardModals';
 import LeftSidebar from '../components/layout/LeftSidebar';
-import type { Box } from '../types';
+import Modal from '../components/common/Modal';
 import { getTimeTheme } from '../components/layout/getTimeTheme';
+import { useState } from 'react';
 
 export default function BoardApp({ onLogout }: { onLogout: () => void }) {
-
     const {
         currentBoard,
         boardActions: {
             loading, loadBoard, createNewBoard, resetBoard,
             patchBoxState, removeBox, reorderBox,
             updateBoxLocal, reorderTask, addBox,
+            applySample,
         },
         boards: { allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard },
         clockStr, dateStr,
         optionBox, setOptionBox,
         newBoardConfirmOpen, setNewBoardConfirmOpen,
+        sampleConfirmOpen, setSampleConfirmOpen,
         alarmToasts, allBoxes, allBoxesStats,
-        handleCloseToast, handleNewBoardClick,
+        handleCloseToast, handleNewBoardClick, handleStart,
+        usedTaskIds,
         isTaskDragging, taskDraggingBoxId, handleTaskDragChange,
     } = useBoardApp();
 
-    const routineBoxes = currentBoard?.boxes.filter((b: Box) => b.boxType === 'ROUTINE') ?? [];
-    const eventBoxes = currentBoard?.boxes.filter((b: Box) => b.boxType === 'EVENT') ?? [];
-    const usedTaskIds = allBoxes.flatMap(b => b.tasks.map(t => t.taskId));
+    const routineBoxes = currentBoard?.boxes.filter(b => b.boxType === 'ROUTINE') ?? [];
+    const eventBoxes = currentBoard?.boxes.filter(b => b.boxType === 'EVENT') ?? [];
     const theme = getTimeTheme();
 
+    const columnProps = (type: 'ROUTINE' | 'EVENT') => ({
+        boardType: type,
+        boxes: type === 'ROUTINE' ? routineBoxes : eventBoxes,
+        onStateChange: patchBoxState,
+        onDelete: removeBox,
+        onUpdate: updateBoxLocal,
+        onOpenOption: setOptionBox,
+        onReorder: (id: number, idx: number) => reorderBox(id, idx, type),
+        onReorderTask: reorderTask,
+        isTaskDragging,
+        taskDraggingBoxId,
+        onTaskDragChange: handleTaskDragChange,
+    });
+
+    const [sampleLoading, setSampleLoading] = useState(false);
+
     return (
-            <div className="app" onClick={() => {
-                const audio = new Audio();
-                audio.play().catch(() => { });
-            }}>
+        <div className="app" onClick={() => new Audio().play().catch(() => { })}>
             <Topbar
                 clockStr={clockStr}
                 dateStr={dateStr}
-                alarmCount={allBoxesStats.alarm}
                 onNewBoard={handleNewBoardClick}
                 onLoadBoard={handleLoadClick}
                 onResetBoard={resetBoard}
                 onLogout={onLogout}
             />
+
             {loading ? (
                 <div className="loading-state">
                     <i className="ti ti-loader-2 spin" aria-hidden="true" />
@@ -61,8 +75,6 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                         onLoadBoard={loadBoard}
                         onDeleteBoard={handleDeleteBoard}
                         onNewBoard={handleNewBoardClick}
-                        boardId={currentBoard.boardId}
-                        total={allBoxes.length}
                         {...allBoxesStats}
                         alarms={alarmToasts}
                         onDismissAlarm={handleCloseToast}
@@ -70,30 +82,8 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                     />
                     <div className="board-inner">
                         <div className="board-grid">
-                            <RoutineBoard
-                                boxes={routineBoxes}
-                                onStateChange={patchBoxState}
-                                onDelete={removeBox}
-                                onUpdate={updateBoxLocal}
-                                onOpenOption={setOptionBox}
-                                onReorder={(id, idx) => reorderBox(id, idx, 'ROUTINE')}
-                                onReorderTask={reorderTask}
-                                isTaskDragging={isTaskDragging}
-                                taskDraggingBoxId={taskDraggingBoxId}
-                                onTaskDragChange={handleTaskDragChange}
-                            />
-                            <EventBoard
-                                boxes={eventBoxes}
-                                onStateChange={patchBoxState}
-                                onDelete={removeBox}
-                                onUpdate={updateBoxLocal}
-                                onOpenOption={setOptionBox}
-                                onReorder={(id, idx) => reorderBox(id, idx, 'EVENT')}
-                                onReorderTask={reorderTask}
-                                isTaskDragging={isTaskDragging}
-                                taskDraggingBoxId={taskDraggingBoxId}
-                                onTaskDragChange={handleTaskDragChange}
-                            />
+                            <BoardColumn {...columnProps('ROUTINE')} />
+                            <BoardColumn {...columnProps('EVENT')} />
                         </div>
                     </div>
                     <aside className={`task-sidebar ${theme}`}>
@@ -104,9 +94,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                         />
                     </aside>
                 </div>
-            ) : null}
-
-            {!loading && !currentBoard && (
+            ) : (
                 <div className="no-board-overlay">
                     <div className="no-board-card">
                         <div className="no-board-icon">
@@ -116,9 +104,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                         <div className="no-board-desc">
                             새 보드를 만들어 오늘의 할 일을<br />정리해보세요.
                         </div>
-                        <button className="no-board-btn" onClick={createNewBoard}>
-                            START
-                        </button>
+                        <button className="no-board-btn" onClick={handleStart}>START</button>
                     </div>
                 </div>
             )}
@@ -129,10 +115,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                         <BoxOptionPanel
                             box={optionBox}
                             onClose={() => setOptionBox(null)}
-                            onUpdate={box => {
-                                updateBoxLocal(box);
-                                setOptionBox(null);
-                            }}
+                            onUpdate={box => { updateBoxLocal(box); setOptionBox(null); }}
                         />
                     </div>
                 </div>
@@ -147,15 +130,43 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                 onDeleteBoard={handleDeleteBoard}
                 newBoardConfirmOpen={newBoardConfirmOpen}
                 onCloseNewBoardConfirm={() => setNewBoardConfirmOpen(false)}
-                onDiscardAndNew={() => {
-                    createNewBoard();
-                    setNewBoardConfirmOpen(false);
-                }}
-                onSaveAndNew={async () => {
-                    await createNewBoard();
-                    setNewBoardConfirmOpen(false);
-                }}
+                onDiscardAndNew={() => { createNewBoard(); setNewBoardConfirmOpen(false); }}
+                onSaveAndNew={async () => { await createNewBoard(); setNewBoardConfirmOpen(false); }}
             />
+
+            {/* 샘플 보드 적용 팝업 */}
+<Modal
+    open={sampleConfirmOpen}
+    title="샘플로 시작할까요?"
+    onClose={() => { if (!sampleLoading) setSampleConfirmOpen(false); }}
+    width={320}
+>
+    {sampleLoading ? (
+        <div className="sample-loading">
+            <i className="ti ti-loader-2 spin" />
+            <span>샘플 보드를 만드는 중이에요...</span>
+        </div>
+    ) : (
+        <>
+            <p className="confirm-msg">나이트 근무용 샘플 사용해 보실래요?</p>
+            <div className="confirm-actions">
+                <button className="confirm-btn secondary"
+                    onClick={() => setSampleConfirmOpen(false)}>
+                    아니오
+                </button>
+                <button className="confirm-btn primary"
+                    onClick={async () => {
+                        setSampleLoading(true);
+                        await applySample();
+                        setSampleLoading(false);
+                        setSampleConfirmOpen(false);
+                    }}>
+                    예
+                </button>
+            </div>
+        </>
+    )}
+</Modal>
 
             <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast} />
         </div>

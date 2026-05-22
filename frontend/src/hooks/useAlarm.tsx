@@ -1,5 +1,5 @@
-import {useEffect, useRef} from 'react';
-import type {Box} from '../types';
+import { useEffect, useRef } from 'react';
+import type { Box } from '../types';
 
 export type AlarmToast = {
     boxId: number;
@@ -7,64 +7,59 @@ export type AlarmToast = {
     timeLabel: string;
 };
 
+const ALARM_OFFSET: Record<string, number> = {
+    AT_TIME: 0,
+    TEN_MINUTES_BEFORE: -10,
+    THIRTY_MINUTES_BEFORE: -30,
+    ONE_HOUR_BEFORE: -60,
+};
+
+const ALARM_LABEL: Record<string, string> = {
+    AT_TIME: '알람',
+    TEN_MINUTES_BEFORE: '10분 전',
+    THIRTY_MINUTES_BEFORE: '30분 전',
+    ONE_HOUR_BEFORE: '1시간 전',
+};
+
 export function useAlarm(boxes: Box[], onAlarm: (toast: AlarmToast) => void) {
-    const audioRef = useRef<HTMLAudioElement>(new Audio(localStorage.getItem('alarmFile') ?? '/alarm.mp3'));
+   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+if (audioRef.current === null) {
+    audioRef.current = new Audio(localStorage.getItem('alarmFile') ?? '/alarm.mp3');
+    audioRef.current.loop = true;
+}
     const firedRef = useRef<Set<string>>(new Set());
 
-    useEffect(() => {
-        audioRef.current.loop = true;
-    }, []);
+    useEffect(() => { if (audioRef.current) audioRef.current.loop = true; }, []);
 
     const stopAudio = () => {
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.currentTime = 0;
-        }
+        audioRef.current?.pause();
+        audioRef.current && (audioRef.current.currentTime = 0);
     };
 
     useEffect(() => {
         const check = () => {
             const now = new Date();
-            const hh = now.getHours().toString().padStart(2, '0');
-            const mm = now.getMinutes().toString().padStart(2, '0');
-            const ss = now.getSeconds().toString().padStart(2, '0');
-            const nowStr = `${hh}:${mm}:${ss}`;
             const nowMinutes = now.getHours() * 60 + now.getMinutes();
+            const isMidnight = now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0;
+
+            if (isMidnight) firedRef.current.clear();
 
             boxes.forEach(box => {
-                if (!box.expireTime || box.state === 'DONE') return;
-                if (box.alarmType === 'NONE') return;
+                if (!box.expireTime || box.state === 'DONE' || box.alarmType === 'NONE') return;
 
                 const [eh, em] = box.expireTime.split(':').map(Number);
-                const expireMinutes = eh * 60 + em;
-
-                let triggerMinutes = expireMinutes;
-                if (box.alarmType === 'TEN_MINUTES_BEFORE') triggerMinutes = expireMinutes - 10;
-                if (box.alarmType === 'THIRTY_MINUTES_BEFORE') triggerMinutes = expireMinutes - 30;
-                if (box.alarmType === 'ONE_HOUR_BEFORE') triggerMinutes = expireMinutes - 60;
-
+                const triggerMinutes = eh * 60 + em + (ALARM_OFFSET[box.alarmType] ?? 0);
                 const key = `${box.boxId}-${box.alarmType}`;
 
                 if (nowMinutes === triggerMinutes && now.getSeconds() < 10 && !firedRef.current.has(key)) {
                     firedRef.current.add(key);
-                    audioRef.current.play().catch(() => {
-                    });
+                    audioRef.current.play().catch(() => {});
                     onAlarm({
                         boxId: box.boxId,
                         name: box.name,
-                        timeLabel: box.alarmType === 'AT_TIME'
-                            ? `${box.expireTime.slice(0, 5)} 알람`
-                            : box.alarmType === 'TEN_MINUTES_BEFORE'
-                                ? `${box.expireTime.slice(0, 5)} 10분 전`
-                                : box.alarmType === 'THIRTY_MINUTES_BEFORE'
-                                    ? `${box.expireTime.slice(0, 5)} 30분 전`
-                                    : `${box.expireTime.slice(0, 5)} 1시간 전`,
+                        timeLabel: `${box.expireTime.slice(0, 5)} ${ALARM_LABEL[box.alarmType] ?? ''}`,
                     });
-                }
-
-                // 자정 넘기면 fired 초기화
-                if (nowStr === '00:00:00') {
-                    firedRef.current.clear();
                 }
             });
         };
@@ -73,5 +68,5 @@ export function useAlarm(boxes: Box[], onAlarm: (toast: AlarmToast) => void) {
         return () => clearInterval(interval);
     }, [boxes, onAlarm]);
 
-    return {stopAudio};
+    return { stopAudio };
 }

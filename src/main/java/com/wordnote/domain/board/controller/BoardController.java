@@ -35,6 +35,16 @@ class BoardController {
     }
 
 
+    //샘플복제
+    @PostMapping("/{boardId}/sample")
+    public ResponseEntity<BoardResponseDto> postSampleBoard(@PathVariable long boardId) {
+
+        long memberId = SecurityUtil.getMemberId();
+
+        BoardResponseDto response = boardService.copySampleBoard(boardId, memberId);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
     //생성
     @PostMapping
     public ResponseEntity<BoardResponseDto> postBoard() {

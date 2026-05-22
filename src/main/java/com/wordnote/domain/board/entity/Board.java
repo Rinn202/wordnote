@@ -17,12 +17,12 @@ import java.util.List;
 public class Board {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "boardId")
     private Long boardId;
 
     @ManyToOne
-    @JoinColumn(name = "memberId", updatable = false, nullable = false)
+    @JoinColumn(name = "memberId")
     Member member;
 
     @Builder.Default

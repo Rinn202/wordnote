@@ -122,8 +122,8 @@
 
 .task-new-input {
     font-size: 14px;
-    margin-top: 10px;
-    padding: 5px 10px;
+    padding: 6px 10px;
+    margin-bottom: 2px;
     border: 1px dashed var(--border2);
     border-radius: 20px;
     background: var(--surface);
@@ -147,7 +147,7 @@
     align-items: center;
     gap: 6px;
     padding-top: 8px;
-    margin-top: 4px;
+    margin: 4px 0 14px 0;
     flex-wrap: wrap;
 }
 
@@ -170,6 +170,27 @@
 
 .box-name-input:focus {
     border-bottom-color: var(--routine);
+}
+
+.task-info-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 6px 10px;
+    margin-top: 4px;
+    border-radius: var(--radius);
+    background: var(--surface2);
+    border: 0.5px solid var(--border2);
+    font-size: 12px;
+    color: var(--text2);
+    font-family: 'GowunBatang', serif;
+    line-height: 1.5;
+}
+
+.task-info-box .ti {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--text3);
 }
 
 .create-box-btn {
@@ -200,3 +221,68 @@
     cursor: not-allowed;
     pointer-events: none;
 }
+
+.task-new-form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 8px 0 5px 0;
+    padding: 8px 0 10px 0;
+    border-bottom: 1px dashed var(--border2);
+}
+
+
+/* ── Task Group (아코디언) ───────────────────────────────────────── */
+.task-group-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.task-group-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 4px 6px;
+    border: none;
+    border-bottom: 1px solid var(--border2);
+
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'GowunBatang', serif;
+    
+    letter-spacing: .06em;
+    cursor: pointer;
+    text-align: left;
+    transition: background .12s;
+    background: transparent;
+}
+
+.task-group-header:hover {
+    color: var(--event);
+}
+
+.task-group-header .ti {
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.task-group-count {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--text3);
+}
+
+.task-group .task-grid {
+    padding: 4px 4px 2px;
+}
+
+.task-group-divider {
+    width: 100%;
+    border-top: 1px dashed var(--border2);
+    margin: 4px 0;
+}
+

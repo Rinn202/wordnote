@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import type {BoardType, Box, Task} from '../../types';
-import {boxApi, taskApi} from '../../api';
+import { useEffect, useState, type KeyboardEvent } from 'react';
+import type { BoardType, Box, Task } from '../../types';
+import { boxApi, taskApi } from '../../api';
 
 interface Props {
     boardId: number;
@@ -8,39 +8,35 @@ interface Props {
     usedTaskIds: number[];
 }
 
-export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
+export default function TaskPool({ boardId, onBoxCreated, usedTaskIds }: Props) {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [selected, setSelected] = useState<number[]>([]);
     const [boxType, setBoxType] = useState<BoardType>('ROUTINE');
     const [boxName, setBoxName] = useState('');
-    const [newTaskName, setNewTaskName] = useState('');
+const [newTaskForm, setNewTaskForm] = useState({ name: '', info: '' });
     const [loading, setLoading] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [editName, setEditName] = useState('');
     const [deleteWarning, setDeleteWarning] = useState(false);
 
-
     useEffect(() => {
         taskApi.getAll().then(setTasks).catch(console.error);
     }, []);
 
-    const toggleTask = (id: number) => {
-        setSelected(prev =>
-            prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id],
-        );
-    };
+    const toggleTask = (id: number) =>
+        setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
-    const selectedTask = selected.length === 1
-        ? tasks.find(t => t.taskId === selected[0]) ?? null
-        : null;
+    const selectedTask = selected.length === 1 ? tasks.find(t => t.taskId === selected[0]) ?? null : null;
     const canEditDelete = selectedTask !== null && selectedTask.memberId !== null;
+    const isUsed = selectedTask ? usedTaskIds.includes(selectedTask.taskId) : false;
+
+    const taskClass = (t: Task) =>
+        ['task-item', boxType === 'EVENT' ? 'event-type' : '', selected.includes(t.taskId) ? 'selected' : '']
+            .filter(Boolean).join(' ');
 
     const handleDelete = async () => {
         if (!selectedTask) return;
-        if (isUsed) {
-            setDeleteWarning(true);
-            return;
-        }
+        if (isUsed) { setDeleteWarning(true); return; }
         setDeleteWarning(false);
         await taskApi.delete(selectedTask.taskId);
         setTasks(prev => prev.filter(t => t.taskId !== selectedTask.taskId));
@@ -62,7 +58,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
             const name = boxName.trim() || (selected.length === 1
                 ? tasks.find(t => t.taskId === selected[0])?.name ?? 'Unnamed'
                 : 'Unnamed');
-            const box = await boxApi.create({boardId, name, boxType, taskIds: selected});
+            const box = await boxApi.create({ boardId, name, boxType, taskIds: selected });
             onBoxCreated(box);
             setSelected([]);
             setBoxName('');
@@ -71,136 +67,150 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
         }
     };
 
-    const handleAddTask = async (e: React.KeyboardEvent) => {
-        if (e.key !== 'Enter' || !newTaskName.trim()) return;
-        const task = await taskApi.create(newTaskName.trim());
-        setTasks(prev => [...prev, task]);
-        setNewTaskName('');
-    };
 
-    const defaultTasks = tasks.filter(t => t.memberId === null);
-    const customTasks = tasks.filter(t => t.memberId !== null);
 
-    const isUsed = selectedTask ? usedTaskIds.includes(selectedTask.taskId) : false;
+const [openCats, setOpenCats] = useState<Set<string>>(new Set());
 
-    return (
-        <div className="task-pool">
-            <div className="task-pool-header">
-                <div className="type-toggle">
-                    {(['ROUTINE', 'EVENT'] as BoardType[]).map(t => (
-                        <button
-                            key={t}
-                            className={`toggle-btn ${boxType === t ? 'active' : ''}`}
-                            onClick={() => setBoxType(t)}
-                        >
-                            {t === 'ROUTINE' ? 'ROUTINE' : 'EVENT'}
-                        </button>
-                    ))}
-                </div>
+const toggleCat = (cat: string) =>
+    setOpenCats(prev => {
+        if (prev.has(cat)) return new Set();
+        return new Set([cat]);
+    });
 
-                {canEditDelete && (
-                    <div style={{display: 'flex', gap: 4}}>
-                        <button
-                            className="act-btn"
-                            onClick={() => {
-                                setEditingTask(selectedTask);
-                                setEditName(selectedTask.name);
-                            }}
-                            title="수정"
-                        >
-                            <i className="ti ti-pencil" aria-hidden="true"/>
-                        </button>
-                        <button
-                            className="act-btn danger"
-                            onClick={handleDelete}
-                            title="삭제"
-                        >
-                            <i className="ti ti-trash" aria-hidden="true"/>
-                        </button>
+const normalizeCategory = (cat: string) => cat.replace(/_상세$/, '');
 
-                    </div>
-                )}
-            </div>
+const grouped = tasks.reduce<Record<string, { main: Task[], sub: Task[] }>>((acc, t) => {
+    const raw = t.category ?? '기타';
+    const parent = normalizeCategory(raw);
+    const isSub = raw.endsWith('_상세');
+    acc[parent] ??= { main: [], sub: [] };
+    (isSub ? acc[parent].sub : acc[parent].main).push(t);
+    return acc;
+}, {});
 
-            {editingTask && (
-                <div style={{display: 'flex', gap: 6, marginBottom: 8}}>
-                    <input
-                        className="box-name-input"
-                        value={editName}
-                        onChange={e => setEditName(e.target.value)}
-                        onKeyDown={e => e.key === 'Enter' && handleEditConfirm()}
-                        autoFocus
-                    />
-                    <button className="act-btn" onClick={handleEditConfirm}>
-                        <i className="ti ti-check" aria-hidden="true"/>
-                    </button>
-                    <button className="act-btn" onClick={() => setEditingTask(null)}>
-                        <i className="ti ti-x" aria-hidden="true"/>
-                    </button>
-                </div>
-            )}
+const handleAddTask = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter' || !newTaskForm.name.trim()) return;
+    const task = await taskApi.create(
+        newTaskForm.name.trim(),
+        '커스텀',
+        newTaskForm.info || undefined
+    );
+    setTasks(prev => [...prev, task]);
+    setNewTaskForm({ name: '', info: '' });
+};
 
-            <div className="task-grid">
-                {defaultTasks.map(t => (
-                    <button
-                        key={t.taskId}
-                        className={['task-item', boxType === 'EVENT' ? 'event-type' : '', selected.includes(t.taskId) ? 'selected' : ''].filter(Boolean).join(' ')}
-                        onClick={() => toggleTask(t.taskId)}
-                    >
-                        {t.name}
+return (
+    <div className="task-pool">
+        <div className="task-pool-header">
+            <div className="type-toggle">
+                {(['ROUTINE', 'EVENT'] as BoardType[]).map(t => (
+                    <button key={t} className={`toggle-btn ${boxType === t ? 'active' : ''}`} onClick={() => setBoxType(t)}>
+                        {t}
                     </button>
                 ))}
-
-                {customTasks.length > 0 && (
-                    <div style={{width: '100%', borderTop: '1px dashed var(--border2)', margin: '4px 0'}}/>
-                )}
-
-                {customTasks.map(t => (
-                    <button
-                        key={t.taskId}
-                        className={['task-item', boxType === 'EVENT' ? 'event-type' : '', selected.includes(t.taskId) ? 'selected' : ''].filter(Boolean).join(' ')}
-                        onClick={() => toggleTask(t.taskId)}
-                    >
-                        {t.name}
-                    </button>
-                ))}
-
-                <input
-                    className="task-new-input"
-                    placeholder="+ 새 태스크 입력 후 Enter"
-                    value={newTaskName}
-                    onChange={e => setNewTaskName(e.target.value)}
-                    onKeyDown={handleAddTask}
-                />
             </div>
 
-            {selected.length > 0 && (
-                <div className="create-row">
-                    <input
-                        className="box-name-input"
-                        placeholder={
-                            selected.length === 1
-                                ? tasks.find(t => t.taskId === selected[0])?.name ?? '박스 이름 입력'
-                                : '박스 이름 입력'
-                        }
-                        value={boxName}
-                        onChange={e => setBoxName(e.target.value)}
-                    />
-                    <button className="create-box-btn" onClick={handleCreateBox} disabled={loading}>
-                        <i className="ti ti-plus" aria-hidden="true"/>
-                        add box
+            {canEditDelete && (
+                <div style={{ display: 'flex', gap: 4 }}>
+                    <button className="act-btn" onClick={() => { setEditingTask(selectedTask); setEditName(selectedTask!.name); }} title="수정">
+                        <i className="ti ti-pencil" aria-hidden="true" />
                     </button>
-
-                    {deleteWarning && isUsed && selectedTask?.memberId !== null && (
-                        <div style={{
-                            fontSize: 12, color: 'var(--danger)',
-                            padding: '6px 8px', marginTop: 4, fontFamily: 'GowunBatang, serif', lineHeight: 1.5,
-                        }}>
-                            사용 중인 태스크는 삭제할 수 없습니다.
-                        </div>
-                    )}
+                    <button className="act-btn danger" onClick={handleDelete} title="삭제">
+                        <i className="ti ti-trash" aria-hidden="true" />
+                    </button>
                 </div>
             )}
         </div>
-    );
+
+                <div className="task-new-form">
+            <input
+                className="task-new-input"
+                placeholder="+ 태스크 이름 (Enter로 추가)"
+                value={newTaskForm.name}
+                onChange={e => setNewTaskForm(p => ({ ...p, name: e.target.value }))}
+                onKeyDown={handleAddTask}
+            />
+            <input
+                className="task-new-input"
+                placeholder="상세설명을 입력할 수 있습니다(선택)"
+                value={newTaskForm.info}
+                onChange={e => setNewTaskForm(p => ({ ...p, info: e.target.value }))}
+            />
+        </div>
+
+        {selected.length > 0 && (
+            <div className="create-row">
+                <input
+                    className="box-name-input"
+                    placeholder={selected.length === 1 ? tasks.find(t => t.taskId === selected[0])?.name ?? '박스 이름 입력' : '박스 이름 입력'}
+                    value={boxName}
+                    onChange={e => setBoxName(e.target.value)}
+                />
+                <button className="create-box-btn" onClick={handleCreateBox} disabled={loading}>
+                    <i className="ti ti-plus" aria-hidden="true" /> add box
+                </button>
+
+                {deleteWarning && isUsed && (
+                    <div style={{ fontSize: 12, color: 'var(--danger)', padding: '6px 8px', marginTop: 4, fontFamily: 'GowunBatang, serif', lineHeight: 1.5 }}>
+                        사용 중인 태스크는 삭제할 수 없습니다.
+                    </div>
+                )}
+            </div>
+        )}
+
+        {editingTask && (
+            <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+                <input
+                    className="box-name-input"
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleEditConfirm()}
+                    autoFocus
+                />
+                <button className="act-btn" onClick={handleEditConfirm}><i className="ti ti-check" aria-hidden="true" /></button>
+                <button className="act-btn" onClick={() => setEditingTask(null)}><i className="ti ti-x" aria-hidden="true" /></button>
+            </div>
+        )}
+
+        <div className="task-group-list">
+            {Object.entries(grouped).map(([cat, items]) => (
+                <div key={cat} className="task-group">
+                    <button className="task-group-header" onClick={() => toggleCat(cat)}>
+                        <i className={`ti ${openCats.has(cat) ? 'ti-chevron-down' : 'ti-chevron-right'}`} />
+                        {cat}
+                        <span className="task-group-count">{items.main.length + items.sub.length}</span>
+                    </button>
+                    {openCats.has(cat) && (
+                        <div className="task-grid">
+                            {items.main.map(t => (
+                                <button key={t.taskId} className={taskClass(t)} onClick={() => toggleTask(t.taskId)}
+                                    title={t.info ?? undefined}>
+                                    {t.name}
+                                </button>
+                            ))}
+                            {items.sub.length > 0 && (
+                                <>
+                                    <div className="task-group-divider" />
+                                    {items.sub.map(t => (
+                                        <button key={t.taskId} className={taskClass(t)} onClick={() => toggleTask(t.taskId)}
+                                            title={t.info ?? undefined}>
+                                            {t.name}
+                                        </button>
+                                    ))}
+                                </>
+                            )}
+                        </div>
+                    )}
+                </div>
+            ))}
+        </div>
+
+        {selectedTask?.info && (
+            <div className="task-info-box">
+                <i className="ti ti-info-circle" aria-hidden="true" />
+                {selectedTask.info}
+            </div>
+        )}
+    </div>
+);
 }

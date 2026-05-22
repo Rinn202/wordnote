@@ -1,31 +1,20 @@
 spring:
+  datasource:
+    url: ${MYSQL_PUBLIC_URL}
+    username: ${MYSQLUSER}
+    password: ${MYSQLPASSWORD}
   sql:
     init:
       mode: always
-  #  datasource:
-  #    url: jdbc:mysql://database-mainproj.ce3ctn9df6gn.ap-northeast-2.rds.amazonaws.com:13306/mainproj
-  #    username: admin
-  #    password: ${RDS_SECRET}
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  datasource:
-    url: jdbc:h2:mem:testdb # H2 인메모리 DB URL
-    driver-class-name: org.h2.Driver # H2 드라이버
-    username: sa # DB 사용자명
-    password: # DB 비밀번호
-  h2:
-    console:
-      enabled: true # H2 콘솔 활성화
-      path: /h2-console # 접속 경로 (http://localhost:8080/h2-console)
   jpa:
     hibernate:
-      ddl-auto: create # 매번 새로 생성 -> 실제 운영시 validate로 바꿔야 함
-    show-sql: true # 실행되는 SQL 콘솔 출력
+      ddl-auto: create
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect # JPA SQL -> H2용으로 번역
+        dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true #초기 파일(data.sql) 추가시 사용
-
   security:
     oauth2:
       client:
@@ -41,10 +30,6 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration-minutes: 30
   refresh-token-expiration-minutes: 420 # 7시간
-
-
-#server:
-#  port: 8080 # 서버 포트
 
 logging:
   level:

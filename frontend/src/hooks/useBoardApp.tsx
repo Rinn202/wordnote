@@ -1,17 +1,19 @@
-import {useCallback, useEffect, useMemo, useState} from 'react';
-import {useBoard} from './useBoard';
-import {useBoards} from './useBoards';
-import type {AlarmToast} from './useAlarm';
-import {useAlarm} from './useAlarm';
-import {useClock} from './useClock';
-import type {Box} from '../types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useBoard } from './useBoard';
+import { useBoards } from './useBoards';
+import type { AlarmToast } from './useAlarm';
+import { useAlarm } from './useAlarm';
+import { useClock } from './useClock';
+import type { Box } from '../types';
 
+// useBoardApp.ts
 export function useBoardApp() {
-    const {board: currentBoard, ...boardActions} = useBoard();
-    const {clockStr, dateStr} = useClock();
+    const { board: currentBoard, ...boardActions } = useBoard();
+    const { clockStr, dateStr } = useClock();
 
     const [optionBox, setOptionBox] = useState<Box | null>(null);
     const [newBoardConfirmOpen, setNewBoardConfirmOpen] = useState(false);
+    const [sampleConfirmOpen, setSampleConfirmOpen] = useState(false); // 추가
     const [alarmToasts, setAlarmToasts] = useState<AlarmToast[]>([]);
     const [isTaskDragging, setIsTaskDragging] = useState(false);
     const [taskDraggingBoxId, setTaskDraggingBoxId] = useState<number | null>(null);
@@ -23,7 +25,7 @@ export function useBoardApp() {
         setAlarmToasts(prev => [...prev, toast]);
     }, []);
 
-    const {stopAudio} = useAlarm(allBoxes, handleAlarm);
+    const { stopAudio } = useAlarm(allBoxes, handleAlarm);
 
     const handleCloseToast = useCallback((boxId: number) => {
         setAlarmToasts(prev => {
@@ -33,40 +35,41 @@ export function useBoardApp() {
         });
     }, [stopAudio]);
 
-    // boxId를 함께 받아 어느 박스에서 task 드래그가 일어나는지 추적
     const handleTaskDragChange = useCallback((v: boolean, boxId?: number) => {
         setIsTaskDragging(v);
         setTaskDraggingBoxId(v && boxId != null ? boxId : null);
     }, []);
 
-    useEffect(() => {
-        boardActions.initBoard();
-    }, []);
+    const handleNewBoardClick = useCallback(() => {
+        if (!currentBoard || currentBoard.boxes.length === 0) return;
+        setNewBoardConfirmOpen(true);
+    }, [currentBoard]);
 
-    const handleNewBoardClick = () => {
-        const isEmpty = (currentBoard?.boxes.length ?? 0) === 0;
-        if (currentBoard && isEmpty) return;
-        if ((currentBoard?.boxes.length ?? 0) > 0) setNewBoardConfirmOpen(true);
-        else boardActions.createNewBoard();
-    };
+    // START 버튼 핸들러 추가
+    const handleStart = useCallback(async () => {
+        await boardActions.createNewBoard();
+        setSampleConfirmOpen(true);
+    }, [boardActions]);
 
     const usedTaskIds = useMemo(
-        () => allBoxes.flatMap((b: Box) => b.tasks.map(t => t.taskId)),
+        () => allBoxes.flatMap(b => b.tasks.map(t => t.taskId)),
         [allBoxes]
     );
 
-    useEffect(() => {
-        if (currentBoard?.boardId) {
-            boards.loadAllBoards(currentBoard.boardId);
-        }
-    }, [currentBoard?.boardId]);
+    const allBoxesStats = useMemo(() => ({
+        todo: allBoxes.filter(b => b.state === 'READY').length,
+        prog: allBoxes.filter(b => b.state === 'IN_PROGRESS').length,
+        done: allBoxes.filter(b => b.state === 'DONE').length,
+        alarm: allBoxes.filter(b => b.alarmType && b.alarmType !== 'NONE' && b.state !== 'DONE').length,
+    }), [allBoxes]);
 
-    const allBoxesStats = {
-        todo: allBoxes.filter((b: Box) => b.state === 'READY').length,
-        prog: allBoxes.filter((b: Box) => b.state === 'IN_PROGRESS').length,
-        done: allBoxes.filter((b: Box) => b.state === 'DONE').length,
-        alarm: allBoxes.filter((b: Box) => b.alarmType && b.alarmType !== 'NONE' && b.state !== 'DONE').length,
-    };
+    useEffect(() => {
+        boardActions.initBoard();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        if (currentBoard?.boardId) boards.loadAllBoards(currentBoard.boardId);
+    }, [currentBoard?.boardId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return {
         currentBoard,
@@ -76,12 +79,14 @@ export function useBoardApp() {
         dateStr,
         optionBox, setOptionBox,
         newBoardConfirmOpen, setNewBoardConfirmOpen,
+        sampleConfirmOpen, setSampleConfirmOpen, // 추가
         alarmToasts,
         allBoxes,
         allBoxesStats,
         handleAlarm,
         handleCloseToast,
         handleNewBoardClick,
+        handleStart, // 추가
         usedTaskIds,
         isTaskDragging,
         taskDraggingBoxId,

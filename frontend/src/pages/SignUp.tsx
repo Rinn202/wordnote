@@ -1,136 +1,91 @@
-import React, {useRef, useState} from 'react';
+import { useRef, useState, type ChangeEvent } from 'react';
 import axios from 'axios';
 
-// ─── API 설정 ──────────────────────────────────────────────────────────────────
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-const api = axios.create({baseURL: API_BASE});
+const api = axios.create({ baseURL: API_BASE });
 
-// ─── 타입 ──────────────────────────────────────────────────────────────────────
 interface SignUpForm {
-    name: string;
-    nickname: string;
-    email: string;
-    password: string;
-    passwordConfirm: string;
+    name: string; nickname: string; email: string;
+    password: string; passwordConfirm: string;
 }
+interface SignUpProps { onSuccess?: () => void; onGoLogin?: () => void; }
 
-interface SignUpProps {
-    onSuccess?: () => void;
-    onGoLogin?: () => void;
-}
-
-// ─── 유효성 검사 ───────────────────────────────────────────────────────────────
 const validate = (form: SignUpForm): Partial<SignUpForm> => {
     const e: Partial<SignUpForm> = {};
     if (!form.name.trim()) e.name = '이름을 입력해 주세요.';
     if (!form.nickname.trim()) e.nickname = '닉네임을 입력해 주세요.';
     if (!form.email.includes('@')) e.email = '올바른 이메일을 입력해 주세요.';
     if (form.password.length < 4) e.password = '비밀번호는 4자 이상이어야 합니다.';
-    if (form.password !== form.passwordConfirm)
-        e.passwordConfirm = '비밀번호가 일치하지 않습니다.';
+    if (form.password !== form.passwordConfirm) e.passwordConfirm = '비밀번호가 일치하지 않습니다.';
     return e;
 };
 
-// ─── Field 컴포넌트 ────────────────────────────────────────────────────────────
 interface FieldProps {
-    label: string;
-    emoji: string;
-    type: string;
-    placeholder: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    error?: string;
+    label: string; emoji: string; type: string; placeholder: string;
+    value: string; onChange: (e: ChangeEvent<HTMLInputElement>) => void; error?: string;
 }
 
-function Field({label, emoji, type, placeholder, value, onChange, error}: FieldProps) {
+function Field({ label, emoji, type, placeholder, value, onChange, error }: FieldProps) {
     const [focused, setFocused] = useState(false);
-
     return (
-        <div style={{display: 'flex', flexDirection: 'column', gap: 5}}>
-            <label style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: '#475569',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5
-            }}>
-                <span>{emoji}</span>
-                {label}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            <label style={{ fontSize: 12, fontWeight: 700, color: '#475569', display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span>{emoji}</span>{label}
             </label>
             <input
-                type={type}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
+                type={type} placeholder={placeholder} value={value} onChange={onChange}
+                onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
                 autoComplete={type === 'password' ? 'new-password' : undefined}
                 style={{
                     padding: '9px 12px',
                     border: `1.5px solid ${error ? '#fca5a5' : focused ? '#1e293b' : '#e2e8f0'}`,
-                    borderRadius: 10,
-                    fontSize: 13,
-                    outline: 'none',
+                    borderRadius: 10, fontSize: 13, outline: 'none',
                     background: error ? '#fff5f5' : focused ? '#fff' : '#f8fafc',
-                    color: '#0f172a',
-                    transition: 'border-color 0.15s, background 0.15s',
+                    color: '#0f172a', transition: 'border-color 0.15s, background 0.15s',
                     fontFamily: '"Pretendard", "Apple SD Gothic Neo", sans-serif',
-                    width: '100%',
-                    boxSizing: 'border-box' as const,
+                    width: '100%', boxSizing: 'border-box' as const,
                 }}
             />
-            {error && (
-                <span style={{fontSize: 11, color: '#ef4444'}}>
-          ⚠ {error}
-        </span>
-            )}
+            {error && <span style={{ fontSize: 11, color: '#ef4444' }}>⚠ {error}</span>}
         </div>
     );
 }
 
-// ─── SignUp ────────────────────────────────────────────────────────────────────
-export default function SignUp({onSuccess, onGoLogin}: SignUpProps) {
+export default function SignUp({ onSuccess, onGoLogin }: SignUpProps) {
     const [form, setForm] = useState<SignUpForm>({
         name: '', nickname: '', email: '', password: '', passwordConfirm: '',
     });
     const [errors, setErrors] = useState<Partial<SignUpForm>>({});
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
-    const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const toastTimer = useRef<ReturnType<typeof setTimeout>>(null);
 
     const showToast = (msg: string, ok = true) => {
         if (toastTimer.current) clearTimeout(toastTimer.current);
-        setToast({msg, ok});
+        setToast({ msg, ok });
         toastTimer.current = setTimeout(() => setToast(null), 2500);
     };
 
-    const set = (k: keyof SignUpForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm(f => ({...f, [k]: e.target.value}));
-        if (errors[k]) setErrors(er => ({...er, [k]: undefined}));
+    const set = (k: keyof SignUpForm) => (e: ChangeEvent<HTMLInputElement>) => {
+        setForm(f => ({ ...f, [k]: e.target.value }));
+        if (errors[k]) setErrors(er => ({ ...er, [k]: undefined }));
     };
 
     const handleSubmit = async () => {
         const e = validate(form);
-        if (Object.keys(e).length) {
-            setErrors(e);
-            return;
-        }
+        if (Object.keys(e).length) { setErrors(e); return; }
         setLoading(true);
         try {
             await api.post('/member/signup', {
-                name: form.name.trim(),
-                nickname: form.nickname.trim(),
-                email: form.email.trim(),
-                password: form.password,
+                name: form.name.trim(), nickname: form.nickname.trim(),
+                email: form.email.trim(), password: form.password,
             });
-            showToast('🎉 회원가입이 완료되었습니다!', true);
+            showToast('🎉 회원가입이 완료되었습니다!');
             setTimeout(() => onSuccess?.(), 1200);
         } catch (err: unknown) {
-            const msg =
-                axios.isAxiosError(err)
-                    ? (err.response?.data?.message ?? `오류 ${err.response?.status}`)
-                    : '회원가입에 실패했습니다.';
+            const msg = axios.isAxiosError(err)
+                ? (err.response?.data?.message ?? `오류 ${err.response?.status}`)
+                : '회원가입에 실패했습니다.';
             showToast(`⚠ ${msg}`, false);
         } finally {
             setLoading(false);
@@ -141,6 +96,7 @@ export default function SignUp({onSuccess, onGoLogin}: SignUpProps) {
         window.location.href = `${API_BASE}/oauth2/authorization/google`;
     };
 
+    
     // ── 렌더 ─────────────────────────────────────────────────────────────────
     return (
         <>

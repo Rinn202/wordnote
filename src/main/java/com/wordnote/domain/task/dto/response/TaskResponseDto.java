@@ -14,4 +14,6 @@ public class TaskResponseDto {
     private String name;
 
     private String category;
+
+    private String info;
 }

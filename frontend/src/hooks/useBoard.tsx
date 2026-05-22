@@ -1,6 +1,6 @@
-import {useCallback, useState} from 'react';
-import type {Board, BoardType, Box, BoxState} from '../types';
-import {boardApi, boxApi, taskApi} from '../api';
+import { useCallback, useState } from 'react';
+import type { Board, BoardType, Box, BoxState } from '../types';
+import { boardApi, boxApi, taskApi } from '../api';
 
 const LAST_BOARD_KEY = 'lastBoardId';
 
@@ -8,83 +8,96 @@ export function useBoard() {
     const [board, setBoard] = useState<Board | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const loadBoard = useCallback(async (boardId: number) => {
-        setLoading(true);
-        try {
-            // 현재 보드가 비어있으면 삭제
-            if (board && board.boxes.length === 0) {
-                await boardApi.delete(board.boardId);
-            }
-            const b = await boardApi.getById(boardId);
-            localStorage.setItem(LAST_BOARD_KEY, String(boardId));
-            setBoard(b);
-        } finally {
-            setLoading(false);
-        }
-    }, [board]);
+const loadBoard = useCallback(async (boardId: number) => {
+    setLoading(true);
+    try {
+        // 🗑️ 빈 보드 삭제 로직 제거 - createNewBoard 이후 샘플 보드가 삭제되는 원인
+        // if (board && board.boxes.length === 0) await boardApi.delete(board.boardId);
+        const b = await boardApi.getById(boardId);
+        localStorage.setItem(LAST_BOARD_KEY, String(boardId));
+        setBoard(b);
+    } finally {
+        setLoading(false);
+    }
+}, [board]);
 
+    // const loadBoard = useCallback(async (boardId: number) => {
+    //     setLoading(true);
+    //     try {
+    //         if (board && board.boxes.length === 0) await boardApi.delete(board.boardId);
+    //         const b = await boardApi.getById(boardId);
+    //         localStorage.setItem(LAST_BOARD_KEY, String(boardId));
+    //         setBoard(b);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }, [board]);
+
+    
     const initBoard = useCallback(async () => {
         const lastId = localStorage.getItem(LAST_BOARD_KEY);
-        if (!lastId) {
-            setLoading(false); // lastId 없을 때 로딩 종료
-            return;
-        }
+        if (!lastId) { setLoading(false); return; }
         setLoading(true);
         try {
-            const b = await boardApi.getById(Number(lastId));
-            setBoard(b);
-        } catch (error: any) {
-            setLoading(false); // ← 추가
-            const status = error?.response?.status;
-            if (status !== 401) {
-                localStorage.removeItem(LAST_BOARD_KEY);
-            }
+            setBoard(await boardApi.getById(Number(lastId)));
+        } catch (error: unknown) {
+            const status = (error as any)?.response?.status;
+            if (status !== 401) localStorage.removeItem(LAST_BOARD_KEY);
         } finally {
             setLoading(false);
         }
     }, []);
 
-    const createNewBoard = useCallback(async () => {
-        setLoading(true);
-        try {
-            const b = await boardApi.create();
-            localStorage.setItem(LAST_BOARD_KEY, String(b.boardId));
-            setBoard(b);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+    // const createNewBoard = useCallback(async () => {
+    //     setLoading(true);
+    //     try {
+    //         const b = await boardApi.create();
+    //         localStorage.setItem(LAST_BOARD_KEY, String(b.boardId));
+    //         setBoard(b);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }, []);
+
+const createNewBoard = useCallback(async () => {
+    setLoading(true);
+    try {
+        const b = await boardApi.create();
+        localStorage.setItem(LAST_BOARD_KEY, String(b.boardId));
+        setBoard(b);
+    } finally {
+        setLoading(false);
+    }
+}, []);
+
+const applySample = useCallback(async () => {
+    if (!board) return;
+    setLoading(true);
+    try {
+        const b = await boardApi.createSample(board.boardId);
+        setBoard(b);
+    } finally {
+        setLoading(false);
+    }
+}, [board]);
+
 
     const resetBoard = useCallback(async () => {
         if (!board) return;
         await boardApi.reset(board.boardId);
-        const fresh = await boardApi.getById(board.boardId);
-        setBoard(fresh);
+        setBoard(await boardApi.getById(board.boardId));
     }, [board]);
 
     const patchBoxState = useCallback(async (boxId: number, state: BoxState) => {
-        const updated = await boxApi.patchState(boxId, {state});
-        setBoard(prev => {
-            if (!prev) return prev;
-            return {
-                ...prev,
-                boxes: prev.boxes.map(b => b.boxId === boxId ? updated : b),
-            };
-        });
+        const updated = await boxApi.patchState(boxId, { state });
+        setBoard(prev => prev ? { ...prev, boxes: prev.boxes.map(b => b.boxId === boxId ? updated : b) } : prev);
     }, []);
 
     const removeBox = useCallback((boxId: number) => {
-        setBoard(prev => {
-            if (!prev) return prev;
-            return {...prev, boxes: prev.boxes.filter(b => b.boxId !== boxId)};
-        });
+        setBoard(prev => prev ? { ...prev, boxes: prev.boxes.filter(b => b.boxId !== boxId) } : prev);
     }, []);
 
-    const reorderBox = useCallback(async (
-        boxId: number,
-        targetIndex: number,
-        boardType: BoardType,
-    ) => {
+    const reorderBox = useCallback(async (boxId: number, targetIndex: number, boardType: BoardType) => {
         if (!board) return;
 
         setBoard(prev => {
@@ -96,47 +109,31 @@ export function useBoard() {
             const reordered = [...typed];
             const [item] = reordered.splice(from, 1);
             reordered.splice(targetIndex, 0, item);
-            const merged = boardType === 'ROUTINE'
-                ? [...reordered, ...others]
-                : [...others, ...reordered];
-            return {...prev, boxes: merged};
+            const merged = boardType === 'ROUTINE' ? [...reordered, ...others] : [...others, ...reordered];
+            return { ...prev, boxes: merged };
         });
 
-        const allBoxes = board.boxes;
-        const typedBoxes = allBoxes.filter(b => b.boxType === boardType);
-        const otherBoxes = allBoxes.filter(b => b.boxType !== boardType);
+        const typedBoxes = board.boxes.filter(b => b.boxType === boardType);
+        const otherBoxes = board.boxes.filter(b => b.boxType !== boardType);
         const targetBox = typedBoxes[targetIndex];
         const globalTargetIndex = targetBox
-            ? allBoxes.findIndex(b => b.boxId === targetBox.boxId)
-            : boardType === 'ROUTINE'
-                ? typedBoxes.length - 1
-                : otherBoxes.length + typedBoxes.length - 1;
+            ? board.boxes.findIndex(b => b.boxId === targetBox.boxId)
+            : boardType === 'ROUTINE' ? typedBoxes.length - 1 : otherBoxes.length + typedBoxes.length - 1;
 
-        await boardApi.reorderBox(board.boardId, {boxId, targetIndex: globalTargetIndex});
+        await boardApi.reorderBox(board.boardId, { boxId, targetIndex: globalTargetIndex });
     }, [board]);
 
     const updateBoxLocal = useCallback((updated: Box) => {
-        setBoard(prev => {
-            if (!prev) return prev;
-            return {...prev, boxes: prev.boxes.map(b => b.boxId === updated.boxId ? updated : b)};
-        });
+        setBoard(prev => prev ? { ...prev, boxes: prev.boxes.map(b => b.boxId === updated.boxId ? updated : b) } : prev);
     }, []);
 
     const addBox = useCallback((box: Box) => {
-        setBoard(prev => {
-            if (!prev) return prev;
-            return {...prev, boxes: [...prev.boxes, box]};
-        });
+        setBoard(prev => prev ? { ...prev, boxes: [...prev.boxes, box] } : prev);
     }, []);
 
-    const reorderTask = useCallback(async (
-        boxId: number,
-        boxTaskId: number,
-        targetIndex: number,
-    ) => {
+    const reorderTask = useCallback(async (boxId: number, boxTaskId: number, targetIndex: number) => {
         if (!board) return;
 
-        // 낙관적 업데이트
         setBoard(prev => {
             if (!prev) return prev;
             return {
@@ -148,18 +145,18 @@ export function useBoard() {
                     if (from === -1) return b;
                     const [item] = tasks.splice(from, 1);
                     tasks.splice(targetIndex, 0, item);
-                    return {...b, tasks};
+                    return { ...b, tasks };
                 }),
             };
         });
 
-        await taskApi.move(boxTaskId, {boxId, targetIndex});
+        await taskApi.move(boxTaskId, { boxId, targetIndex });
     }, [board]);
 
     return {
         board, loading,
         initBoard, loadBoard, createNewBoard, resetBoard,
-        patchBoxState, removeBox, reorderBox,
-        updateBoxLocal, addBox, reorderTask,
+        patchBoxState, removeBox, reorderBox, 
+        updateBoxLocal, addBox, reorderTask, applySample,
     };
 }

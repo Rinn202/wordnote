@@ -46,6 +46,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
                 .sameSite("Lax")
                 .path("/")
                 .build();
+
         response.addHeader("Set-Cookie", cookie.toString());
 
         //AccessToken 파라미터 리다이렉트
@@ -61,7 +62,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", email);
         claims.put("memberId", member.getMemberId());
-        claims.put("role", List.of("BASIC"));
+        claims.put("role", member.getRole());
         return jwtTokenizer.generateAccessToken(claims, email);
     }
 

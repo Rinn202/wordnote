@@ -23,4 +23,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     );
 
     long countByMember(Member member);
+
+    Optional<Board> findByMemberIsNull();
 }

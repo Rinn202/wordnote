@@ -23,6 +23,7 @@ public enum ExceptionCode {
     INVALID_REFERENCE(HttpStatus.CONFLICT, "DB-004", "참조 오류"),
 
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-005", "보드를 찾을수 없습니다"),
+    SAMPLE_BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-005S", "샘플보드를 찾을수 없습니다"),
     BOX_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-006", "박스를 찾을수 없습니다"),
     TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-007", "테스크를 찾을수 없습니다"),
     BOX_TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "DB-008", "박스테스크를 찾을수 없습니다"),
@@ -32,7 +33,6 @@ public enum ExceptionCode {
 
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-999", "서버 오류"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON-404", "요청하신 리소스를 찾을 수 없습니다.");
-
     private final HttpStatus status;
     private final String code;
     private final String message;

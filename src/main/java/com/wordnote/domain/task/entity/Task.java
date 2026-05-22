@@ -22,6 +22,9 @@ public class Task {
     @Column(nullable = false)
     private String name;
 
+    @Column
+    private String info;
+
     @OneToMany(mappedBy = "task")
     private List<BoxTask> boxTasks = new ArrayList<>();
 

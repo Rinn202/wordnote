@@ -51,7 +51,7 @@ public class BoxService {
 
         for (Task task : tasks) {   //각 task마다 연결
 
-            BoxTask relation = new BoxTask();
+            BoxTask relation = BoxTask.builder().build();
 
             relation.setBox(savedBox); // join - box
             relation.setTask(task); // join - task

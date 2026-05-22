@@ -7,4 +7,8 @@ import lombok.Getter;
 public class TaskUpdateDto {
     @NotBlank
     private String name;
+
+    private String category;
+
+    private String info;
 }

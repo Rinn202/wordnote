@@ -1,10 +1,10 @@
-import {useCallback, useRef, useState} from 'react';
-import type {BoardType} from '../types';
+import { useCallback, useRef, useState, type DragEvent } from 'react';
+import type { BoardType } from '../types';
 
 export function useDragDrop(
     onReorder: (boxId: number, targetIndex: number, boardType: BoardType) => Promise<void>,
     boardType: BoardType,
-    onDragActiveChange?: (active: boolean) => void, 
+    onDragActiveChange?: (active: boolean) => void,
 ) {
     const [draggingId, setDraggingId] = useState<number | null>(null);
     const [overIndex, setOverIndex] = useState<number | null>(null);
@@ -14,49 +14,41 @@ export function useDragDrop(
         dragIndex.current = index;
         requestAnimationFrame(() => {
             setDraggingId(boxId);
-            onDragActiveChange?.(true);  // 추가
+            onDragActiveChange?.(true);
         });
-    }, [onDragActiveChange]);;
+    }, [onDragActiveChange]);
 
-    const onDragOver = useCallback((e: React.DragEvent<HTMLElement>, index: number) => {
+    const onDragOver = useCallback((e: DragEvent<HTMLElement>, index: number) => {
         e.preventDefault();
         e.stopPropagation();
 
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        const relY = e.clientY - rect.top;
-        const ratio = relY / rect.height;
-
+        const ratio = (e.clientY - rect.top) / rect.height;
         const topThreshold = index === 0 ? 0.1 : 0.05;
 
         let next: number | null = null;
-        if (ratio < topThreshold) {
-            next = index;
-        } else if (ratio > 0.75) {
-            next = index + 1;
-        } else {
-            return; // 중간 구간은 아무것도 안 함
-        }
+        if (ratio < topThreshold) next = index;
+        else if (ratio > 0.75) next = index + 1;
+        else return;
 
         setOverIndex(prev => prev === next ? prev : next);
     }, []);
 
-    const onDrop = useCallback(async (e: React.DragEvent<HTMLElement>) => {
+    const onDrop = useCallback(async (e: DragEvent<HTMLElement>) => {
         e.preventDefault();
-
         const currentDraggingId = draggingId;
         const currentOverIndex = overIndex;
 
-        // 먼저 상태 초기화 → UI 즉시 복구
         setDraggingId(null);
         setOverIndex(null);
         dragIndex.current = -1;
-         onDragActiveChange?.(false);
+        onDragActiveChange?.(false);
 
         if (currentDraggingId === null || currentOverIndex === null) return;
         if (currentOverIndex !== dragIndex.current) {
             await onReorder(currentDraggingId, currentOverIndex, boardType);
         }
-    }, [draggingId, overIndex, boardType, onReorder]);
+    }, [draggingId, overIndex, boardType, onReorder, onDragActiveChange]);
 
     const onDragEnd = useCallback(() => {
         setDraggingId(null);
@@ -64,15 +56,14 @@ export function useDragDrop(
         dragIndex.current = -1;
     }, []);
 
-    // useDragDrop.tsx
-    const onDragLeave = useCallback((e: React.DragEvent<HTMLElement>) => {
+    const onDragLeave = useCallback((e: DragEvent<HTMLElement>) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) {
             setDraggingId(null);
             setOverIndex(null);
             dragIndex.current = -1;
             onDragActiveChange?.(false);
         }
-    }, []);
+    }, [onDragActiveChange]);
 
-    return {draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave};
+    return { draggingId, overIndex, onDragStart, onDragOver, onDrop, onDragEnd, onDragLeave };
 }

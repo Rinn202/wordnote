@@ -11,6 +11,7 @@ export interface Task {
     name: string;
     memberId: number | null;
     category: string | null;
+    info: string | null;
 }
 
 // ─── BoxTask ──────────────────────────────────────────────────────────────────
@@ -126,15 +127,6 @@ export interface DragState {
     draggingBoxId: number | null;
     overIndex: number | null;
     boardType: BoardType | null;
-}
-
-// ─── Time-of-day character ────────────────────────────────────────────────────
-export type TimeOfDay = 'day' | 'evening' | 'night';
-
-export function getTimeOfDay(hour: number): TimeOfDay {
-    if (hour >= 6 && hour < 14) return 'day';
-    if (hour >= 14 && hour < 21) return 'evening';
-    return 'night';
 }
 
 // ─── notice ────────────────────────────────────────────────────

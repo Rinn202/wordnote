@@ -1,6 +1,6 @@
-import {useCallback, useState} from 'react';
-import type {Board} from '../types';
-import {boardApi} from '../api';
+import { useCallback, useState, type MouseEvent } from 'react';
+import type { Board } from '../types';
+import { boardApi } from '../api';
 
 export function useBoards(
     currentBoardId: number | undefined,
@@ -11,22 +11,21 @@ export function useBoards(
     const [deletingBoardId, setDeletingBoardId] = useState<number | null>(null);
 
     const loadAllBoards = useCallback(async (boardId: number) => {
-        const boards = await boardApi.getAll(boardId);
-        setAllBoards(boards);
+        setAllBoards(await boardApi.getAll(boardId));
     }, []);
 
-    const handleLoadClick = async () => {
+    const handleLoadClick = useCallback(async () => {
         if (!currentBoardId) return;
         await loadAllBoards(currentBoardId);
         setLoadModalOpen(true);
-    };
+    }, [currentBoardId, loadAllBoards]);
 
-    const handleDeleteBoard = async (boardId: number, e: React.MouseEvent) => {
+    const handleDeleteBoard = useCallback(async (boardId: number, e: MouseEvent) => {
         e.stopPropagation();
         setDeletingBoardId(boardId);
         try {
             await boardApi.delete(boardId);
-            setAllBoards(prev => prev.filter((b: Board) => b.boardId !== boardId));
+            setAllBoards(prev => prev.filter(b => b.boardId !== boardId));
             if (currentBoardId === boardId) {
                 await onNewBoard();
                 setLoadModalOpen(false);
@@ -34,7 +33,7 @@ export function useBoards(
         } finally {
             setDeletingBoardId(null);
         }
-    };
+    }, [currentBoardId, onNewBoard]);
 
     return {
         allBoards,
