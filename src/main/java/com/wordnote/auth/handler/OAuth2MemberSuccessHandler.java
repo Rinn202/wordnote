@@ -71,7 +71,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
     private URI createURI(String accessToken) {
         return UriComponentsBuilder
-                .fromUriString("https://wordnote-production.up.railway.app/oauth2/redirect") // 리다이렉트 전용 경로 추천
+                .fromUriString("https://wordnote-production.up.railway.app/login/redirect")
                 .queryParam("access_token", accessToken)
                 .build()
                 .toUri();

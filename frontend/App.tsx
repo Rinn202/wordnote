@@ -27,7 +27,7 @@ export default function App() {
 
     return (
         <Routes>
-            <Route path="/oauth2/redirect" element={<OAuthRedirect/>}/>
+            <Route path="/login/redirect" element={<OAuthRedirect/>}/>
             <Route path="/notice" element={<AdminPage/>}/>
             <Route path="/member/mypage" element={<MyPage/>}/>
             <Route path="/*" element={<AuthGate/>}/>
