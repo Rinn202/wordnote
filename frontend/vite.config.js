@@ -6,12 +6,12 @@ export default defineConfig({
     plugins: [react()],
     server: {
         proxy: {
-            '/auth': 'http://localhost:8080',
-            '/board': 'http://localhost:8080',
-            '/box': 'http://localhost:8080',
-            '/task': 'http://localhost:8080',
-            '/boxTask': 'http://localhost:8080',
-            '/member': 'http://localhost:8080',
+            '/auth': 'https://wordnote-production.up.railway.app',
+            '/board': 'https://wordnote-production.up.railway.app',
+            '/box': 'https://wordnote-production.up.railway.app',
+            '/task': 'https://wordnote-production.up.railway.app',
+            '/boxTask': 'https://wordnote-production.up.railway.app',
+            '/member': 'https://wordnote-production.up.railway.app',
         }
     }
 })
