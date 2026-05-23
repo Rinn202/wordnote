@@ -10,7 +10,7 @@
 /* 아침 */
 .task-sidebar.morning {
     background-image: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, .85)),
-    url('/참새.png');
+    url('/Jjac.png');
     background-position: center, right 30px bottom -30px;
     background-size: cover, 300px;
 }
@@ -18,7 +18,7 @@
 /* 점심 */
 .task-sidebar.afternoon {
     background-image: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, .85)),
-    url('/까치.png');
+    url('/Kka.png');
 
     background-size: cover, 400px;
 }
@@ -26,7 +26,7 @@
 /* 저녁 */
 .task-sidebar.night {
     background-image: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, .85)),
-    url('/부엉이.png');
+    url('/bobu.png');
 
     background-size: cover, 500px;
 }
