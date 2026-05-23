@@ -36,6 +36,7 @@ logging:
     org:
       springframework:
         orm:
-          jpa: DEBUG # JPA 관련 로그 상세 출력
+          jpa: ERROR  # DEBUG → ERROR
+    root: WARN
 server:
   port: ${PORT:8080}
