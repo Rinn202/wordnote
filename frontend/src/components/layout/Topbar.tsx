@@ -20,6 +20,8 @@ export default function Topbar({clockStr, dateStr, onNewBoard, onLoadBoard, onRe
     const topbarRef = useRef<HTMLElement>(null);
     const [latestNotice, setLatestNotice] = useState<Notice | null>(null);
     const isAdmin = localStorage.getItem('role') === 'ADMIN';
+    
+    
 
     useTopbarTheme(topbarRef);
 

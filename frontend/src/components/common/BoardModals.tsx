@@ -12,6 +12,7 @@ interface Props {
     onCloseNewBoardConfirm: () => void;
     onDiscardAndNew: () => void;
     onSaveAndNew: () => Promise<void>;
+    resetLoading: boolean;
 }
 
 export default function BoardModals({
@@ -19,6 +20,7 @@ export default function BoardModals({
                                         allBoards, deletingBoardId, onLoadBoard, onDeleteBoard,
                                         newBoardConfirmOpen, onCloseNewBoardConfirm,
                                         onDiscardAndNew, onSaveAndNew,
+                                        resetLoading,
                                     }: Props) {
     return (
         <>
@@ -63,6 +65,12 @@ export default function BoardModals({
                     <button className="confirm-btn primary" onClick={onSaveAndNew}>저장 후 새 보드</button>
                 </div>
             </Modal>
+<Modal open={resetLoading} title="초기화 중" onClose={() => {}} width={320}>
+    <div className="sample-loading">
+        <i className="ti ti-loader-2 spin"/>
+        <span>잠시만 기다려주세요...</span>
+    </div>
+</Modal>
         </>
     );
 }

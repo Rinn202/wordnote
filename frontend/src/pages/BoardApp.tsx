@@ -1,4 +1,4 @@
-import {useBoardApp} from '../hooks/useBoardApp';
+import { useBoardApp } from '../hooks/useBoardApp';
 import AlarmToastList from '../components/common/AlarmToast';
 import Topbar from '../components/layout/Topbar';
 import BoardColumn from '../components/board/BoardColumn';
@@ -7,10 +7,10 @@ import BoxOptionPanel from '../components/box/BoxOptionPanel';
 import BoardModals from '../components/common/BoardModals';
 import LeftSidebar from '../components/layout/LeftSidebar';
 import Modal from '../components/common/Modal';
-import {getTimeTheme} from '../components/layout/getTimeTheme';
-import {useState} from 'react';
+import { getTimeTheme } from '../components/layout/getTimeTheme';
+import { useState } from 'react';
 
-export default function BoardApp({onLogout}: { onLogout: () => void }) {
+export default function BoardApp({ onLogout }: { onLogout: () => void }) {
     const {
         currentBoard,
         boardActions: {
@@ -19,7 +19,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
             updateBoxLocal, reorderTask, addBox,
             applySample,
         },
-        boards: {allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard},
+        boards: { allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard },
         clockStr, dateStr,
         optionBox, setOptionBox,
         newBoardConfirmOpen, setNewBoardConfirmOpen,
@@ -49,6 +49,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
     });
 
     const [sampleLoading, setSampleLoading] = useState(false);
+    const [resetLoading, setResetLoading] = useState(false);
 
     return (
         <div className="app" onClick={() => new Audio().play().catch(() => {
@@ -58,13 +59,17 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                 dateStr={dateStr}
                 onNewBoard={handleNewBoardClick}
                 onLoadBoard={handleLoadClick}
-                onResetBoard={resetBoard}
+                onResetBoard={async () => {        // ← 이 부분 교체
+                    setResetLoading(true);
+                    await resetBoard();
+                    setResetLoading(false);
+                }}
                 onLogout={onLogout}
             />
 
             {loading ? (
                 <div className="loading-state">
-                    <i className="ti ti-loader-2 spin" aria-hidden="true"/>
+                    <i className="ti ti-loader-2 spin" aria-hidden="true" />
                     <span>보드를 불러오는 중...</span>
                 </div>
             ) : currentBoard ? (
@@ -99,11 +104,11 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                 <div className="no-board-overlay">
                     <div className="no-board-card">
                         <div className="no-board-icon">
-                            <i className="ti ti-note" aria-hidden="true"/>
+                            <i className="ti ti-note" aria-hidden="true" />
                         </div>
                         <div className="no-board-title">첫 보드를 만들어 보세요</div>
                         <div className="no-board-desc">
-                            새 보드를 만들어 오늘의 할 일을<br/>정리해보세요.
+                            새 보드를 만들어 오늘의 할 일을<br />정리해보세요.
                         </div>
                         <button className="no-board-btn" onClick={handleStart}>START</button>
                     </div>
@@ -142,6 +147,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                     await createNewBoard();
                     setNewBoardConfirmOpen(false);
                 }}
+                    resetLoading={resetLoading}  // ← 추가
             />
 
             {/* 샘플 보드 적용 팝업 */}
@@ -155,7 +161,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
             >
                 {sampleLoading ? (
                     <div className="sample-loading">
-                        <i className="ti ti-loader-2 spin"/>
+                        <i className="ti ti-loader-2 spin" />
                         <span>샘플 보드를 만드는 중이에요...</span>
                     </div>
                 ) : (
@@ -163,16 +169,16 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                         <p className="confirm-msg">나이트 근무용 샘플 사용해 보실래요?</p>
                         <div className="confirm-actions">
                             <button className="confirm-btn secondary"
-                                    onClick={() => setSampleConfirmOpen(false)}>
+                                onClick={() => setSampleConfirmOpen(false)}>
                                 아니오
                             </button>
                             <button className="confirm-btn primary"
-                                    onClick={async () => {
-                                        setSampleLoading(true);
-                                        await applySample();
-                                        setSampleLoading(false);
-                                        setSampleConfirmOpen(false);
-                                    }}>
+                                onClick={async () => {
+                                    setSampleLoading(true);
+                                    await applySample();
+                                    setSampleLoading(false);
+                                    setSampleConfirmOpen(false);
+                                }}>
                                 예
                             </button>
                         </div>
@@ -180,7 +186,7 @@ export default function BoardApp({onLogout}: { onLogout: () => void }) {
                 )}
             </Modal>
 
-            <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast}/>
+            <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast} />
         </div>
     );
 }
