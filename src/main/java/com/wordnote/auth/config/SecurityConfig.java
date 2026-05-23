@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/auth/**", "/member/signup", "/oauth2/**").permitAll()
+                                .requestMatchers("/auth/**", "/member/signup", "/login/redirect").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
 
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //OPTIONS 메서드 허용 (CORS Preflight 대응)
