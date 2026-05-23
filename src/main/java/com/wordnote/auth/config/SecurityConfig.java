@@ -50,6 +50,7 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.GET, "/box").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/board").hasRole("ADMIN")
 
+
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtVerificationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
