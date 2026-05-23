@@ -318,3 +318,79 @@
     display: flex;
     gap: 6px;
 }
+
+/*테스크 카테고리*/
+.category-dropdown {
+    position: relative;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.category-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.category-dropdown-trigger:hover {
+    border-color: var(--primary);
+}
+
+.category-dropdown-trigger span:first-of-type {
+    flex: 1;
+    text-align: left;
+}
+
+.category-dropdown-menu {
+    position: absolute;
+    top: calc(100% - 4px);
+    left: 12px;
+    right: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.category-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 12px;
+    font-size: 13px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    transition: background 0.1s;
+}
+
+.category-dropdown-item:hover {
+    background: var(--hover);
+}
+
+.category-dropdown-item.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.category-dropdown-count {
+    font-family: 'GowunBatang', serif;
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--hover);
+    padding: 1px 6px;
+    border-radius: 999px;
+}

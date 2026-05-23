@@ -1,6 +1,6 @@
-import {type KeyboardEvent, useEffect, useRef, useState} from 'react';
-import type {BoardType, Box, Task} from '../../types';
-import {boxApi, taskApi} from '../../api';
+import { type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import type { BoardType, Box, Task } from '../../types';
+import { boxApi, taskApi } from '../../api';
 
 interface Props {
     boardId: number;
@@ -8,12 +8,12 @@ interface Props {
     usedTaskIds: number[];
 }
 
-export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
+export default function TaskPool({ boardId, onBoxCreated, usedTaskIds }: Props) {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [selected, setSelected] = useState<number[]>([]);
     const [boxType, setBoxType] = useState<BoardType>('ROUTINE');
     const [boxName, setBoxName] = useState('');
-    const [newTaskForm, setNewTaskForm] = useState({name: '', info: ''});
+    const [newTaskForm, setNewTaskForm] = useState({ name: '', info: '' });
     const [loading, setLoading] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [editName, setEditName] = useState('');
@@ -68,7 +68,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
         const nextName = editName.trim();
         const previousTasks = [...tasks];
 
-        setTasks(prev => prev.map(t => t.taskId === targetId ? {...t, name: nextName} : t));
+        setTasks(prev => prev.map(t => t.taskId === targetId ? { ...t, name: nextName } : t));
         setEditingTask(null);
         setEditName('');
 
@@ -88,7 +88,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
             const name = boxName.trim() || (selected.length === 1
                 ? tasks.find(t => t.taskId === selected[0])?.name ?? 'Unnamed'
                 : 'Unnamed');
-            const box = await boxApi.create({boardId, name, boxType, taskIds: selected});
+            const box = await boxApi.create({ boardId, name, boxType, taskIds: selected });
             onBoxCreated(box);
             setSelected([]);
             setBoxName('');
@@ -113,7 +113,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
             };
 
             setTasks(prev => [...prev, safeTask]);
-            setNewTaskForm({name: '', info: ''});
+            setNewTaskForm({ name: '', info: '' });
             setOpenCats(prev => new Set([...prev, 'custom']));
 
         } catch (error) {
@@ -138,16 +138,27 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
             return new Set([cat]);
         });
 
+
     const normalizeCategory = (cat: string) => cat.replace(/_상세$/, '');
 
-    const grouped = tasks.reduce<Record<string, { main: Task[], sub: Task[] }>>((acc, t) => {
-        const raw = t.category ?? 'custom';
+    const customTasks = tasks.filter(t => t.category === '커스텀');
+    const groupedTasks = tasks.filter(t => t.category !== '커스텀');
+
+    const grouped = groupedTasks.reduce<Record<string, { main: Task[], sub: Task[] }>>((acc, t) => {
+        const raw = t.category ?? '기타';
         const parent = normalizeCategory(raw);
         const isSub = raw.endsWith('_상세');
-        acc[parent] ??= {main: [], sub: []};
+        acc[parent] ??= { main: [], sub: [] };
         (isSub ? acc[parent].sub : acc[parent].main).push(t);
         return acc;
     }, {});
+
+    const sortedEntries = Object.entries(grouped).sort(([catA], [catB]) => {
+        const aOpen = openCats.has(catA) ? 1 : 0;
+        const bOpen = openCats.has(catB) ? 1 : 0;
+        return aOpen - bOpen;
+    });
+
 
     return (
         <div className="task-pool">
@@ -155,22 +166,22 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
                 <div className="type-toggle">
                     {(['ROUTINE', 'EVENT'] as BoardType[]).map(t => (
                         <button key={t} className={`toggle-btn ${boxType === t ? 'active' : ''}`}
-                                onClick={() => setBoxType(t)}>
+                            onClick={() => setBoxType(t)}>
                             {t}
                         </button>
                     ))}
                 </div>
 
                 {canEditDelete && (
-                    <div style={{display: 'flex', gap: 4}}>
+                    <div style={{ display: 'flex', gap: 4 }}>
                         <button className="act-btn" onClick={() => {
                             setEditingTask(selectedTask);
                             setEditName(selectedTask!.name);
                         }} title="수정">
-                            <i className="ti ti-pencil" aria-hidden="true"/>
+                            <i className="ti ti-pencil" aria-hidden="true" />
                         </button>
                         <button className="act-btn danger" onClick={handleDelete} title="삭제">
-                            <i className="ti ti-trash" aria-hidden="true"/>
+                            <i className="ti ti-trash" aria-hidden="true" />
                         </button>
                     </div>
                 )}
@@ -181,7 +192,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
                     className="task-new-input"
                     placeholder="+ 태스크 이름 (Enter로 다음 단계)"
                     value={newTaskForm.name}
-                    onChange={e => setNewTaskForm(p => ({...p, name: e.target.value}))}
+                    onChange={e => setNewTaskForm(p => ({ ...p, name: e.target.value }))}
                     onKeyDown={handleNameKeyDown}
                 />
                 <input
@@ -189,7 +200,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
                     className="task-new-input"
                     placeholder="상세설명 입력 후 Enter로 추가 (선택)"
                     value={newTaskForm.info}
-                    onChange={e => setNewTaskForm(p => ({...p, info: e.target.value}))}
+                    onChange={e => setNewTaskForm(p => ({ ...p, info: e.target.value }))}
                     onKeyDown={handleInfoKeyDown}
                 />
             </div>
@@ -203,7 +214,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
                         onChange={e => setBoxName(e.target.value)}
                     />
                     <button className="create-box-btn" onClick={handleCreateBox} disabled={loading}>
-                        <i className="ti ti-plus" aria-hidden="true"/> add box
+                        <i className="ti ti-plus" aria-hidden="true" /> add box
                     </button>
 
                     {deleteWarning && isUsed && (
@@ -222,7 +233,7 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
             )}
 
             {editingTask && (
-                <div style={{display: 'flex', gap: 6, marginBottom: 8}}>
+                <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
                     <input
                         className="box-name-input"
                         value={editName}
@@ -231,52 +242,68 @@ export default function TaskPool({boardId, onBoxCreated, usedTaskIds}: Props) {
                         autoFocus
                     />
                     <button className="act-btn" onClick={handleEditConfirm}>
-                        <i className="ti ti-check" aria-hidden="true"/>
+                        <i className="ti ti-check" aria-hidden="true" />
                     </button>
                     <button className="act-btn" onClick={() => setEditingTask(null)}>
-                        <i className="ti ti-x" aria-hidden="true"/>
+                        <i className="ti ti-x" aria-hidden="true" />
                     </button>
                 </div>
             )}
 
             <div className="task-group-list">
-                {Object.entries(grouped).map(([cat, items]) => (
-                    <div key={cat} className="task-group">
-                        <button className="task-group-header" onClick={() => toggleCat(cat)}>
-                            <i className={`ti ${openCats.has(cat) ? 'ti-chevron-down' : 'ti-chevron-right'}`}/>
-                            {cat}
-                            <span className="task-group-count">{items.main.length + items.sub.length}</span>
-                        </button>
-                        {openCats.has(cat) && (
-                            <div className="task-grid">
-                                {items.main.map(t => (
-                                    <button key={t.taskId} className={taskClass(t)}
+                {/* 커스텀 태스크 상단 flat 표시 */}
+                {customTasks.length > 0 && (
+                    <div className="task-grid custom-top">
+                        {customTasks.map(t => (
+                            <button key={t.taskId} className={taskClass(t)}
+                                onClick={() => toggleTask(t.taskId)}
+                                title={t.info ?? undefined}>
+                                {t.name}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {/* 카테고리 2열 그리드 */}
+                <div className="task-group-grid">
+                    {sortedEntries.map(([cat, items]) => (
+                        <div key={cat} className={`task-group ${openCats.has(cat) ? 'expanded' : ''}`}>
+                            <button className="task-group-header" onClick={() => toggleCat(cat)}>
+                                <i className={`ti ${openCats.has(cat) ? 'ti-chevron-down' : 'ti-chevron-right'}`} />
+                                {cat}
+                                <span className="task-group-count">{items.main.length + items.sub.length}</span>
+                            </button>
+                            {openCats.has(cat) && (
+                                <div className="task-grid">
+                                    {items.main.map(t => (
+                                        <button key={t.taskId} className={taskClass(t)}
                                             onClick={() => toggleTask(t.taskId)}
                                             title={t.info ?? undefined}>
-                                        {t.name}
-                                    </button>
-                                ))}
-                                {items.sub.length > 0 && (
-                                    <>
-                                        <div className="task-group-divider"/>
-                                        {items.sub.map(t => (
-                                            <button key={t.taskId} className={taskClass(t)}
+                                            {t.name}
+                                        </button>
+                                    ))}
+                                    {items.sub.length > 0 && (
+                                        <>
+                                            <div className="task-group-divider" />
+                                            {items.sub.map(t => (
+                                                <button key={t.taskId} className={taskClass(t)}
                                                     onClick={() => toggleTask(t.taskId)}
                                                     title={t.info ?? undefined}>
-                                                {t.name}
-                                            </button>
-                                        ))}
-                                    </>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                ))}
+                                                    {t.name}
+                                                </button>
+                                            ))}
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
 
             {selectedTask?.info && (
                 <div className="task-info-box">
-                    <i className="ti ti-info-circle" aria-hidden="true"/>
+                    <i className="ti ti-info-circle" aria-hidden="true" />
                     {selectedTask.info}
                 </div>
             )}

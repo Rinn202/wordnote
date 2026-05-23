@@ -116,8 +116,9 @@
 
 /* ── boxes-list ─────────────────────────────────────────────────── */
 .boxes-list {
-    margin-top: 10px;
     flex: 1;
+    margin-top: 10px;
+    padding-bottom: 120px;
     min-width: 200px;
     overflow-y: auto;
     background: var(--surface);

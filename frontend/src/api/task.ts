@@ -5,9 +5,9 @@ import type {MoveBoxTaskRequest, Task} from '../types';
 export const taskApi = {
     getAll: () => req<Task[]>('GET', '/task'),
     create: (name: string, category?: string, info?: string | undefined) =>
-        req<Task>('POST', '/task', {name, category: category ?? 'custom', info}),
-    update: (id: number, name: string, category?: string) =>
-        req<Task>('PATCH', `/task/${id}`, {name, category}),
+    req<Task>('POST', '/task', {name, category: category ?? '기타', info}),
+update: (id: number, name: string, category?: string, info?: string) =>
+    req<Task>('PATCH', `/task/${id}`, {name, category, info}),
     delete: (id: number) => req<void>('DELETE', `/task/${id}`),
     done: (boxTaskId: number) => req<void>('PATCH', `/boxTask/${boxTaskId}/done`),
     move: (boxTaskId: number, body: MoveBoxTaskRequest) =>

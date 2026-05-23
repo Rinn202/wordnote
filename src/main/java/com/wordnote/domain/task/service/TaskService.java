@@ -34,7 +34,7 @@ public class TaskService {
     //생성
     @Transactional
     public TaskResponseDto createTask(TaskCreateDto dto, long memberId) {
-        Task task = new Task(memberId, dto.getName());
+        Task task = new Task(memberId, dto.getName(), dto.getCategory(), dto.getInfo());
 
         taskRepository.save(task);
 
@@ -47,7 +47,7 @@ public class TaskService {
         Task foundTask = taskRepository.findByIdAndMemberId(taskId, memberId)
                 .orElseThrow(() -> new LogicException(ExceptionCode.TASK_NOT_FOUND));
 
-        foundTask.update(patchDto.getName());
+        foundTask.update(patchDto.getName(), patchDto.getCategory(), patchDto.getInfo());
 
         return taskMapper.toResponseDto(foundTask);
     }

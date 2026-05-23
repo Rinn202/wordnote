@@ -2,6 +2,7 @@ package com.wordnote.domain.task.entity;
 
 import com.wordnote.domain.boxtask.entity.BoxTask;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -34,15 +35,17 @@ public class Task {
     @Column
     private String category;
 
-    public Task(Long memberId, String name) {
-        this.memberId = memberId;
+    public Task(long memberId, @NotBlank String name, String category, String info) {
         this.name = name;
+        this.memberId = memberId;
+        if (category != null) this.category = category;
+        if (info != null) this.info = info;
     }
 
-    public void update(String name) {
-        if (name != null) this.name = name;
+    public void update(@NotBlank String name, String category, String info) {
+        this.name = name;
+        if (category != null) this.category = category;
+        if (info != null) this.info = info;
     }
-
-
 }
 

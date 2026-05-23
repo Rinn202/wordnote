@@ -90,7 +90,7 @@
     border-radius: 20px;
     border: 1px solid var(--border2);
     background: var(--surface2);
-    color: var(--text2);
+    color: #000000;
     cursor: pointer;
     transition: all .12s;
     font-family: 'GowunBatang', serif;
@@ -240,6 +240,12 @@
     margin-bottom: 8px;
 }
 
+.task-group-list.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
 .task-group-header {
     display: flex;
     align-items: center;
@@ -286,3 +292,18 @@
     margin: 4px 0;
 }
 
+.task-group-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
+.task-group.expanded {
+    grid-column: 1 / -1;  /* 1열 전체 차지 */
+}
+
+.custom-top {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+}

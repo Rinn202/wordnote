@@ -1,7 +1,7 @@
-import {useEffect, useState} from 'react';
-import {noticeApi} from '../api/notice';
-import {taskApi} from '../api/task';
-import type {Notice, Task} from '../types';
+import { useEffect, useState } from 'react';
+import { noticeApi } from '../api/notice';
+import { taskApi } from '../api/task';
+import type { Notice, Task } from '../types';
 import ConfirmModal from '../components/common/ConfirmModal';
 import '../styles/admin-page.css';
 
@@ -9,8 +9,8 @@ type Tab = 'notice' | 'task';
 type Mode = 'view' | 'create' | 'edit';
 
 const TABS: { key: Tab; icon: string; label: string }[] = [
-    {key: 'notice', icon: 'ti-speakerphone', label: '공지사항'},
-    {key: 'task', icon: 'ti-checklist', label: '태스크 관리'},
+    { key: 'notice', icon: 'ti-speakerphone', label: '공지사항' },
+    { key: 'task', icon: 'ti-checklist', label: '태스크 관리' },
 ];
 
 export default function AdminPage() {
@@ -21,7 +21,7 @@ export default function AdminPage() {
     const [notices, setNotices] = useState<Notice[]>([]);
     const [selected, setSelected] = useState<Notice | null>(null);
     const [mode, setMode] = useState<Mode>('view');
-    const [form, setForm] = useState({title: '', content: ''});
+    const [form, setForm] = useState({ title: '', content: '' });
     const [loading, setLoading] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
@@ -29,11 +29,12 @@ export default function AdminPage() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [taskMode, setTaskMode] = useState<Mode>('view');
-    const [taskForm, setTaskForm] = useState({name: '', category: ''});
+    const [taskForm, setTaskForm] = useState({ name: '', category: '', info: '' });
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [taskLoading, setTaskLoading] = useState(false);
     const [taskLoaded, setTaskLoaded] = useState(false);
     const [taskDeleteTarget, setTaskDeleteTarget] = useState<number | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<string>('전체');
 
     useEffect(() => {
         noticeApi.getAll().then(setNotices).catch(console.error);
@@ -47,6 +48,24 @@ export default function AdminPage() {
                 .finally(() => setTaskLoaded(true));
         }
     }, [tab, taskLoaded]);
+
+    // ── 카테고리 목록 ──
+    const normalizeCategory = (cat: string) => cat.replace(/_상세$/, '');
+
+    const categories = ['전체', ...Array.from(new Set(tasks.map(t => normalizeCategory(t.category ?? '기타'))))];
+
+    const getCategoryCount = (cat: string) =>
+        cat === '전체'
+            ? tasks.length
+            : tasks.filter(t => normalizeCategory(t.category ?? '기타') === cat).length;
+
+    const filteredTasks = selectedCategory === '전체'
+        ? tasks
+        : tasks.filter(t => normalizeCategory(t.category ?? '기타') === selectedCategory);
+
+    const displayCategory = (cat: string | null | undefined) =>
+        cat ? normalizeCategory(cat) : '기타';
+
 
     // ── 공지 핸들러 ──
     const handleSubmit = async () => {
@@ -68,6 +87,8 @@ export default function AdminPage() {
         }
     };
 
+    const [categoryOpen, setCategoryOpen] = useState(false);
+
     const handleDelete = async () => {
         if (deleteTarget === null) return;
         await noticeApi.delete(deleteTarget);
@@ -82,10 +103,14 @@ export default function AdminPage() {
         if (!taskForm.name.trim()) return;
         setTaskLoading(true);
         try {
-            const created = await taskApi.create(taskForm.name, taskForm.category || undefined);
+            const created = await taskApi.create(
+                taskForm.name,
+                taskForm.category.trim() || undefined,
+                taskForm.info.trim() || undefined,
+            );
             setTasks(prev => [created, ...prev]);
             setSelectedTask(created);
-            setTaskForm({name: '', category: ''});
+            setTaskForm({ name: '', category: '', info: '' });
             setTaskMode('view');
         } finally {
             setTaskLoading(false);
@@ -96,7 +121,12 @@ export default function AdminPage() {
         if (!editingTask?.name.trim()) return;
         setTaskLoading(true);
         try {
-            const updated = await taskApi.update(editingTask.taskId, editingTask.name, editingTask.category ?? undefined);
+const updated = await taskApi.update(
+    editingTask.taskId,
+    editingTask.name,
+    editingTask.category?.trim() || undefined,
+    editingTask.info?.trim() || undefined,
+);
             setTasks(prev => prev.map(t => t.taskId === updated.taskId ? updated : t));
             setSelectedTask(updated);
             setEditingTask(null);
@@ -115,13 +145,15 @@ export default function AdminPage() {
         setTaskMode('view');
     };
 
+
+
     // ── edit 모드 input 헬퍼 ──
-    const taskVal = (field: 'name' | 'category') =>
+    const taskVal = (field: 'name' | 'category' | 'info') =>
         taskMode === 'edit' ? editingTask?.[field] ?? '' : taskForm[field];
 
-    const taskChange = (field: 'name' | 'category') => (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (taskMode === 'edit') setEditingTask(prev => prev ? {...prev, [field]: e.target.value} : prev);
-        else setTaskForm(p => ({...p, [field]: e.target.value}));
+    const taskChange = (field: 'name' | 'category' | 'info') => (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (taskMode === 'edit') setEditingTask(prev => prev ? { ...prev, [field]: e.target.value } : prev);
+        else setTaskForm(p => ({ ...p, [field]: e.target.value }));
     };
 
     return (
@@ -132,17 +164,17 @@ export default function AdminPage() {
                 <div className="notice-list-header">
                     <span className="notice-list-title">관리자 페이지</span>
                     <button className="icon-btn" title="돌아가기" onClick={() => window.history.back()}>
-                        <i className="ti ti-arrow-left" aria-hidden="true"/>
+                        <i className="ti ti-arrow-left" aria-hidden="true" />
                     </button>
                 </div>
                 <div className="admin-tab-list">
-                    {TABS.map(({key, icon, label}) => (
+                    {TABS.map(({ key, icon, label }) => (
                         <button
                             key={key}
                             className={`admin-tab-item ${tab === key ? 'active' : ''}`}
                             onClick={() => setTab(key)}
                         >
-                            <i className={`ti ${icon}`} aria-hidden="true"/>
+                            <i className={`ti ${icon}`} aria-hidden="true" />
                             {label}
                         </button>
                     ))}
@@ -157,12 +189,12 @@ export default function AdminPage() {
                             <span className="notice-list-title">공지사항</span>
                             {isAdmin && (
                                 <button className="icon-btn" title="새 공지 작성"
-                                        onClick={() => {
-                                            setSelected(null);
-                                            setForm({title: '', content: ''});
-                                            setMode('create');
-                                        }}>
-                                    <i className="ti ti-plus" aria-hidden="true"/>
+                                    onClick={() => {
+                                        setSelected(null);
+                                        setForm({ title: '', content: '' });
+                                        setMode('create');
+                                    }}>
+                                    <i className="ti ti-plus" aria-hidden="true" />
                                 </button>
                             )}
                         </div>
@@ -175,11 +207,11 @@ export default function AdminPage() {
                                 ? <div className="notice-empty">공지사항이 없습니다.</div>
                                 : notices.map(n => (
                                     <button key={n.noticeId}
-                                            className={`notice-table-row ${selected?.noticeId === n.noticeId ? 'active' : ''}`}
-                                            onClick={() => {
-                                                setSelected(n);
-                                                setMode('view');
-                                            }}
+                                        className={`notice-table-row ${selected?.noticeId === n.noticeId ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelected(n);
+                                            setMode('view');
+                                        }}
                                     >
                                         <span className="notice-col-title">{n.title}</span>
                                         <span className="notice-col-date">{n.createdAt?.slice(0, 10)}</span>
@@ -196,18 +228,18 @@ export default function AdminPage() {
                                     <span>{mode === 'create' ? '새 공지 작성' : '공지 수정'}</span>
                                     <div className="notice-form-header-actions">
                                         <button className="icon-btn" title="저장" onClick={handleSubmit}
-                                                disabled={loading || !form.title.trim() || !form.content.trim()}>
-                                            <i className="ti ti-check" aria-hidden="true"/>
+                                            disabled={loading || !form.title.trim() || !form.content.trim()}>
+                                            <i className="ti ti-check" aria-hidden="true" />
                                         </button>
                                         <button className="icon-btn" title="닫기" onClick={() => setMode('view')}>
-                                            <i className="ti ti-x" aria-hidden="true"/>
+                                            <i className="ti ti-x" aria-hidden="true" />
                                         </button>
                                     </div>
                                 </div>
                                 <input className="notice-input" placeholder="제목" value={form.title}
-                                       onChange={e => setForm(p => ({...p, title: e.target.value}))}/>
+                                    onChange={e => setForm(p => ({ ...p, title: e.target.value }))} />
                                 <textarea className="notice-textarea" placeholder="내용" value={form.content}
-                                          onChange={e => setForm(p => ({...p, content: e.target.value}))}/>
+                                    onChange={e => setForm(p => ({ ...p, content: e.target.value }))} />
                             </div>
                         )}
 
@@ -221,15 +253,15 @@ export default function AdminPage() {
                                 {isAdmin && (
                                     <div className="notice-detail-actions">
                                         <button className="icon-btn" title="수정"
-                                                onClick={() => {
-                                                    setForm({title: selected.title, content: selected.content});
-                                                    setMode('edit');
-                                                }}>
-                                            <i className="ti ti-pencil" aria-hidden="true"/>
+                                            onClick={() => {
+                                                setForm({ title: selected.title, content: selected.content });
+                                                setMode('edit');
+                                            }}>
+                                            <i className="ti ti-pencil" aria-hidden="true" />
                                         </button>
                                         <button className="icon-btn danger" title="삭제"
-                                                onClick={() => setDeleteTarget(selected.noticeId)}>
-                                            <i className="ti ti-trash" aria-hidden="true"/>
+                                            onClick={() => setDeleteTarget(selected.noticeId)}>
+                                            <i className="ti ti-trash" aria-hidden="true" />
                                         </button>
                                     </div>
                                 )}
@@ -238,7 +270,7 @@ export default function AdminPage() {
 
                         {mode === 'view' && !selected && (
                             <div className="notice-placeholder">
-                                <i className="ti ti-speakerphone" aria-hidden="true"/>
+                                <i className="ti ti-speakerphone" aria-hidden="true" />
                                 <span>공지를 선택해주세요</span>
                             </div>
                         )}
@@ -253,31 +285,68 @@ export default function AdminPage() {
                         <div className="notice-list-header">
                             <span className="notice-list-title">태스크 관리</span>
                             <button className="icon-btn" title="새 태스크 추가"
-                                    onClick={() => {
-                                        setSelectedTask(null);
-                                        setTaskForm({name: '', category: ''});
-                                        setTaskMode('create');
-                                    }}>
-                                <i className="ti ti-plus" aria-hidden="true"/>
+                                onClick={() => {
+                                    setSelectedTask(null);
+                                    setTaskForm({ name: '', category: '', info: ''});
+                                    setTaskMode('create');
+                                }}>
+                                <i className="ti ti-plus" aria-hidden="true" />
                             </button>
                         </div>
+
+                        {/* ── 카테고리 필터 ── */}
+                        <div className="category-dropdown">
+                            <button
+                                className="category-dropdown-trigger"
+                                onClick={() => setCategoryOpen(prev => !prev)}
+                            >
+                                <i className="ti ti-filter" aria-hidden="true" />
+                                <span>{selectedCategory}</span>
+                                <span className="category-dropdown-count">
+                                    {getCategoryCount(selectedCategory)}
+                                </span>
+                                <i className={`ti ${categoryOpen ? 'ti-chevron-up' : 'ti-chevron-down'}`} aria-hidden="true" />
+                            </button>
+                            {categoryOpen && (
+                                <div className="category-dropdown-menu">
+                                    {categories.map(cat => (
+                                        <button
+                                            key={cat}
+                                            className={`category-dropdown-item ${selectedCategory === cat ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setSelectedCategory(cat);
+                                                setSelectedTask(null);
+                                                setTaskMode('view');
+                                                setCategoryOpen(false);
+                                            }}
+                                        >
+                                            <span>{cat}</span>
+                                            <span className="category-dropdown-count">
+                                                {getCategoryCount(cat)}
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
                         <div className="notice-table-header">
                             <span className="notice-col-title">태스크명</span>
                             <span className="notice-col-date">카테고리</span>
                         </div>
                         <div className="notice-table-body">
-                            {tasks.length === 0
+                            {filteredTasks.length === 0
                                 ? <div className="notice-empty">태스크가 없습니다.</div>
-                                : tasks.map(t => (
+                                : filteredTasks.map(t => (
                                     <button key={t.taskId}
-                                            className={`notice-table-row ${selectedTask?.taskId === t.taskId ? 'active' : ''}`}
-                                            onClick={() => {
-                                                setSelectedTask(t);
-                                                setTaskMode('view');
-                                            }}
+                                        className={`notice-table-row ${selectedTask?.taskId === t.taskId ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelectedTask(t);
+                                            setTaskMode('view');
+                                        }}
                                     >
                                         <span className="notice-col-title">{t.name}</span>
-                                        <span className="notice-col-date">{t.category ?? 'custom'}</span>
+                                        <span className="notice-col-date">{displayCategory(t.category)}</span>
                                     </button>
                                 ))
                             }
@@ -291,18 +360,20 @@ export default function AdminPage() {
                                     <span>{taskMode === 'create' ? '새 태스크 추가' : '태스크 수정'}</span>
                                     <div className="notice-form-header-actions">
                                         <button className="icon-btn" title="저장" disabled={taskLoading}
-                                                onClick={taskMode === 'create' ? handleTaskCreate : handleTaskEdit}>
-                                            <i className="ti ti-check" aria-hidden="true"/>
+                                            onClick={taskMode === 'create' ? handleTaskCreate : handleTaskEdit}>
+                                            <i className="ti ti-check" aria-hidden="true" />
                                         </button>
                                         <button className="icon-btn" title="닫기" onClick={() => setTaskMode('view')}>
-                                            <i className="ti ti-x" aria-hidden="true"/>
+                                            <i className="ti ti-x" aria-hidden="true" />
                                         </button>
                                     </div>
                                 </div>
                                 <input className="notice-input" placeholder="태스크 이름"
-                                       value={taskVal('name')} onChange={taskChange('name')}/>
+                                    value={taskVal('name')} onChange={taskChange('name')} />
                                 <input className="notice-input" placeholder="카테고리 (선택)"
-                                       value={taskVal('category')} onChange={taskChange('category')}/>
+                                    value={taskVal('category')} onChange={taskChange('category')} />
+                                <input className="notice-input" placeholder="상세설명 (선택)"
+                                    value={taskVal('info')} onChange={taskChange('info')} />
                             </div>
                         )}
 
@@ -310,19 +381,19 @@ export default function AdminPage() {
                             <div className="notice-detail">
                                 <div className="notice-detail-header">
                                     <h2 className="notice-detail-title">{selectedTask.name}</h2>
-                                    <span className="notice-detail-date">{selectedTask.category ?? 'custom'}</span>
+                                    <span className="notice-detail-date">{displayCategory(selectedTask.category)}</span>
                                 </div>
                                 <div className="notice-detail-actions">
                                     <button className="icon-btn" title="수정"
-                                            onClick={() => {
-                                                setEditingTask(selectedTask);
-                                                setTaskMode('edit');
-                                            }}>
-                                        <i className="ti ti-pencil" aria-hidden="true"/>
+                                        onClick={() => {
+                                            setEditingTask(selectedTask);
+                                            setTaskMode('edit');
+                                        }}>
+                                        <i className="ti ti-pencil" aria-hidden="true" />
                                     </button>
                                     <button className="icon-btn danger" title="삭제"
-                                            onClick={() => setTaskDeleteTarget(selectedTask.taskId)}>
-                                        <i className="ti ti-trash" aria-hidden="true"/>
+                                        onClick={() => setTaskDeleteTarget(selectedTask.taskId)}>
+                                        <i className="ti ti-trash" aria-hidden="true" />
                                     </button>
                                 </div>
                             </div>
@@ -330,7 +401,7 @@ export default function AdminPage() {
 
                         {taskMode === 'view' && !selectedTask && (
                             <div className="notice-placeholder">
-                                <i className="ti ti-checklist" aria-hidden="true"/>
+                                <i className="ti ti-checklist" aria-hidden="true" />
                                 <span>태스크를 선택해주세요</span>
                             </div>
                         )}

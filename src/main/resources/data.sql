@@ -61,7 +61,7 @@ VALUES (1, '마약, 향정약 확인', '인수인계_상세', NULL, NULL),
        (51, '정규 PO', '투약', NULL, NULL),
        (52, '식전 인슐린', '투약', NULL, NULL),
        (53, 'Patch', '투약', NULL, NULL),
-       (54, '안약 및 연고', '투약', NULL, NULL),
+       (54, '익일 약제 준비', '투약', NULL, NULL),
 
        (55, 'F/U info', '환자 info', NULL, NULL),
        (56, 'NPO notice', '환자 info', NULL, NULL),
@@ -88,11 +88,12 @@ VALUES (1, 1, 'ROUTINE', '약품, 비품 인수인계', 0),
 
        (6, 1, 'ROUTINE', '투약 수행 입력', 5),
        (7, 1, 'ROUTINE', '낙상/욕창/통증 차팅', 6),
-       (8, 1, 'ROUTINE', 'V/S check', 7),
-       (9, 1, 'ROUTINE', 'BST check', 8),
-       (10, 1, 'ROUTINE', '인슐린', 9),
-       (11, 1, 'ROUTINE', 'I/O, 식사량 체크', 10),
-       (12, 1, 'ROUTINE', '검체 내리기', 11);
+       (13, 1, 'ROUTINE', '익일 약제 준비', 7),
+       (8, 1, 'ROUTINE', 'V/S check', 8),
+       (9, 1, 'ROUTINE', 'BST check', 9),
+       (10, 1, 'ROUTINE', '인슐린', 10),
+       (11, 1, 'ROUTINE', 'I/O, 식사량 체크', 11),
+       (12, 1, 'ROUTINE', '검체 내리기', 12);
 
 -- BoxTask
 INSERT IGNORE INTO box_task (box_task_id, box_id, task_id, sort_index, is_done)
@@ -116,4 +117,5 @@ VALUES (1, 1, 4, 0, false),
        (17, 10, 52, 0, false),
        (18, 11, 39, 0, false),
        (19, 12, 41, 0, false),
-       (20, 12, 43, 1, false);
+       (20, 12, 43, 1, false),
+       (21, 13, 54, 0, false);
