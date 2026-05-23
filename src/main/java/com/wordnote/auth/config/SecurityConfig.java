@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 .requestMatchers("/h2-console/**").permitAll()
 
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //OPTIONS 메서드 허용 (CORS Preflight 대응)
-//
+                                .requestMatchers("/", "/index.html", "/assets/**").permitAll()
+
 //                        .requestMatchers(HttpMethod.GET, "/member").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/box").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/board").hasRole("ADMIN")
@@ -71,7 +72,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://wordnote-production.up.railway.app"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS", "PUT"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Refresh"));
