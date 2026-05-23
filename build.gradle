@@ -17,35 +17,44 @@ repositories {
     mavenCentral()
 }
 
+// 프론트 빌드 task
+task npmInstall(type: Exec) {
+    workingDir 'frontend'
+    commandLine 'npm', 'install'
+}
+
+task npmBuild(type: Exec) {
+    dependsOn npmInstall
+    workingDir 'frontend'
+    commandLine 'npm', 'run', 'build'
+}
+
+// Spring Boot 빌드 전에 프론트 빌드 실행
+processResources.dependsOn npmBuild
+
+// 프론트 빌드 결과물을 static으로 복사
+task copyFrontend(type: Copy) {
+    dependsOn npmBuild
+    from 'frontend/dist'
+    into 'src/main/resources/static'
+}
+
+processResources.dependsOn copyFrontend
+
 dependencies {
-    // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'    // JPA (DB)
-    implementation 'org.springframework.boot:spring-boot-starter-validation'    // Validation
-
-    //OAuth
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
-    // DB (H2)
-    // runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.mysql:mysql-connector-j'
-
-    // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-
-    // Lombok (코드 생성)
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-    // MapStruct (DTO 변환)
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'    // MapStruct + Lombok 충돌 방지
-
-    // Test
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     testImplementation 'org.springframework.security:spring-security-test'
 }
