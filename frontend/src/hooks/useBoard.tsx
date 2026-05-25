@@ -22,15 +22,23 @@ export function useBoard() {
 const initBoard = useCallback(async () => {
     setLoading(true);
     try {
+        const boards = await boardApi.getAll();
+        
+        if (boards.length === 0) {
+            // 보드 자체가 없음 → "첫 보드" 화면
+            return;
+        }
+
         const lastId = localStorage.getItem(LAST_BOARD_KEY);
-        if (lastId) {
+        const lastBoard = lastId && boards.find(b => b.boardId === Number(lastId));
+
+        if (lastBoard) {
+            // lastBoardId가 유효하면 바로 로드
             setBoard(await boardApi.getById(Number(lastId)));
         } else {
-            const boards = await boardApi.getAll(); // currentBoardId 없이 호출
-            if (boards.length > 0) {
-                // useBoardApp에서 모달 띄우도록 boards 반환
-                return boards;
-            }
+            // lastBoardId 없거나 삭제된 보드면 모달
+            localStorage.removeItem(LAST_BOARD_KEY);
+            return boards;
         }
     } catch (error: unknown) {
         const status = (error as any)?.response?.status;

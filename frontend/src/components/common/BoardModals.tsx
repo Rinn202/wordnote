@@ -1,4 +1,4 @@
-import type {Board} from '../../types';
+import type { Board } from '../../types';
 import Modal from '../common/Modal';
 
 interface Props {
@@ -8,20 +8,14 @@ interface Props {
     deletingBoardId: number | null;
     onLoadBoard: (boardId: number) => void;
     onDeleteBoard: (boardId: number, e: React.MouseEvent) => void;
-    newBoardConfirmOpen: boolean;
-    onCloseNewBoardConfirm: () => void;
-    onDiscardAndNew: () => void;
-    onSaveAndNew: () => Promise<void>;
     resetLoading: boolean;
 }
 
 export default function BoardModals({
-                                        loadModalOpen, onCloseLoadModal,
-                                        allBoards, deletingBoardId, onLoadBoard, onDeleteBoard,
-                                        newBoardConfirmOpen, onCloseNewBoardConfirm,
-                                        onDiscardAndNew, onSaveAndNew,
-                                        resetLoading,
-                                    }: Props) {
+    loadModalOpen, onCloseLoadModal,
+    allBoards, deletingBoardId, onLoadBoard, onDeleteBoard,
+    resetLoading,
+}: Props) {
     return (
         <>
             <Modal open={loadModalOpen} title="보드 불러오기" onClose={onCloseLoadModal}>
@@ -47,8 +41,8 @@ export default function BoardModals({
                                         onClick={e => onDeleteBoard(b.boardId, e)}
                                     >
                                         {deletingBoardId === b.boardId
-                                            ? <i className="ti ti-loader-2 spin" aria-hidden="true"/>
-                                            : <i className="ti ti-trash" aria-hidden="true"/>
+                                            ? <i className="ti ti-loader-2 spin" aria-hidden="true" />
+                                            : <i className="ti ti-trash" aria-hidden="true" />
                                         }
                                     </button>
                                 </div>
@@ -58,19 +52,12 @@ export default function BoardModals({
                 )}
             </Modal>
 
-            <Modal open={newBoardConfirmOpen} title="진행 중인 보드" onClose={onCloseNewBoardConfirm} width={320}>
-                <p className="confirm-msg">진행 중인 보드를 저장할까요?</p>
-                <div className="confirm-actions">
-                    <button className="confirm-btn secondary" onClick={onDiscardAndNew}>저장 안 함</button>
-                    <button className="confirm-btn primary" onClick={onSaveAndNew}>저장 후 새 보드</button>
+            <Modal open={resetLoading} title="초기화 중" onClose={() => { }} width={320}>
+                <div className="sample-loading">
+                    <i className="ti ti-loader-2 spin" />
+                    <span>잠시만 기다려주세요...</span>
                 </div>
             </Modal>
-<Modal open={resetLoading} title="초기화 중" onClose={() => {}} width={320}>
-    <div className="sample-loading">
-        <i className="ti ti-loader-2 spin"/>
-        <span>잠시만 기다려주세요...</span>
-    </div>
-</Modal>
         </>
     );
 }

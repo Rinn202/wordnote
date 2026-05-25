@@ -4,12 +4,12 @@ import Topbar from '../components/layout/Topbar';
 import BoardColumn from '../components/board/BoardColumn';
 import TaskPool from '../components/task/TaskPool';
 import BoxOptionPanel from '../components/box/BoxOptionPanel';
-import BoardModals from '../components/common/BoardModals';
 import LeftSidebar from '../components/layout/LeftSidebar';
 import Modal from '../components/common/Modal';
 import { getTimeTheme } from '../components/layout/getTimeTheme';
 import { useState } from 'react';
-import { boardApi } from '../api';
+import BoardModals from '../components/common/BoardModals';
+
 
 export default function BoardApp({ onLogout }: { onLogout: () => void }) {
     const {
@@ -20,13 +20,12 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
             updateBoxLocal, reorderTask, addBox,
             applySample,
         },
-        boards: { allBoards, loadModalOpen, setLoadModalOpen, deletingBoardId, handleLoadClick, handleDeleteBoard },
+        boards: { allBoards, deletingBoardId, handleLoadClick, handleDeleteBoard, loadModalOpen, setLoadModalOpen },
         clockStr, dateStr,
         optionBox, setOptionBox,
-        newBoardConfirmOpen, setNewBoardConfirmOpen,
         sampleConfirmOpen, setSampleConfirmOpen,
         alarmToasts, allBoxes, allBoxesStats,
-        handleCloseToast, handleNewBoardClick, handleStart,
+        handleCloseToast, handleStart,
         usedTaskIds,
         isTaskDragging, taskDraggingBoxId, handleTaskDragChange,
     } = useBoardApp();
@@ -58,7 +57,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
             <Topbar
                 clockStr={clockStr}
                 dateStr={dateStr}
-                onNewBoard={handleNewBoardClick}
+                onNewBoard={createNewBoard}
                 onLoadBoard={handleLoadClick}
                 onResetBoard={async () => {
                     setResetLoading(true);
@@ -81,7 +80,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                         deletingBoardId={deletingBoardId}
                         onLoadBoard={loadBoard}
                         onDeleteBoard={handleDeleteBoard}
-                        onNewBoard={handleNewBoardClick}
+                        onNewBoard={createNewBoard}
                         {...allBoxesStats}
                         alarms={alarmToasts}
                         onDismissAlarm={handleCloseToast}
@@ -131,29 +130,6 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                 </div>
             )}
 
-            <BoardModals
-                loadModalOpen={loadModalOpen}
-                onCloseLoadModal={() => setLoadModalOpen(false)}
-                allBoards={allBoards}
-                deletingBoardId={deletingBoardId}
-                onLoadBoard={loadBoard}
-                onDeleteBoard={handleDeleteBoard}
-                newBoardConfirmOpen={newBoardConfirmOpen}
-                onCloseNewBoardConfirm={() => setNewBoardConfirmOpen(false)}
-                onDiscardAndNew={async () => {
-                    if (currentBoard) {
-                        await boardApi.delete(currentBoard.boardId);
-                    }
-                    await createNewBoard();
-                    setNewBoardConfirmOpen(false);
-                }}
-                onSaveAndNew={async () => {
-                    await createNewBoard();
-                    setNewBoardConfirmOpen(false);
-                }}
-                resetLoading={resetLoading}  // ← 추가
-            />
-
             {/* 샘플 보드 적용 팝업 */}
             <Modal
                 open={sampleConfirmOpen}
@@ -189,7 +165,15 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                     </>
                 )}
             </Modal>
-
+<BoardModals
+                loadModalOpen={loadModalOpen}
+                onCloseLoadModal={() => setLoadModalOpen(false)}
+                allBoards={allBoards}
+                deletingBoardId={deletingBoardId}
+                onLoadBoard={loadBoard}
+                onDeleteBoard={handleDeleteBoard}
+                resetLoading={resetLoading}
+            />
             <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast} />
         </div>
     );

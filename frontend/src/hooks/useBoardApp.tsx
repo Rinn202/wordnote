@@ -12,7 +12,6 @@ export function useBoardApp() {
     const { clockStr, dateStr } = useClock();
 
     const [optionBox, setOptionBox] = useState<Box | null>(null);
-    const [newBoardConfirmOpen, setNewBoardConfirmOpen] = useState(false);
     const [sampleConfirmOpen, setSampleConfirmOpen] = useState(false); // 추가
     const [alarmToasts, setAlarmToasts] = useState<AlarmToast[]>([]);
     const [isTaskDragging, setIsTaskDragging] = useState(false);
@@ -39,11 +38,6 @@ export function useBoardApp() {
         setIsTaskDragging(v);
         setTaskDraggingBoxId(v && boxId != null ? boxId : null);
     }, []);
-
-    const handleNewBoardClick = useCallback(() => {
-        if (!currentBoard || currentBoard.boxes.length === 0) return;
-        setNewBoardConfirmOpen(true);
-    }, [currentBoard]);
 
     // START 버튼 핸들러 추가
     const handleStart = useCallback(async () => {
@@ -84,14 +78,12 @@ export function useBoardApp() {
         clockStr,
         dateStr,
         optionBox, setOptionBox,
-        newBoardConfirmOpen, setNewBoardConfirmOpen,
         sampleConfirmOpen, setSampleConfirmOpen, // 추가
         alarmToasts,
         allBoxes,
         allBoxesStats,
         handleAlarm,
         handleCloseToast,
-        handleNewBoardClick,
         handleStart, // 추가
         usedTaskIds,
         isTaskDragging,
