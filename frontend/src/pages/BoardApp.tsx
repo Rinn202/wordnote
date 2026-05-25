@@ -9,7 +9,7 @@ import LeftSidebar from '../components/layout/LeftSidebar';
 import Modal from '../components/common/Modal';
 import { getTimeTheme } from '../components/layout/getTimeTheme';
 import { useState } from 'react';
-import {boardApi} from '../api';
+import { boardApi } from '../api';
 
 export default function BoardApp({ onLogout }: { onLogout: () => void }) {
     const {
@@ -60,7 +60,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                 dateStr={dateStr}
                 onNewBoard={handleNewBoardClick}
                 onLoadBoard={handleLoadClick}
-                onResetBoard={async () => {        // ← 이 부분 교체
+                onResetBoard={async () => {
                     setResetLoading(true);
                     await resetBoard();
                     setResetLoading(false);
@@ -151,7 +151,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                     await createNewBoard();
                     setNewBoardConfirmOpen(false);
                 }}
-                    resetLoading={resetLoading}  // ← 추가
+                resetLoading={resetLoading}  // ← 추가
             />
 
             {/* 샘플 보드 적용 팝업 */}

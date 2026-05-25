@@ -3,7 +3,7 @@ import type {Board, ReorderBoxRequest} from '../types';
 
 export const boardApi = {
     create: () => req<Board>('POST', '/board'),
-    getAll: (currentBoardId: number) => req<Board[]>('GET', `/board?currentBoardId=${currentBoardId}`),
+    getAll: (currentBoardId?: number) => req<Board[]>('GET', currentBoardId ? `/board?currentBoardId=${currentBoardId}` : '/board'),
     getById: (id: number) => req<Board>('GET', `/board/${id}`),
     update: (id: number, body: Partial<Board>) => req<Board>('PATCH', `/board/${id}`, body),
     reset: (id: number) => req<void>('PUT', `/board/${id}/reset`),

@@ -19,22 +19,26 @@ export function useBoard() {
         }
     }, []);
 
-    const initBoard = useCallback(async () => {
+const initBoard = useCallback(async () => {
+    setLoading(true);
+    try {
         const lastId = localStorage.getItem(LAST_BOARD_KEY);
-        if (!lastId) {
-            setLoading(false);
-            return;
-        }
-        setLoading(true);
-        try {
+        if (lastId) {
             setBoard(await boardApi.getById(Number(lastId)));
-        } catch (error: unknown) {
-            const status = (error as any)?.response?.status;
-            if (status !== 401) localStorage.removeItem(LAST_BOARD_KEY);
-        } finally {
-            setLoading(false);
+        } else {
+            const boards = await boardApi.getAll(); // currentBoardId 없이 호출
+            if (boards.length > 0) {
+                // useBoardApp에서 모달 띄우도록 boards 반환
+                return boards;
+            }
         }
-    }, []);
+    } catch (error: unknown) {
+        const status = (error as any)?.response?.status;
+        if (status !== 401) localStorage.removeItem(LAST_BOARD_KEY);
+    } finally {
+        setLoading(false);
+    }
+}, []);
 
     const createNewBoard = useCallback(async () => {
         setLoading(true);

@@ -1,15 +1,15 @@
-import {useCallback, useEffect, useMemo, useState} from 'react';
-import {useBoard} from './useBoard';
-import {useBoards} from './useBoards';
-import type {AlarmToast} from './useAlarm';
-import {useAlarm} from './useAlarm';
-import {useClock} from './useClock';
-import type {Box} from '../types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useBoard } from './useBoard';
+import { useBoards } from './useBoards';
+import type { AlarmToast } from './useAlarm';
+import { useAlarm } from './useAlarm';
+import { useClock } from './useClock';
+import type { Box } from '../types';
 
 // useBoardApp.ts
 export function useBoardApp() {
-    const {board: currentBoard, ...boardActions} = useBoard();
-    const {clockStr, dateStr} = useClock();
+    const { board: currentBoard, ...boardActions } = useBoard();
+    const { clockStr, dateStr } = useClock();
 
     const [optionBox, setOptionBox] = useState<Box | null>(null);
     const [newBoardConfirmOpen, setNewBoardConfirmOpen] = useState(false);
@@ -25,7 +25,7 @@ export function useBoardApp() {
         setAlarmToasts(prev => [...prev, toast]);
     }, []);
 
-    const {stopAudio} = useAlarm(allBoxes, handleAlarm);
+    const { stopAudio } = useAlarm(allBoxes, handleAlarm);
 
     const handleCloseToast = useCallback((boxId: number) => {
         setAlarmToasts(prev => {
@@ -63,9 +63,15 @@ export function useBoardApp() {
         alarm: allBoxes.filter(b => b.alarmType && b.alarmType !== 'NONE' && b.state !== 'DONE').length,
     }), [allBoxes]);
 
+
     useEffect(() => {
-        boardActions.initBoard();
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        boardActions.initBoard().then(initialBoards => {
+            if (initialBoards && initialBoards.length > 0) {
+                boards.setAllBoards(initialBoards);
+                boards.setLoadModalOpen(true);
+            }
+        });
+    }, []);
 
     useEffect(() => {
         if (currentBoard?.boardId) boards.loadAllBoards(currentBoard.boardId);

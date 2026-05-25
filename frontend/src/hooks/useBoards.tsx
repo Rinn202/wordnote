@@ -35,13 +35,14 @@ export function useBoards(
         }
     }, [currentBoardId, onNewBoard]);
 
-    return {
-        allBoards,
-        loadModalOpen,
-        setLoadModalOpen,
-        deletingBoardId,
-        loadAllBoards,
-        handleLoadClick,
-        handleDeleteBoard,
-    };
+return {
+    allBoards,
+    setAllBoards,
+    loadModalOpen,
+    setLoadModalOpen,
+    deletingBoardId,
+    loadAllBoards,
+    handleLoadClick,
+    handleDeleteBoard,
+};
 }
