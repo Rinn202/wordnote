@@ -1,8 +1,8 @@
 package com.wordnote.domain.notice.controller;
 
 import com.wordnote.domain.notice.entity.Notice;
-import com.wordnote.domain.notice.repository.NoticeRepository;
 import com.wordnote.domain.notice.service.NoticeService;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,10 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@RolesAllowed("ADMIN")
 @RequestMapping("/notice")
 public class NoticeController {
     private final NoticeService NoticeService;
-    private final NoticeRepository NoticeRepository;
 
     @GetMapping
     public ResponseEntity<List<Notice>> getAllNotice() {
