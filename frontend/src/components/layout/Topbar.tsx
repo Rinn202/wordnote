@@ -51,7 +51,7 @@ export default function Topbar({clockStr, dateStr, onNewBoard, onLoadBoard, onRe
                 <span className="topbar-date">{dateStr}</span>
             </div>
 
-            <div className="topbar-notice" onClick={() => navigate('/notice')} style={{cursor: 'pointer'}}>
+            <div className="topbar-notice">
                 <i className="ti ti-speakerphone" aria-hidden="true"/>
                 <Marquee scrollamount="2" className="topbar-notice-marquee">
                     {latestNotice ? `[공지] ${latestNotice.title} : ${latestNotice.content}` : '공지사항 없음'}

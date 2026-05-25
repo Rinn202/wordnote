@@ -9,6 +9,7 @@ import LeftSidebar from '../components/layout/LeftSidebar';
 import Modal from '../components/common/Modal';
 import { getTimeTheme } from '../components/layout/getTimeTheme';
 import { useState } from 'react';
+import {boardApi} from '../api';
 
 export default function BoardApp({ onLogout }: { onLogout: () => void }) {
     const {
@@ -139,8 +140,11 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                 onDeleteBoard={handleDeleteBoard}
                 newBoardConfirmOpen={newBoardConfirmOpen}
                 onCloseNewBoardConfirm={() => setNewBoardConfirmOpen(false)}
-                onDiscardAndNew={() => {
-                    createNewBoard();
+                onDiscardAndNew={async () => {
+                    if (currentBoard) {
+                        await boardApi.delete(currentBoard.boardId);
+                    }
+                    await createNewBoard();
                     setNewBoardConfirmOpen(false);
                 }}
                 onSaveAndNew={async () => {

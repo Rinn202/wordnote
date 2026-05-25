@@ -9,10 +9,11 @@ export default function AuthGate() {
         localStorage.getItem('accessToken') ? 'board' : 'login'
     );
 
-    const handleLogout = () => {
-        memberApi.logout();
-        setPage('login');
-    };
+const handleLogout = () => {
+    memberApi.logout();
+    localStorage.removeItem('lastBoardId');
+    setPage('login');
+};
 
     if (page === 'login') return <Login onSuccess={() => setPage('board')} onGoSignUp={() => setPage('signup')}/>;
     if (page === 'signup') return <SignUp onSuccess={() => setPage('login')} onGoLogin={() => setPage('login')}/>;
