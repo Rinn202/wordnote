@@ -119,7 +119,6 @@ export default function Login({onSuccess, onGoSignUp}: LoginProps) {
         if (e.key === 'Enter') handleSubmit();
     };
 
-
     // ── 렌더 ─────────────────────────────────────────────────────────────────
     return (
         <>

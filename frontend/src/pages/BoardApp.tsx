@@ -10,7 +10,6 @@ import { getTimeTheme } from '../components/layout/getTimeTheme';
 import { useState } from 'react';
 import BoardModals from '../components/common/BoardModals';
 
-
 export default function BoardApp({ onLogout }: { onLogout: () => void }) {
     const {
         currentBoard,
