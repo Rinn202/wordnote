@@ -16,7 +16,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findByMember_MemberId(long memberId);
 
     @Query("SELECT b FROM Board b " +
-            "WHERE b.member.memberId = :memberId AND b.boardId != :currentBoardId")
+            "WHERE b.member.memberId = :memberId " +
+            "AND (:currentBoardId IS NULL OR b.boardId != :currentBoardId)")
         // 💡 현재 보드 ID 제외 조건
     List<Board> findBoardsByMemberExceptCurrent(@Param("memberId") Long memberId,
                                                 @Param("currentBoardId") Long currentBoardId
