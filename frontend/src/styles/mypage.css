@@ -1,0 +1,267 @@
+.mypage-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.mypage-container {
+    min-height: 100vh;
+    background: var(--bg);
+    padding: 80px 20px;
+}
+
+.mypage-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 헤더 */
+.mypage-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mypage-header-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+/* 카드 */
+.mypage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mypage-card-label {
+    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text3);
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.mypage-card-label-sm {
+    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text3);
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.mypage-divider {
+    border-top: 1px solid var(--border);
+    margin: 0 -24px;
+    padding: 0 24px;
+}
+
+/* 프로필 */
+.mypage-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.mypage-profile-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.mypage-profile-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    color: var(--text3);
+    flex-shrink: 0;
+}
+
+.mypage-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mypage-profile-name {
+    font-family: 'GowunBatang', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.mypage-profile-email {
+    font-size: 14px;
+    color: var(--text3);
+}
+
+.mypage-profile-date {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+/* 비밀번호 */
+.mypage-password-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.mypage-password-label {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: 'GowunBatang', serif;
+}
+
+.mypage-btn-secondary {
+    padding: 3px 10px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text3);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'GowunBatang', serif;
+}
+
+.mypage-password-input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mypage-password-input {
+    width: 130px;
+    font-size: 13px;
+    padding: 3px 2px;
+    border: none;
+    border-bottom: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text);
+    outline: none;
+    font-family: 'GowunBatang', serif;
+}
+
+.mypage-btn-confirm {
+    padding: 3px 8px;
+    border: 1px solid var(--brand-b);
+    background: var(--brand-bg);
+    color: var(--text3);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'GowunBatang', serif;
+    font-weight: 700;
+}
+
+.mypage-btn-cancel {
+    padding: 3px 7px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text3);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'GowunBatang', serif;
+}
+
+.mypage-password-msg {
+    font-size: 13px;
+    color: var(--brand-c);
+}
+
+/* 역할 */
+.mypage-role-text {
+    font-size: 15px;
+    font-family: 'GowunBatang', serif;
+    color: var(--text);
+    font-weight: 700;
+}
+
+/* 알림음 */
+.mypage-alarm-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.mypage-alarm-chip {
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'GowunBatang', serif;
+}
+
+.mypage-alarm-chip-default {
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+}
+
+.mypage-alarm-chip-active {
+    border: 1px solid var(--brand-b);
+    background: var(--brand-bg);
+    color: var(--brand-c);
+}
+
+.mypage-volume-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mypage-volume-icon {
+    font-size: 15px;
+    color: var(--text3);
+    flex-shrink: 0;
+}
+
+.mypage-volume-slider {
+    accent-color: var(--brand-b);
+    flex: 1;
+    cursor: pointer;
+    height: 1px;
+}
+
+.mypage-volume-label {
+    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text3);
+    min-width: 28px;
+    text-align: right;
+}
+
+/* 회원탈퇴 */
+.mypage-withdraw-row {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mypage-btn-withdraw {
+    font-size: 12px;
+    color: var(--text3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: 'GowunBatang', serif;
+}

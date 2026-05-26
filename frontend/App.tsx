@@ -2,7 +2,6 @@ import {useEffect} from 'react';
 import {Route, Routes} from 'react-router-dom';
 import AuthGate from './src/pages/AuthGate';
 import OAuthRedirect from './src/pages/OAuthRedirect';
-import MyPage from './src/pages/MyPage';
 import AdminPage from './src/pages/AdminPage';
 import './src/styles/index.css';
 
@@ -29,7 +28,6 @@ export default function App() {
         <Routes>
             <Route path="/login/redirect" element={<OAuthRedirect/>}/>
             <Route path="/notice" element={<AdminPage/>}/>
-            <Route path="/member/mypage" element={<MyPage/>}/>
             <Route path="/*" element={<AuthGate/>}/>
         </Routes>
     );

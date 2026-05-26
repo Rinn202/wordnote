@@ -1,0 +1,175 @@
+.about-container {
+    min-height: 100vh;
+    background: var(--bg);
+    padding: 80px 20px;
+}
+
+.about-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 헤더 */
+.about-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.about-header-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+/* 카드 */
+.about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.about-card-label {
+    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text3);
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.about-divider {
+    border-top: 1px solid var(--border);
+    margin: 0 -24px;
+    padding: 0 24px;
+}
+
+/* 서비스 소개 */
+.about-service-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.about-service-desc {
+    font-family: 'GowunBatang', serif;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+/* 버전 */
+.about-version-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.about-version-key {
+    font-size: 13px;
+    font-family: 'GowunBatang', serif;
+    color: var(--text3);
+}
+
+.about-version-val {
+    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text2);
+}
+
+/* 기술 스택 */
+.about-tech-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.about-tech-chip {
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+/* 이메일 */
+.about-email-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.about-email-icon {
+    font-size: 16px;
+    color: var(--text3);
+    flex-shrink: 0;
+}
+
+.about-email-link {
+    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--brand-c);
+    text-decoration: none;
+}
+
+.about-email-link:hover {
+    text-decoration: underline;
+}
+
+/* 라이센스 */
+.about-license-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.about-license-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.about-license-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    font-size: 12px;
+    font-family: 'GowunBatang', serif;
+    color: var(--text3);
+}
+
+.about-license-badge i {
+    font-size: 13px;
+}
+
+.about-license-desc {
+    font-size: 12px;
+    font-family: 'GowunBatang', serif;
+    color: var(--text3);
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+/* 카피라이트 */
+.about-copyright {
+    text-align: center;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text3);
+    padding-bottom: 8px;
+}

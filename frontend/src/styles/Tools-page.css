@@ -1,0 +1,82 @@
+.tools-container {
+    min-height: 100vh;
+    background: var(--bg);
+    padding: 80px 20px;
+}
+
+.tools-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 헤더 */
+.tools-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tools-header-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+/* 툴 목록 */
+.tools-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tools-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-decoration: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.tools-card:hover {
+    border-color: var(--border2);
+    background: var(--surface2);
+}
+
+.tools-card-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.tools-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.tools-card-title {
+    font-family: 'GowunBatang', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.tools-card-desc {
+    font-family: 'GowunBatang', serif;
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 1.6;
+}
+
+.tools-card-arrow {
+    font-size: 15px;
+    color: var(--text3);
+    flex-shrink: 0;
+}

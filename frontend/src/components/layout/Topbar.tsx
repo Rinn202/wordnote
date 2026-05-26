@@ -39,7 +39,7 @@ export default function Topbar({clockStr, dateStr, onNewBoard, onResetBoard, onL
         return (
             <header ref={topbarRef} className="topbar">
                 <div className="logo-area">
-                    <span className="logo">오늘 하루</span>
+                    <span className="logo">WORD NOTE</span>
                 </div>
 
                 <div className="topbar-divider"/>
