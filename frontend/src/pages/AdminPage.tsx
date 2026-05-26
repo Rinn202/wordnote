@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { noticeApi } from '../api/notice';
-import { taskApi } from '../api/task';
+import { noticeApi, taskApi } from '../api';
 import type { Notice, Task } from '../types';
 import ConfirmModal from '../components/common/ConfirmModal';
 import '../styles/admin-page.css';
@@ -13,7 +12,7 @@ const TABS: { key: Tab; icon: string; label: string }[] = [
     { key: 'task', icon: 'ti-checklist', label: '태스크 관리' },
 ];
 
-export default function AdminPage() {
+export default function AdminPage({ onBack }: { onBack: () => void }) {
     const [tab, setTab] = useState<Tab>('notice');
     const isAdmin = localStorage.getItem('role') === 'ADMIN';
 
@@ -163,7 +162,7 @@ const updated = await taskApi.update(
             <aside className="notice-list-panel">
                 <div className="notice-list-header">
                     <span className="notice-list-title">관리자 페이지</span>
-                    <button className="icon-btn" title="돌아가기" onClick={() => window.history.back()}>
+                    <button className="icon-btn" title="돌아가기" onClick={onBack}>
                         <i className="ti ti-arrow-left" aria-hidden="true" />
                     </button>
                 </div>

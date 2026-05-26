@@ -7,6 +7,7 @@ import MenuPage from './MenuPage';
 import MyPage from "./MyPage.tsx";
 import AboutPage from './AboutPage';
 import ToolsPage from './Toolspage.tsx';
+import AdminPage from "./AdminPage.tsx";
 
 export default function AuthGate() {
     const [page, setPage] = useState<string>(
@@ -21,9 +22,18 @@ export default function AuthGate() {
 
     if (page === 'login') return <Login onSuccess={() => setPage('menu')} onGoSignUp={() => setPage('signup')}/>;
     if (page === 'signup') return <SignUp onSuccess={() => setPage('login')} onGoLogin={() => setPage('login')}/>;
-    if (page === 'mypage') return <MyPage onBack={() => setPage('menu')} onWithdraw={() => setPage('login')} />;;
-    if (page === 'board') return <BoardApp onLogout={handleLogout} />;
     if (page === 'menu') return <MenuPage onNavigate={(p) => setPage(p)} />;
+
+    if (page === 'board') return <BoardApp
+        onLogout={handleLogout}
+        onMenu={() => setPage('menu')}
+        onMyPage={() => setPage('mypage')}
+        onAdmin={() => setPage('admin')}
+    />;
+
+    if (page === 'admin') return <AdminPage onBack={() => setPage('board')} />;
+
+    if (page === 'mypage') return <MyPage onBack={() => setPage('menu')} onWithdraw={() => setPage('login')} />;
     if (page === 'about') return <AboutPage onBack={() => setPage('menu')} />;
     if (page === 'tools') return <ToolsPage onBack={() => setPage('menu')} />;
 

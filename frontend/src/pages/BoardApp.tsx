@@ -9,8 +9,13 @@ import Modal from '../components/common/Modal';
 import { getTimeTheme } from '../components/layout/getTimeTheme';
 import { useState } from 'react';
 
-export default function BoardApp({ onLogout, onMenu }: { onLogout: () => void; onMenu: () => void }) {
-    const {
+// BoardApp props
+export default function BoardApp({ onLogout, onMenu, onMyPage, onAdmin }: {
+    onLogout: () => void;
+    onMenu: () => void;
+    onMyPage: () => void;
+    onAdmin: () => void;
+}) {    const {
         currentBoard,
         boardActions: {
             loading, loadBoard, createNewBoard, resetBoard,
@@ -62,6 +67,8 @@ export default function BoardApp({ onLogout, onMenu }: { onLogout: () => void; o
                     setResetLoading(false);
                 }}
                 onLogout={onLogout}
+                onMyPage={onMyPage}
+                onAdmin={onAdmin}
                 onMenu={onMenu} />
 
             {loading ? (

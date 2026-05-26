@@ -1,4 +1,3 @@
-import {useNavigate} from 'react-router-dom';
 import {useEffect, useRef, useState} from 'react';
 import {useTopbarTheme} from './useTopbarTheme';
 import {noticeApi} from '../../api';
@@ -14,12 +13,12 @@ interface Props {
     onResetBoard: () => void;
     onLogout: () => void;
     onMenu: () => void;
-
+    onMyPage: () => void;
+    onAdmin: () => void;
 }
 
-export default function Topbar({clockStr, dateStr, onNewBoard, onResetBoard, onLogout, onMenu}: Props) {
+export default function Topbar({clockStr, dateStr, onNewBoard, onResetBoard, onLogout, onMenu, onMyPage, onAdmin}: Props) {
     {
-        const navigate = useNavigate();
         const topbarRef = useRef<HTMLElement>(null);
         const [latestNotice, setLatestNotice] = useState<Notice | null>(null);
         const isAdmin = localStorage.getItem('role') === 'ADMIN';
@@ -33,8 +32,8 @@ export default function Topbar({clockStr, dateStr, onNewBoard, onResetBoard, onL
 
         const actions = [
             {icon: 'ti-layout-grid', title: '메뉴', onClick: onMenu},
-            {icon: 'ti-user', title: '마이페이지', onClick: () => navigate('/member/mypage')},
-            ...(isAdmin ? [{icon: 'ti-news', title: '공지 관리', onClick: () => navigate('/notice')}] : []),
+            {icon: 'ti-user', title: '마이페이지', onClick: onMyPage},
+            ...(isAdmin ? [{icon: 'ti-news', title: '공지 관리', onClick: onAdmin}] : []),
             {icon: 'ti-plus', title: '새 보드', onClick: onNewBoard},
             {icon: 'ti-refresh', title: '보드 리셋', onClick: onResetBoard},
             {icon: 'ti-logout', title: '로그아웃', onClick: onLogout},
