@@ -91,8 +91,8 @@ public class BoardService {
     }
 
     //전체 검색
-    public List<BoardResponseDto> findAll(long memberId, Long currentBoardId) {
-        List<Board> boards = boardRepository.findBoardsByMemberExceptCurrent(memberId, currentBoardId);
+    public List<BoardResponseDto> findAll(long memberId) {
+        List<Board> boards = boardRepository.findBoardsByMember_MemberId(memberId);
 
         return boardMapper.toResponseDtos(boards);
     }

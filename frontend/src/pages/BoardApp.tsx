@@ -8,7 +8,6 @@ import LeftSidebar from '../components/layout/LeftSidebar';
 import Modal from '../components/common/Modal';
 import { getTimeTheme } from '../components/layout/getTimeTheme';
 import { useState } from 'react';
-import BoardModals from '../components/common/BoardModals';
 
 export default function BoardApp({ onLogout }: { onLogout: () => void }) {
     const {
@@ -19,7 +18,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
             updateBoxLocal, reorderTask, addBox,
             applySample,
         },
-        boards: { allBoards, deletingBoardId, handleLoadClick, handleDeleteBoard, loadModalOpen, setLoadModalOpen },
+        boards: { allBoards, deletingBoardId, handleDeleteBoard },
         clockStr, dateStr,
         optionBox, setOptionBox,
         sampleConfirmOpen, setSampleConfirmOpen,
@@ -57,7 +56,6 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                 clockStr={clockStr}
                 dateStr={dateStr}
                 onNewBoard={createNewBoard}
-                onLoadBoard={handleLoadClick}
                 onResetBoard={async () => {
                     setResetLoading(true);
                     await resetBoard();
@@ -164,15 +162,12 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                     </>
                 )}
             </Modal>
-<BoardModals
-                loadModalOpen={loadModalOpen}
-                onCloseLoadModal={() => setLoadModalOpen(false)}
-                allBoards={allBoards}
-                deletingBoardId={deletingBoardId}
-                onLoadBoard={loadBoard}
-                onDeleteBoard={handleDeleteBoard}
-                resetLoading={resetLoading}
-            />
+            <Modal open={resetLoading} title="초기화 중" onClose={() => {}} width={320}>
+                <div className="sample-loading">
+                    <i className="ti ti-loader-2 spin" />
+                    <span>잠시만 기다려주세요...</span>
+                </div>
+            </Modal>
             <AlarmToastList toasts={alarmToasts} onClose={handleCloseToast} />
         </div>
     );

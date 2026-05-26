@@ -10,13 +10,13 @@ export function useBoards(
     const [loadModalOpen, setLoadModalOpen] = useState(false);
     const [deletingBoardId, setDeletingBoardId] = useState<number | null>(null);
 
-    const loadAllBoards = useCallback(async (boardId: number) => {
-        setAllBoards(await boardApi.getAll(boardId));
+    const loadAllBoards = useCallback(async () => {
+        setAllBoards(await boardApi.getAll());
     }, []);
 
     const handleLoadClick = useCallback(async () => {
         if (!currentBoardId) return;
-        await loadAllBoards(currentBoardId);
+        await loadAllBoards();
         setLoadModalOpen(true);
     }, [currentBoardId, loadAllBoards]);
 

@@ -108,9 +108,12 @@
 
 
 .board-load-button.active {
-    border: 1px solid #d4905a;
-    background: #fff7ee;
-    color: #b86a30;
+    border: 1.5px solid #d4905a;
+    background: #f5e6d0;
+    color: #8a4a1a;
+    font-weight: 700;
+    cursor: default;
+    pointer-events: none;
 }
 
 .board-icon {

@@ -121,7 +121,7 @@ export default function LeftSidebar({
                         }}
                         className={`board-load-button ${b.boardId === currentBoardId ? 'active' : ''}`}
                     >
-                        <i className="ti ti-layout-board board-icon" aria-hidden="true"/>
+                        <i className={`ti ${b.boardId === currentBoardId ? 'ti-pin' : 'ti-layout-board'} board-icon`} aria-hidden="true"/>
                         {b.boardId === currentBoardId ? '현재 보드' : `보드 #${b.boardId}`}
                     </button>
                     {b.boardId !== currentBoardId && (

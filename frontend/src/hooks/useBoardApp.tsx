@@ -62,14 +62,13 @@ export function useBoardApp() {
         boardActions.initBoard().then(initialBoards => {
             if (initialBoards && initialBoards.length > 0) {
                 boards.setAllBoards(initialBoards);
-                boards.setLoadModalOpen(true);
             }
         });
     }, []);
 
     useEffect(() => {
-        if (currentBoard?.boardId) boards.loadAllBoards(currentBoard.boardId);
-    }, [currentBoard?.boardId]); // eslint-disable-line react-hooks/exhaustive-deps
+        if (currentBoard?.boardId) boards.loadAllBoards();
+    }, [currentBoard?.boardId]);
 
     return {
         currentBoard,

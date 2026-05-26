@@ -57,12 +57,11 @@ class BoardController {
 
     //조회
     @GetMapping
-    public ResponseEntity<List<BoardResponseDto>> getAllBoards(
-            @RequestParam(value = "currentBoardId", required = false) Long currentBoardId) {
+    public ResponseEntity<List<BoardResponseDto>> getAllBoards() {
 
         long memberId = SecurityUtil.getMemberId();
 
-        List<BoardResponseDto> response = boardService.findAll(memberId, currentBoardId);
+        List<BoardResponseDto> response = boardService.findAll(memberId);
 
         return ResponseEntity.ok(response);
     }
