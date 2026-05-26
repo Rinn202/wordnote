@@ -45,6 +45,7 @@ public class SecurityConfig {
 
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //OPTIONS 메서드 허용 (CORS Preflight 대응)
                                 .requestMatchers("/", "/index.html", "/assets/**").permitAll()
+                                .requestMatchers("/", "/index.html", "/assets/**", "/public/**", "/*.mp3", "/*.png", "/*.jpg", "/*.jpeg", "/*.ico", "/*.svg").permitAll()
 
 //                        .requestMatchers(HttpMethod.GET, "/member").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/box").hasRole("ADMIN")
