@@ -45,6 +45,7 @@ export interface Box {
 export interface Board {
     boardId: number;
     boxes: Box[];
+    createdAt: string;
 }
 
 // ─── BoxOption ────────────────────────────────────────────────────────────────

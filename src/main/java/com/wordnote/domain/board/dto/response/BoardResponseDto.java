@@ -4,6 +4,7 @@ import com.wordnote.domain.box.dto.response.BoxResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -11,4 +12,5 @@ import java.util.List;
 public class BoardResponseDto {
     private Long boardId;
     private List<BoxResponseDto> boxes;
+    private LocalDateTime createdAt;
 }

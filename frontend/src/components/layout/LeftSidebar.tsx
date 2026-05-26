@@ -2,6 +2,7 @@ import {useState} from 'react';
 import type {Board, Box} from '../../types';
 import '../../styles/left-sidebar.css';
 import type {AlarmToast} from '../../hooks/useAlarm';
+import React from 'react';
 
 interface Props {
     currentBoardId: number | undefined;
@@ -47,6 +48,16 @@ export default function LeftSidebar({
         b => b.alarmType && b.alarmType !== 'NONE' && b.state !== 'DONE' && b.expireTime
     );
     const firedIds = new Set(alarms.map(a => a.boxId));
+
+    const formatDate = (createdAt: string) => {
+        const d = new Date(createdAt);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const hour = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        return `${year}.${month}.${day} ${hour}:${min}`;
+    };
 
     return (
         <aside className="sidebar-container">
@@ -112,7 +123,7 @@ export default function LeftSidebar({
                         className={`board-load-button ${b.boardId === currentBoardId ? 'active' : ''}`}
                     >
                         <i className={`ti ${b.boardId === currentBoardId ? 'ti-pin' : 'ti-layout-board'} board-icon`} aria-hidden="true"/>
-                        {b.boardId === currentBoardId ? '현재 보드' : `보드 #${b.boardId}`}
+                        {b.boardId === currentBoardId ? '현재 보드' : formatDate(b.createdAt)}
                     </button>
                     {b.boardId !== currentBoardId && (
                         <button onClick={e => onDeleteBoard(b.boardId, e)} disabled={deletingBoardId === b.boardId}

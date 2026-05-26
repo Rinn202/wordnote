@@ -20,6 +20,7 @@ public class BoardMapper {
 
         return BoardResponseDto.builder()
                 .boardId(board.getBoardId())
+                .createdAt(board.getCreatedAt())
                 .boxes(
                         board.getBoxes() == null || board.getBoxes().isEmpty()
                                 ? List.of()
