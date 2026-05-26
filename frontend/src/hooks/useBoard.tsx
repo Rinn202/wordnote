@@ -19,34 +19,33 @@ export function useBoard() {
         }
     }, []);
 
-const initBoard = useCallback(async () => {
-    setLoading(true);
-    try {
-        const boards = await boardApi.getAll();
-        
-        if (boards.length === 0) {
-            // 보드 자체가 없음 → "첫 보드" 화면
-            return;
-        }
+    const initBoard = useCallback(async () => {
+        setLoading(true);
+        try {
+            const boards = await boardApi.getAll();
 
-        const lastId = localStorage.getItem(LAST_BOARD_KEY);
-        const lastBoard = lastId && boards.find(b => b.boardId === Number(lastId));
+            if (boards.length === 0) {
+                return; // 보드 없음 → 첫 보드 화면
+            }
 
-        if (lastBoard) {
-            // lastBoardId가 유효하면 바로 로드
-            setBoard(await boardApi.getById(Number(lastId)));
-        } else {
-            // lastBoardId 없거나 삭제된 보드면 모달
-            localStorage.removeItem(LAST_BOARD_KEY);
-            return boards;
+            const lastId = localStorage.getItem(LAST_BOARD_KEY);
+            const lastBoard = lastId && boards.find(b => b.boardId === Number(lastId));
+
+            if (lastBoard) {
+                setBoard(await boardApi.getById(Number(lastId)));
+            } else {
+                // lastBoardId 없거나 삭제된 보드면 첫 번째 보드 로드
+                const first = boards[0];
+                localStorage.setItem(LAST_BOARD_KEY, String(first.boardId));
+                setBoard(await boardApi.getById(first.boardId));
+            }
+        } catch (error: unknown) {
+            const status = (error as any)?.response?.status;
+            if (status !== 401) localStorage.removeItem(LAST_BOARD_KEY);
+        } finally {
+            setLoading(false);
         }
-    } catch (error: unknown) {
-        const status = (error as any)?.response?.status;
-        if (status !== 401) localStorage.removeItem(LAST_BOARD_KEY);
-    } finally {
-        setLoading(false);
-    }
-}, []);
+    }, []);
 
     const createNewBoard = useCallback(async () => {
         setLoading(true);

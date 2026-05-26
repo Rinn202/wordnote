@@ -123,7 +123,7 @@ export default function LeftSidebar({
                         className={`board-load-button ${b.boardId === currentBoardId ? 'active' : ''}`}
                     >
                         <i className={`ti ${b.boardId === currentBoardId ? 'ti-pin' : 'ti-layout-board'} board-icon`} aria-hidden="true"/>
-                        {b.boardId === currentBoardId ? '현재 보드' : formatDate(b.createdAt)}
+                        {b.boardId === currentBoardId ? formatDate(b.createdAt) : formatDate(b.createdAt)}
                     </button>
                     {b.boardId !== currentBoardId && (
                         <button onClick={e => onDeleteBoard(b.boardId, e)} disabled={deletingBoardId === b.boardId}
