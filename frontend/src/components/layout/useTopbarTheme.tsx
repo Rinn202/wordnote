@@ -231,7 +231,7 @@ export function useTopbarTheme(ref: React.RefObject<HTMLElement | null>) {
         el.querySelectorAll<HTMLElement>('.topbar-notice i').forEach(e => {
             e.style.color = t.noticeIcon;
         });
-        el.querySelectorAll<HTMLElement>('.topbar-notice span').forEach(e => {
+        el.querySelectorAll<HTMLElement>('.topbar-notice marquee').forEach(e => {
             e.style.color = t.noticeTxt;
         });
         el.querySelectorAll<HTMLElement>('.icon-btn').forEach(e => {
