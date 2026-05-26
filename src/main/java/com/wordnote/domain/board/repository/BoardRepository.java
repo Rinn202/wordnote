@@ -4,6 +4,7 @@ import com.wordnote.domain.board.entity.Board;
 import com.wordnote.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +15,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findByMember_MemberId(long memberId);
 
-    @Query("SELECT b FROM Board b " +
-            "WHERE b.member.memberId = :memberId " +
-            "AND (:currentBoardId IS NULL OR b.boardId != :currentBoardId)")
-    long countByMember(Member member);
+    @Query("SELECT COUNT(b) FROM Board b WHERE b.member = :member")
+    long countByMember(@Param("member") Member member);
 
     Optional<Board> findByMemberIsNull();
 
