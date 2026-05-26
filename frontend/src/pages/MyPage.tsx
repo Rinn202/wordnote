@@ -4,9 +4,9 @@ import type {Member} from '../types';
 import '../styles/mypage.css';
 
 const ALARM_OPTIONS = [
-    {label: '기본', file: '/alarm.mp3'},
-    {label: 'Cluck', file: '/cluck.mp3'},
-    {label: 'Digital', file: '/digital.mp3'},
+    {label: '기본', file: '/media/alarm.mp3'},
+    {label: 'Cluck', file: '/media/cluck.mp3'},
+    {label: 'Digital', file: '/media/digital.mp3'},
 ];
 
 interface Props {
