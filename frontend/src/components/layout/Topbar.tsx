@@ -4,6 +4,7 @@ import {useTopbarTheme} from './useTopbarTheme';
 import {noticeApi} from '../../api';
 import type {Notice} from '../../types';
 
+
 const Marquee = 'marquee' as any;
 
 interface Props {
@@ -12,9 +13,11 @@ interface Props {
     onNewBoard: () => void;
     onResetBoard: () => void;
     onLogout: () => void;
+    onMenu: () => void;
+
 }
 
-export default function Topbar({clockStr, dateStr, onNewBoard, onResetBoard, onLogout}: Props) {
+export default function Topbar({clockStr, dateStr, onNewBoard, onResetBoard, onLogout, onMenu}: Props) {
     {
         const navigate = useNavigate();
         const topbarRef = useRef<HTMLElement>(null);
@@ -29,7 +32,7 @@ export default function Topbar({clockStr, dateStr, onNewBoard, onResetBoard, onL
         }, []);
 
         const actions = [
-            {icon: 'ti-layout-grid', title: '메뉴', onClick: () => navigate('/')},
+            {icon: 'ti-layout-grid', title: '메뉴', onClick: onMenu},
             {icon: 'ti-user', title: '마이페이지', onClick: () => navigate('/member/mypage')},
             ...(isAdmin ? [{icon: 'ti-news', title: '공지 관리', onClick: () => navigate('/notice')}] : []),
             {icon: 'ti-plus', title: '새 보드', onClick: onNewBoard},

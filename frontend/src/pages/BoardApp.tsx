@@ -9,7 +9,7 @@ import Modal from '../components/common/Modal';
 import { getTimeTheme } from '../components/layout/getTimeTheme';
 import { useState } from 'react';
 
-export default function BoardApp({ onLogout }: { onLogout: () => void }) {
+export default function BoardApp({ onLogout, onMenu }: { onLogout: () => void; onMenu: () => void }) {
     const {
         currentBoard,
         boardActions: {
@@ -62,7 +62,7 @@ export default function BoardApp({ onLogout }: { onLogout: () => void }) {
                     setResetLoading(false);
                 }}
                 onLogout={onLogout}
-            />
+                onMenu={onMenu} />
 
             {loading ? (
                 <div className="loading-state">
