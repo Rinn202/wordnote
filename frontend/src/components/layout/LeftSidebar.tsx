@@ -33,22 +33,13 @@ export default function LeftSidebar({
                                         todo, prog, done, alarms, allBoxes, onDismissAlarm,
                                     }: Props) {
     const [showWarning, setShowWarning] = useState(false);
-    const [showEmptyWarning, setShowEmptyWarning] = useState(false);
 
     const handleNewBoard = () => {
-        const isEmptyBoard = allBoards.find(b => b.boardId === currentBoardId)?.boxes.length === 0;
-        if (isEmptyBoard) {
-            setShowEmptyWarning(true);
-            setShowWarning(false);
-            return;
-        }
         if (allBoards.length >= 11) {
             setShowWarning(true);
-            setShowEmptyWarning(false);
             return;
         }
         setShowWarning(false);
-        setShowEmptyWarning(false);
         onNewBoard();
     };
 
@@ -116,7 +107,6 @@ export default function LeftSidebar({
                     <button
                         onClick={() => {
                             setShowWarning(false);
-                            setShowEmptyWarning(false);
                             onLoadBoard(b.boardId);
                         }}
                         className={`board-load-button ${b.boardId === currentBoardId ? 'active' : ''}`}
@@ -134,7 +124,6 @@ export default function LeftSidebar({
             ))}
 
             {showWarning && <div className="warning-message">보드는 최대 10개까지만 생성할 수 있습니다.</div>}
-            {showEmptyWarning && <div className="warning-message">빈 보드는 저장하거나 새로 만들 수 없습니다. 내용을 추가해 주세요.</div>}
 
             <button onClick={handleNewBoard} className="board-create-button">
                 <i className="ti ti-plus btn-icon" aria-hidden="true"/>
