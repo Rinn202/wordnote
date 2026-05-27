@@ -33,7 +33,7 @@ const cards = [
     },
 ];
 
-export default function MenuPage({ onNavigate }: Props) {
+export default function MenuPage({onNavigate}: Props) {
     const nickname = localStorage.getItem('nickname') ?? '사용자';
 
     return (
@@ -99,6 +99,7 @@ export default function MenuPage({ onNavigate }: Props) {
 
                 /* 카드 공통 */
                 .menu-card {
+                    background: #fff;
                     border-radius: 14px;
                     padding: 22px 18px 20px;
                     cursor: pointer;
@@ -109,12 +110,20 @@ export default function MenuPage({ onNavigate }: Props) {
                     text-align: left;
                     border-width: 1.5px;
                     border-style: dashed;
-                    transition: transform 0.15s, box-shadow 0.15s;
+                    transition:
+                            transform 0.15s ease,
+                            box-shadow 0.15s ease,
+                            border-color 0.15s ease;
+                
+                    appearance: none;
+                    -webkit-appearance: none;
                 }
+                
                 .menu-card:hover {
                     transform: translateY(-2px);
-                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
                 }
+                
                 .menu-card-icon {
                     font-size: 20px;
                 }
@@ -132,10 +141,21 @@ export default function MenuPage({ onNavigate }: Props) {
                     line-height: 1.65;
                 }
 
+                .mc-board {border-color: #d05040;}
                 .mc-board  .menu-card-icon { color: #d05040; }
+                
+                .mc-tools {border-color: #c08020;}
                 .mc-tools  .menu-card-icon { color: #c08020; }
+                
+                .mc-my {border-color: #3a8a3a;}
                 .mc-my     .menu-card-icon { color: #3a8a3a; }
+                
+                .mc-about {border-color: #4060c0;}
                 .mc-about  .menu-card-icon { color: #4060c0; }
+                
+
+
+
             `}</style>
 
             <div className="menu-wrapper">
@@ -161,7 +181,7 @@ export default function MenuPage({ onNavigate }: Props) {
                                 className={`menu-card ${card.className}`}
                                 onClick={() => onNavigate(card.id)}
                             >
-                                <i className={`ti ${card.icon} menu-card-icon`} aria-hidden="true" />
+                                <i className={`ti ${card.icon} menu-card-icon`} aria-hidden="true"/>
                                 <div className="menu-card-title">{card.title}</div>
                                 <div className="menu-card-desc">{card.desc}</div>
                             </button>
