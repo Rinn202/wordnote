@@ -114,6 +114,7 @@ export default function MenuPage({onNavigate}: Props) {
                     appearance: none;
                     -webkit-appearance: none;
                 }  
+                
                 .tools-card:hover {
                     border-color: var(--border2);
                     background: var(--surface2);
