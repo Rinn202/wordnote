@@ -59,15 +59,13 @@ export function useBoardApp() {
 
 
     useEffect(() => {
-        boardActions.initBoard().then(initialBoards => {
-            if (initialBoards && initialBoards.length > 0) {
-                boards.setAllBoards(initialBoards);
-            }
-        });
+        void boardActions.initBoard();
     }, []);
 
     useEffect(() => {
-        if (currentBoard?.boardId) boards.loadAllBoards();
+        if (currentBoard?.boardId) {
+            void boards.loadAllBoards();
+        }
     }, [currentBoard?.boardId]);
 
     return {
