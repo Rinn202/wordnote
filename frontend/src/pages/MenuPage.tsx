@@ -110,12 +110,12 @@ export default function MenuPage({onNavigate}: Props) {
                     text-align: left;
                     border-width: 1.5px;
                     border-style: dashed;
-                    transition: transition: border-color 0.15s ease, background 0.15s ease;
+                    transition: border-color 0.15s ease, background 0.15s ease;
                     appearance: none;
                     -webkit-appearance: none;
                 }  
                 
-                .tools-card:hover {
+                ..menu-card:hover {
                     border-color: var(--border2);
                     background: var(--surface2);
                 }
