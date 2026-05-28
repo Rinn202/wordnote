@@ -118,6 +118,7 @@ export default function MenuPage({onNavigate}: Props) {
                 .menu-card:hover {
                     border-color: var(--border2);
                     background: var(--surface2);
+                    border-style: solid;
                 }
                 
                 .menu-card-icon {

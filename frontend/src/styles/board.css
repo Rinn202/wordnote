@@ -1,14 +1,45 @@
+/* ── Board content ───────────────────────────────────────────────── */
+.board-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.board-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ── Board grid ──────────────────────────────────────────────────── */
+.board-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--bg);
+    gap: 12px;
+    padding: 12px;
+    overflow: hidden;
+}
+
 /* ── Board col ───────────────────────────────────────────────────── */
 .board-col {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-right: 1px solid var(--border);
+    border: 1px solid var(--border);
+    border-radius: 6px;
     position: relative;
 }
 
 .board-col:last-child {
-    border-right: none;
+    border-right: 1px solid var(--border);  /* none 제거, 위에서 통일했으니 불필요 */
 }
 
 /* ── Col header & 탭 ─────────────────────────────────────────────── */
