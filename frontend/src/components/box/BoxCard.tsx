@@ -85,7 +85,6 @@ export default function BoxCard({
         window.activeRequestsCount = (window.activeRequestsCount || 0) + 1;
 
         (async () => {
-            const previousBox = box;
             try {
                 await taskApi.done(boxTaskId);
                 const serverUpdated = await boxApi.getById(box.boxId);
@@ -93,11 +92,11 @@ export default function BoxCard({
                 onUpdate(serverUpdated);
                 const serverAllDone = serverUpdated.tasks.every(t => t.isDone);
                 if (serverAllDone && serverUpdated.state !== 'DONE') {
-                    onStateChange(box.boxId, 'DONE');
+                    await onStateChange(box.boxId, 'DONE');
                 }
             } catch (error) {
                 console.error("실패", error);
-                onUpdate(previousBox);
+                onUpdate(box);
             } finally {
                 // 전역 카운터 감소
                 window.activeRequestsCount = Math.max(0, (window.activeRequestsCount || 0) - 1);
@@ -122,6 +121,12 @@ export default function BoxCard({
         } catch (error) {
             onUpdate(box); // 롤백
         }
+    };
+
+    const handleDone = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const nextState = box.state === 'DONE' ? 'READY' : 'DONE';
+        await onStateChange(box.boxId, nextState);
     };
 
     const handleDelete = (e: React.MouseEvent) => {
@@ -209,28 +214,38 @@ export default function BoxCard({
             )}
             onClick={() => onOpenOption(box)}
         >
-            <div className="box-name-row" draggable onDragStart={onDragStart} onDragOver={onDragOver}
-                 onDragEnd={onDragEnd}>
+            <div className="box-name-row" draggable onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
                 {box.tasks.length > 1
                     ? <span className="box-name">[ {box.name} ]</span>
                     : <SingleTask box={box} state={box.state} onToggle={handleTaskToggle}/>
                 }
                 <div className="box-actions" onClick={e => e.stopPropagation()}>
+
+                    {/* 완료 버튼 */}
+                    <button
+                        className={cx('act-btn', box.state === 'DONE' && 'done-btn')}
+                        title={box.state === 'DONE' ? '완료 취소' : '완료'}
+                        onClick={handleDone}
+                    >
+                        <i className="ti ti-check" aria-hidden="true" />
+                    </button>
+
+                    {/* 알람 설정 버튼 */}
                     <button className={cx('act-btn', box.alarmType !== 'NONE' && 'alarmed')} title="알람 설정"
-                            onClick={e => {
-                                e.stopPropagation();
-                                onOpenOption(box);
-                            }}>
-                        <i className={`ti ${box.alarmType !== 'NONE' ? 'ti-bell-filled' : 'ti-bell'}`}
-                           aria-hidden="true"/>
+                            onClick={e => { e.stopPropagation(); onOpenOption(box); }}>
+                        <i className={`ti ${box.alarmType !== 'NONE' ? 'ti-bell-filled' : 'ti-bell'}`} aria-hidden="true" />
                     </button>
-                    <button className={cx('act-btn', box.bookmark && 'bookmarked')} title="즐겨찾기"
-                            onClick={handleBookmark}>
-                        <i className={`ti ${box.bookmark ? 'ti-star-filled' : 'ti-star'}`} aria-hidden="true"/>
+
+                    {/* 즐겨찾기 버튼 */}
+                    <button className={cx('act-btn', box.bookmark && 'bookmarked')} title="즐겨찾기" onClick={handleBookmark}>
+                        <i className={`ti ${box.bookmark ? 'ti-star-filled' : 'ti-star'}`} aria-hidden="true" />
                     </button>
+
+                    {/* 삭제 버튼 */}
                     <button className="act-btn danger" title="삭제" onClick={handleDelete}>
-                        <i className="ti ti-trash" aria-hidden="true"/>
+                        <i className="ti ti-trash" aria-hidden="true" />
                     </button>
+
                 </div>
             </div>
 

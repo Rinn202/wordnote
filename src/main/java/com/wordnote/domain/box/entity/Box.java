@@ -72,6 +72,8 @@ public class Box {
 
     public void changeState(State next) {
         this.state = next;
+        boolean isDone = (next == State.DONE);
+        this.boxTasks.forEach(boxTask -> boxTask.setIsDone(isDone));
     }
 
     public void update(Boolean bookmark,
