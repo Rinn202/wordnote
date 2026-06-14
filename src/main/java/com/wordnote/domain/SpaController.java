@@ -9,4 +9,4 @@ public class SpaController {
     public String index() {
         return "forward:/index.html";
     }
-}
+} //api 미아 -> api/index.html로
