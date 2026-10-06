@@ -17,12 +17,17 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
 
 @Component
 @RequiredArgsConstructor
 public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenizer jwtTokenizer;
     private final MemberService memberService;
+
+    //로컬테스트용
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -71,7 +76,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
     private URI createURI(String accessToken) {
         return UriComponentsBuilder
-                .fromUriString("https://wordnote-production.up.railway.app/login/redirect")
+                .fromUriString(baseUrl + "/login/redirect")
                 .queryParam("access_token", accessToken)
                 .build()
                 .toUri();

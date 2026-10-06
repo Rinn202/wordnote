@@ -40,3 +40,5 @@ logging:
     root: WARN
 server:
   port: ${PORT:8080}
+app: #로컬테스트용
+  base-url: ${APP_BASE_URL:http://localhost:8080}
